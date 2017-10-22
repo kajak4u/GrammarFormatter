@@ -1,10 +1,9 @@
 #pragma once
 
-#include "RuleElement.h"
 #include "Readable.h"
 #include <string>
 
-class CRuleTerminal : public CRuleElement, public IReadable
+class CRuleTerminal : public IReadable
 {
 	std::string value;
 public:

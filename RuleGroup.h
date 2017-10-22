@@ -1,15 +1,18 @@
 #pragma once
 
-#include "RuleElement.h"
 #include "Readable.h"
 #include <vector>
 #include "Enums.h"
+#include "Spawnable.h"
+#include "DefinitionList.h"
 
-class CRuleGroup : public CRuleElement, public IReadable
+class CRuleGroup : public IReadable, public ISpawnable
 {
-	std::vector<CRuleElement*> content;
+	CDefinitionList definitionList;
 	Options options;
 public:
 	virtual ~CRuleGroup();
 	std::istream& ReadFrom(std::istream& is) override;
+	ISpawnable* spawn() const;
+	static void registerPrefixes();
 };

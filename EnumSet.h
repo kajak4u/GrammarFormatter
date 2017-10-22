@@ -15,7 +15,7 @@ public:
 	}
 	CEnumSet<ENUM>& operator|=(const ENUM &elem)
 	{
-		this.insert(elem);
+		this->insert(elem);
 		return *this;
 	}
 };
