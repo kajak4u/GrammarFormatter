@@ -3,4 +3,6 @@
 
 CRuleGroup::~CRuleGroup()
 {
+	for (CRuleElement*& elem : content)
+		delete elem;
 }

@@ -2,4 +2,6 @@
 
 CSymbol::~CSymbol()
 {
+	for (auto& rule : rules)
+		delete rule;
 }
