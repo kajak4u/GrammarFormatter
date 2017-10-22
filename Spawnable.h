@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 
-class ISpawnable{public:
+class ISpawnable
+{
+public:
 	virtual ISpawnable* spawn() const = 0;
 };

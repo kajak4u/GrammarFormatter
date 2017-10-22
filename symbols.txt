@@ -1,0 +1,12 @@
+[	- COptional
+(/	- COptional
+{	- CRepeated
+(:	- CRepeated
+(	- CGroup
+
+?	- CSpecial
+(*	- comment
+"	- CTerminal
+'	- CTerminal
+a-zA-Z - CIdentifier
+0-9 - factor (2*)
