@@ -4,7 +4,7 @@
 #include "Definition.h"
 #include <vector>
 
-class CDefinitionList :	public IReadable, public std::vector<CDefinition>
+class CDefinitionList :	public IReadable, public std::vector<CDefinition*>
 {
 public:
 	CDefinitionList();

@@ -5,6 +5,12 @@ CDefinition::CDefinition()
 {
 }
 
+CDefinition::CDefinition(std::istream & is)
+	: CDefinition()
+{
+	ReadFrom(is);
+}
+
 
 CDefinition::~CDefinition()
 {
