@@ -3,10 +3,10 @@
 #include "Readable.h"
 #include <string>
 
-class CRuleTerminal : public IReadable
+class CTerminal : public IReadable
 {
 	std::string value;
 public:
-	virtual ~CRuleTerminal();
+	virtual ~CTerminal();
 	std::istream& ReadFrom(std::istream& is) override;
 };

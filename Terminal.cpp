@@ -1,12 +1,12 @@
-#include "RuleTerminal.h"
+#include "Terminal.h"
 
 using namespace std;
 
-CRuleTerminal::~CRuleTerminal()
+CTerminal::~CTerminal()
 {
 }
 
-std::istream& CRuleTerminal::ReadFrom(std::istream& is)
+std::istream& CTerminal::ReadFrom(std::istream& is)
 {
 	char c = is.get();
 	if (c != '"' && c!='\'')
