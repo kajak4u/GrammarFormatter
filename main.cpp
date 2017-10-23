@@ -1,7 +1,13 @@
 #include "main.h"
+#include "Terminal.h"
+#include "Group.h"
+#include "MetaIdentifier.h"
 
 int main(int argc, char* argv[])
 {
+	CTerminal::registerPrefixes();
+	CGroup::registerPrefixes();
+	CMetaIdentifier::registerPrefixes();
 	return 0;
 }
 

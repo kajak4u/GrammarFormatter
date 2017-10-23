@@ -1,15 +1,15 @@
 #include "main.h"
-#include "RuleGroup.h"
+#include "Group.h"
 #include "Recognizer.h"
 
 using namespace std;
 
 
-CRuleGroup::~CRuleGroup()
+CGroup::~CGroup()
 {
 }
 
-std::istream& CRuleGroup::ReadFrom(std::istream& is)
+std::istream& CGroup::ReadFrom(std::istream& is)
 {
 	char c = is.get(), c2;
 	char endch, endch2='\0';
@@ -55,18 +55,18 @@ std::istream& CRuleGroup::ReadFrom(std::istream& is)
 	return is;
 }
 
-ISpawnable* CRuleGroup::spawn() const
+ISpawnable* CGroup::spawn() const
 {
-	return new CRuleGroup();
+	return new CGroup();
 }
 
-void CRuleGroup::registerPrefixes()
+void CGroup::registerPrefixes()
 {
-	CRecognizer::registerType(new CRuleGroup(), "[");
-	CRecognizer::registerType(new CRuleGroup(), "(/");
+	CRecognizer::registerType(new CGroup(), "[");
+	CRecognizer::registerType(new CGroup(), "(/");
 
-	CRecognizer::registerType(new CRuleGroup(), "{");
-	CRecognizer::registerType(new CRuleGroup(), "(:");
+	CRecognizer::registerType(new CGroup(), "{");
+	CRecognizer::registerType(new CGroup(), "(:");
 
-	CRecognizer::registerType(new CRuleGroup(), "(");
+	CRecognizer::registerType(new CGroup(), "(");
 }

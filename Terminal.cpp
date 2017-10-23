@@ -1,4 +1,5 @@
 #include "Terminal.h"
+#include "Recognizer.h"
 
 using namespace std;
 
@@ -15,4 +16,15 @@ std::istream& CTerminal::ReadFrom(std::istream& is)
 	if (is.fail())
 		throw invalid_argument(string() + "End-of-symbol character not found for terminal symbol '"+value+"'.");
 	return is;
+}
+
+ISpawnable * CTerminal::spawn() const
+{
+	return new CTerminal();
+}
+
+void CTerminal::registerPrefixes()
+{
+	CRecognizer::registerType(new CTerminal(), "'");
+	CRecognizer::registerType(new CTerminal(), "\"");
 }

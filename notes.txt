@@ -52,11 +52,14 @@ CFactor
 	
 CPrimary
 	derived:
-		COptional |	CRepeated | CGrouped | CSpecial => CGrouped
+		COptional |	CRepeated | CGrouped | CSpecial => CGroup
 		CMetaIdentifier
 		CTerminal
 		empty?
 	
+CGrouped
+	CDefinitionList
+
 CTerminal
 	content
 
