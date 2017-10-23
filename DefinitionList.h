@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Readable.h"
-#include "Definition.h"
 #include <vector>
+
+class CDefinition;
 
 class CDefinitionList :	public IReadable, public std::vector<CDefinition*>
 {

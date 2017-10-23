@@ -1,5 +1,6 @@
 #include "DefinitionList.h"
 #include "main.h"
+#include "Definition.h"
 
 
 CDefinitionList::CDefinitionList()

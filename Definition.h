@@ -2,9 +2,10 @@
 
 #include "Readable.h"
 #include <vector>
-#include "Term.h"
 
-class CDefinition :	public std::vector<CTerm>, public IReadable
+class CTerm;
+
+class CDefinition :	public std::vector<CTerm*>, public IReadable
 {
 public:
 	CDefinition();
