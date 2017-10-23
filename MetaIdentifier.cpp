@@ -12,6 +12,11 @@ CMetaIdentifier::~CMetaIdentifier()
 {
 }
 
+const std::string & CMetaIdentifier::GetName() const
+{
+	return name;
+}
+
 std::istream & CMetaIdentifier::ReadFrom(std::istream & is)
 {
 	char c = is.get();

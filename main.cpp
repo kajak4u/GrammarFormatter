@@ -3,6 +3,10 @@
 #include "Group.h"
 #include "MetaIdentifier.h"
 #include "Multiplier.h"
+#include "Syntax.h"
+#include <fstream>
+
+using namespace std;
 
 int main(int argc, char* argv[])
 {
@@ -10,6 +14,23 @@ int main(int argc, char* argv[])
 	CGroup::registerPrefixes();
 	CMetaIdentifier::registerPrefixes();
 	CMultiplier::registerPrefixes();
+
+	if (argc < 3)
+		return -1;
+	ifstream grammar(argv[1]);
+	if (!grammar.is_open())
+		return -2;
+	CSyntax syntax;
+	try
+	{
+		syntax.ReadFrom(grammar);
+		cout << "Grammar  loaded correctly" << endl;
+	}
+	catch (exception e)
+	{
+		cerr << e.what() << endl;
+	}
+	system("pause");
 	return 0;
 }
 

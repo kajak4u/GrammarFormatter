@@ -8,6 +8,7 @@ class CMetaIdentifier : public CPrimary
 public:
 	CMetaIdentifier();
 	virtual ~CMetaIdentifier();
+	const std::string& GetName() const;
 
 	std::istream & ReadFrom(std::istream & is) override;
 	ISpawnable * spawn() const override;
