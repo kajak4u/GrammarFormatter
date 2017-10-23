@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Primary.h"
+#include "Spawnable.h"
+#include "Readable.h"
 
-class CMultiplier : public CPrimary
+class CMultiplier : public ISpawnable, public IReadable
 {
 	int value;
 public:
