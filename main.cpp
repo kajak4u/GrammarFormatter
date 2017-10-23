@@ -5,8 +5,29 @@
 #include "Multiplier.h"
 #include "Syntax.h"
 #include <fstream>
+#include <string>
 
 using namespace std;
+
+void ExtractLinePos(istream& is, int& line, int& pos)
+{
+	std::streamoff filepos = is.tellg();
+	is.seekg(0, is.beg);
+	line = 0;
+	string str;
+	vector<pair<string, std::streamoff>> lines;
+	std::streamoff oldfilepos = 0;
+	do
+	{
+		oldfilepos = is.tellg();
+		++line;
+		getline(is, str, '\n');
+		lines.push_back({ str, is.tellg() });
+	} while (is.tellg() < filepos);
+
+	pos = int(filepos - oldfilepos);
+	is.seekg(filepos, is.beg);
+}
 
 int main(int argc, char* argv[])
 {
@@ -28,15 +49,57 @@ int main(int argc, char* argv[])
 	}
 	catch (exception e)
 	{
+		int line, pos;
+		std::streamoff p1 = grammar.tellg();
+		char c1 = grammar.get();
+		grammar.putback(c1);
+		ExtractLinePos(grammar, line, pos);
+		std::streamoff p2 = grammar.tellg();
+		char c2 = grammar.get();
+		cerr << "Error in line " << line << ", char " << pos << endl;
 		cerr << e.what() << endl;
 	}
 	system("pause");
 	return 0;
 }
 
+void skipComment(std::istream& is)
+{
+	string s = { (char)is.get(), (char)is.get() };
+	if (s != "(*")
+	{
+		is.putback(s[1]);
+		is.putback(s[0]);
+		return;
+	}
+	char c;
+	while (1)
+	{
+		switch (c = is.get())
+		{
+		case '*':
+			if ((c = is.get()) == ')')
+				return;
+			else
+				is.putback(c);
+			break;
+		case '(':
+			if ((c = is.get()) == '*')
+			{
+				is.putback(c);
+				is.putback('(');
+				skipComment(is);
+			}
+			else
+				is.putback(c);
+			break;
+		}
+	}
+}
+
 void skipWhiteChars(std::istream& is)
 {
-	char c;
+	char c, c2;
 	while (1)
 		switch (c = is.get())
 		{
@@ -44,6 +107,15 @@ void skipWhiteChars(std::istream& is)
 		case '\t':
 		case '\n':
 		case '\r':
+			break;
+		case '(':
+			c2 = is.get();
+			if (c2 == '*')
+			{
+				is.putback(c2);
+				is.putback(c);
+				skipComment(is);
+			}
 			break;
 		default:
 			is.putback(c);

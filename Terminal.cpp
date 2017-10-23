@@ -28,3 +28,14 @@ void CTerminal::registerPrefixes()
 	CRecognizer::registerType(new CTerminal(), "'");
 	CRecognizer::registerType(new CTerminal(), "\"");
 }
+
+void CTerminal::WriteTo(std::ostream & os) const
+{
+	os << "\"" << value << "\"";
+}
+
+std::ostream & operator<<(std::ostream & os, const CTerminal & terminal)
+{
+	terminal.WriteTo(os);
+	return os;
+}

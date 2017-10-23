@@ -14,5 +14,8 @@ public:
 	ISpawnable * spawn() const override;
 	int GetValue() const;
 	static void registerPrefixes();
-};
 
+	// Inherited via IReadable
+	virtual void WriteTo(std::ostream & os) const override;
+};
+std::ostream& operator<<(std::ostream& os, const CMultiplier& mult);

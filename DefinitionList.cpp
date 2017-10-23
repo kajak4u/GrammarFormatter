@@ -28,3 +28,16 @@ std::istream& CDefinitionList::ReadFrom(std::istream& is)
 	} while (true);
 	return is;
 }
+
+void CDefinitionList::WriteTo(std::ostream & os) const
+{
+	bool first = true;
+	for (const CDefinition* def : *this)
+		os << (first ? first = false, "" : "\n\t| ") << *def;
+}
+
+std::ostream & operator<<(std::ostream & os, const CDefinitionList & list)
+{
+	list.WriteTo(os);
+	return os;
+}

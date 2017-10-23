@@ -1,5 +1,7 @@
 #include "MetaIdentifier.h"
 #include "Recognizer.h"
+#include "main.h"
+#include <string>
 
 using namespace std;
 
@@ -19,6 +21,7 @@ const std::string & CMetaIdentifier::GetName() const
 
 std::istream & CMetaIdentifier::ReadFrom(std::istream & is)
 {
+	skipWhiteChars(is);
 	char c = is.get();
 	if (!isalpha(c))
 		throw invalid_argument(string()+"Meta identifier should start with letter, '"+c+"' found instead.");
@@ -27,9 +30,15 @@ std::istream & CMetaIdentifier::ReadFrom(std::istream & is)
 	{
 		name += c;
 		c = is.get();
-	} while (isalnum(c));
-
+	} while (isalnum(c) || c==' ' || c=='-');
+	while (name.back() == ' ')
+		name.pop_back();
 	return is.putback(c);
+}
+
+void CMetaIdentifier::WriteTo(std::ostream & os) const
+{
+	os << name;
 }
 
 ISpawnable * CMetaIdentifier::spawn() const
@@ -44,4 +53,10 @@ void CMetaIdentifier::registerPrefixes()
 		CRecognizer::registerType(new CMetaIdentifier(), string{c});
 		CRecognizer::registerType(new CMetaIdentifier(), string{ (char)toupper(c) });
 	}
+}
+
+std::ostream & operator<<(std::ostream & os, const CMetaIdentifier & identifier)
+{
+	identifier.WriteTo(os);
+	return os;
 }

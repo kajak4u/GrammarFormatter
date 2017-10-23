@@ -27,3 +27,14 @@ std::istream & CSyntaxRule::ReadFrom(std::istream & is)
 		throw invalid_argument(string() + " expected terminator symbol ';' or '.' after definition list for identifier '" + identifier.GetName() + "'.");
 	return is;
 }
+
+void CSyntaxRule::WriteTo(std::ostream & os) const
+{
+	os << identifier << " = " << definitionList << ";" << endl;
+}
+
+std::ostream & operator<<(std::ostream & os, const CSyntaxRule & rule)
+{
+	rule.WriteTo(os);
+	return os;
+}

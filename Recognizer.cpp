@@ -1,4 +1,5 @@
 #include "Recognizer.h"
+#include "main.h"
 
 CRecognizer& CRecognizer::instance()
 {
@@ -13,6 +14,7 @@ void CRecognizer::registerType(ISpawnable* obj, std::string seq)
 
 ISpawnable* CRecognizer::CreateFor(std::istream& is)
 {
+	skipWhiteChars(is);
 	const ISpawnable* found = instance().hierarchy.get(is);
 	return found == nullptr ? nullptr : found->spawn();
 }

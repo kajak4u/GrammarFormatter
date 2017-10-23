@@ -12,5 +12,7 @@ public:
 	virtual ~CFactor();
 
 	std::istream & ReadFrom(std::istream & is) override;
+	void WriteTo(std::ostream & os) const override;
 };
 
+std::ostream& operator<<(std::ostream& os, const CFactor& factor);

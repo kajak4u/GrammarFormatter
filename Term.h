@@ -6,6 +6,7 @@
 class CTerm : public IReadable
 {
 	CFactor factor;
+	bool hasException = false;
 	CFactor exception;
 public:
 	CTerm();
@@ -13,5 +14,6 @@ public:
 	virtual ~CTerm();
 
 	std::istream & ReadFrom(std::istream & is) override;
+	void WriteTo(std::ostream & os) const override;
 };
-
+std::ostream& operator<<(std::ostream& os, const CTerm& term);

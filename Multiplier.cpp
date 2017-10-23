@@ -41,3 +41,14 @@ void CMultiplier::registerPrefixes()
 	for (char c = '0'; c <= '9'; ++c)
 		CRecognizer::registerType(new CMultiplier(), string{ c });
 }
+
+void CMultiplier::WriteTo(std::ostream & os) const
+{
+	os << value;
+}
+
+std::ostream & operator<<(std::ostream & os, const CMultiplier & mult)
+{
+	mult.WriteTo(os);
+	return os;
+}

@@ -10,10 +10,12 @@
 class CGroup : public CPrimary
 {
 	CDefinitionList definitionList;
-	Options options;
+	Option options;
 public:
 	virtual ~CGroup();
 	std::istream& ReadFrom(std::istream& is) override;
 	ISpawnable* spawn() const override;
 	static void registerPrefixes();
+	void WriteTo(std::ostream & os) const override;
 };
+std::ostream& operator<<(std::ostream& os, const CGroup& group);

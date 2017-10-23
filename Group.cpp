@@ -17,11 +17,11 @@ std::istream& CGroup::ReadFrom(std::istream& is)
 	{
 	case '[':
 		endch = ']';
-		options |= OptionOptional;
+		options = OptionOptional;
 		break;
 	case '{':
 		endch = '}';
-		options |= OptionRepetition;
+		options = OptionRepetition;
 		break;
 	case '(':
 		endch2 = ')';
@@ -29,10 +29,10 @@ std::istream& CGroup::ReadFrom(std::istream& is)
 		switch (c2)
 		{
 		case '/':
-			options |= OptionOptional;
+			options = OptionOptional;
 			break;
 		case ':':
-			options |= OptionRepetition;
+			options = OptionRepetition;
 			break;
 		default:
 			endch = endch2;
@@ -69,4 +69,16 @@ void CGroup::registerPrefixes()
 	CRecognizer::registerType(new CGroup(), "(:");
 
 	CRecognizer::registerType(new CGroup(), "(");
+}
+
+void CGroup::WriteTo(std::ostream & os) const
+{
+	string brackets = options == OptionOptional ? "[]" : options == OptionRepetition ? "{}" : "()";
+	os << brackets[0] << definitionList << brackets[1];
+}
+
+std::ostream & operator<<(std::ostream & os, const CGroup & group)
+{
+	group.WriteTo(os);
+	return os;
 }
