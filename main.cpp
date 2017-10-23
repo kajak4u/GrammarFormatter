@@ -2,12 +2,14 @@
 #include "Terminal.h"
 #include "Group.h"
 #include "MetaIdentifier.h"
+#include "Multiplier.h"
 
 int main(int argc, char* argv[])
 {
 	CTerminal::registerPrefixes();
 	CGroup::registerPrefixes();
 	CMetaIdentifier::registerPrefixes();
+	CMultiplier::registerPrefixes();
 	return 0;
 }
 

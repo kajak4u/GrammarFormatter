@@ -2,6 +2,7 @@
 #include "Recognizer.h"
 #include "main.h"
 #include <string>
+#include "Multiplier.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ istream & CFactor::ReadFrom(istream & is)
 	ISpawnable* obj = CRecognizer::CreateFor(is);
 	if (CMultiplier* mult = dynamic_cast<CMultiplier*>(obj))
 	{
-		multiplier = mult->value;
+		multiplier = mult->GetValue();
 		delete mult;
 		if (GetSymbol(is, true) != SymbolRepetition)
 			throw invalid_argument(string()+"Expected repetition symbol '*' after multiplier '"+to_string(multiplier)+"'.");
