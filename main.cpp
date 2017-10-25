@@ -9,25 +9,25 @@
 
 using namespace std;
 
-void ExtractLinePos(istream& is, int& line, int& pos)
+void ExtractLinePos(istream& is, int& line, int& pos, string& lineContent)
 {
 	std::streamoff filepos = is.tellg();
 	is.seekg(0, is.beg);
 	line = 0;
 	string str;
-	vector<pair<string, std::streamoff>> lines;
 	std::streamoff oldfilepos = 0;
 	do
 	{
 		oldfilepos = is.tellg();
 		++line;
 		getline(is, str, '\n');
-		lines.push_back({ str, is.tellg() });
 	} while (is.tellg() < filepos);
 
 	pos = int(filepos - oldfilepos);
 	is.seekg(filepos, is.beg);
+	lineContent = str;
 }
+#include <regex>
 
 int main(int argc, char* argv[])
 {
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
 	if (argc < 3)
 		return -1;
-	ifstream grammar(argv[1]);
+	ifstream grammar(argv[1], ios::binary);
 	if (!grammar.is_open())
 		return -2;
 	CSyntax syntax;
@@ -50,14 +50,13 @@ int main(int argc, char* argv[])
 	catch (exception e)
 	{
 		int line, pos;
-		std::streamoff p1 = grammar.tellg();
-		char c1 = grammar.get();
-		grammar.putback(c1);
-		ExtractLinePos(grammar, line, pos);
-		std::streamoff p2 = grammar.tellg();
-		char c2 = grammar.get();
-		cerr << "Error in line " << line << ", char " << pos << endl;
-		cerr << e.what() << endl;
+		string lineContent;
+		ExtractLinePos(grammar, line, pos, lineContent);
+		lineContent = regex_replace(lineContent, regex("\t"), " ");
+		cerr<< "Error in line " << line << ", char " << pos << endl
+			<< lineContent << endl
+			<< string(pos - 1, '=') << "^" << endl
+			<< e.what() << endl;
 	}
 	system("pause");
 	return 0;
@@ -100,7 +99,7 @@ void skipComment(std::istream& is)
 void skipWhiteChars(std::istream& is)
 {
 	char c, c2;
-	while (1)
+	while (!is.eof())
 		switch (c = is.get())
 		{
 		case ' ':
@@ -115,10 +114,12 @@ void skipWhiteChars(std::istream& is)
 				is.putback(c2);
 				is.putback(c);
 				skipComment(is);
+				break;
 			}
-			break;
+			is.putback(c2);
 		default:
-			is.putback(c);
+			if(c!=-1)
+				is.putback(c);
 			return;
 		}
 }
@@ -166,6 +167,8 @@ Symbol GetSymbol(std::istream & is, int & group, bool alterStream)
 		is.putback(c2);
 		is.putback(c);
 	}
+	else if (result != symbols.end() && result->first.length() == 1)
+		is.putback(c2);
 	if (result == symbols.cend())
 	{
 		group = -1;
