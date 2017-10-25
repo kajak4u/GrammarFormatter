@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010"> 
+  <Type Name="CMetaIdentifier">
+    <DisplayString>{name}</DisplayString>
+  </Type>
+  <Type Name="CMetaIdentifier*">
+    <DisplayString></DisplayString>
+  </Type>
+  <Type Name="CTerminal">
+    <DisplayString>"{value}"</DisplayString>
+  </Type>
+  <Type Name="CTerm">
+    <DisplayString Condition="hasException">{factor} - {exception}</DisplayString>
+    <DisplayString>{factor}</DisplayString>
+  </Type>
+  <Type Name="CFactor">
+    <DisplayString Condition="multiplier==1">{*primary}</DisplayString>
+    <DisplayString>{multiplier}*{*primary}</DisplayString>
+  </Type>
+</AutoVisualizer>
