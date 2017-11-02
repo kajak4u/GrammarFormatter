@@ -4,6 +4,7 @@
 #include "MetaIdentifier.h"
 #include "Multiplier.h"
 #include "Syntax.h"
+#include "Special.h"
 #include <fstream>
 #include <string>
 
@@ -35,6 +36,7 @@ int main(int argc, char* argv[])
 	CGroup::registerPrefixes();
 	CMetaIdentifier::registerPrefixes();
 	CMultiplier::registerPrefixes();
+	CSpecial::registerPrefixes();
 
 	if (argc < 3)
 		return -1;
@@ -46,6 +48,17 @@ int main(int argc, char* argv[])
 	{
 		syntax.ReadFrom(grammar);
 		cout << "Grammar  loaded correctly" << endl;
+		string message;
+		if (syntax.IsCorrect(ref(message)))
+		{
+			cout << "Grammar is correct" << endl;
+			if (message != "")
+				cout<< "warnings: " << endl
+					<< message << endl;
+		}
+		else
+			cerr<< "Grammar contains errors!" << endl
+				<< message << endl;
 	}
 	catch (exception e)
 	{
@@ -53,10 +66,11 @@ int main(int argc, char* argv[])
 		string lineContent;
 		ExtractLinePos(grammar, line, pos, lineContent);
 		lineContent = regex_replace(lineContent, regex("\t"), " ");
-		cerr<< "Error in line " << line << ", char " << pos << endl
-			<< lineContent << endl
-			<< string(pos - 1, '=') << "^" << endl
-			<< e.what() << endl;
+		cerr << "Error in line " << line << ", char " << pos << endl
+			 << lineContent << endl;
+		if (pos != 0)
+			cerr << string(pos - 1, '=') << "^" << endl;
+		cerr << e.what() << endl;
 	}
 	system("pause");
 	return 0;
@@ -72,7 +86,7 @@ void skipComment(std::istream& is)
 		return;
 	}
 	char c;
-	while (1)
+	while (!is.eof())
 	{
 		switch (c = is.get())
 		{

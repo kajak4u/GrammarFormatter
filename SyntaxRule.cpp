@@ -17,6 +17,11 @@ CSyntaxRule::~CSyntaxRule()
 {
 }
 
+const CMetaIdentifier & CSyntaxRule::GetIdentifier() const
+{
+	return identifier;
+}
+
 std::istream & CSyntaxRule::ReadFrom(std::istream & is)
 {
 	identifier.ReadFrom(is);
@@ -31,6 +36,12 @@ std::istream & CSyntaxRule::ReadFrom(std::istream & is)
 void CSyntaxRule::WriteTo(std::ostream & os) const
 {
 	os << identifier << " = " << definitionList << ";" << endl;
+}
+
+void CSyntaxRule::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
+{
+	CGrammarObject::ForEach(condition, action);
+	definitionList.ForEach(condition, action);
 }
 
 std::ostream & operator<<(std::ostream & os, const CSyntaxRule & rule)

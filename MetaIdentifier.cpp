@@ -30,9 +30,10 @@ std::istream & CMetaIdentifier::ReadFrom(std::istream & is)
 	{
 		name += c;
 		c = is.get();
-	} while (isalnum(c) || c==' ' || c=='-');
+	} while (isalnum(c) || c==' ' /*|| c=='-'*/);
 	while (name.back() == ' ')
 		name.pop_back();
+
 	return is.putback(c);
 }
 
@@ -53,6 +54,11 @@ void CMetaIdentifier::registerPrefixes()
 		CRecognizer::registerType(new CMetaIdentifier(), string{c});
 		CRecognizer::registerType(new CMetaIdentifier(), string{ (char)toupper(c) });
 	}
+}
+
+bool CMetaIdentifier::operator<(const CMetaIdentifier & other) const
+{
+	return name < other.name;
 }
 
 std::ostream & operator<<(std::ostream & os, const CMetaIdentifier & identifier)

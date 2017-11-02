@@ -77,6 +77,12 @@ void CGroup::WriteTo(std::ostream & os) const
 	os << brackets[0] << definitionList << brackets[1];
 }
 
+void CGroup::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
+{
+	CGrammarObject::ForEach(condition, action);
+	definitionList.ForEach(condition, action);
+}
+
 std::ostream & operator<<(std::ostream & os, const CGroup & group)
 {
 	group.WriteTo(os);

@@ -45,6 +45,13 @@ void CFactor::WriteTo(std::ostream & os) const
 		primary->WriteTo(os);
 }
 
+void CFactor::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
+{
+	CGrammarObject::ForEach(condition, action);
+	if(primary!=nullptr)
+		primary->ForEach(condition, action);
+}
+
 std::ostream & operator<<(std::ostream & os, const CFactor & factor)
 {
 	factor.WriteTo(os);

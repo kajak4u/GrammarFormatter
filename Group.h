@@ -17,5 +17,6 @@ public:
 	ISpawnable* spawn() const override;
 	static void registerPrefixes();
 	void WriteTo(std::ostream & os) const override;
+	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const;
 };
 std::ostream& operator<<(std::ostream& os, const CGroup& group);

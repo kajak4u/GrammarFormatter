@@ -36,6 +36,14 @@ void CTerm::WriteTo(std::ostream & os) const
 		os << " - " << exception;
 }
 
+void CTerm::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
+{
+	CGrammarObject::ForEach(condition, action);
+	factor.ForEach(condition, action);
+	if (hasException)
+		exception.ForEach(condition, action);
+}
+
 std::ostream & operator<<(std::ostream & os, const CTerm & term)
 {
 	term.WriteTo(os);

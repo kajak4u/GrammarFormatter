@@ -2,6 +2,7 @@
 
 #include <string>
 #include "Primary.h"
+#include "GrammarObject.h"
 
 class CTerminal : public CPrimary
 {
@@ -12,7 +13,6 @@ public:
 	ISpawnable * spawn() const override;
 	static void registerPrefixes();
 
-	// Inherited via CPrimary
-	virtual void WriteTo(std::ostream & os) const override;
+	void WriteTo(std::ostream & os) const override;
 };
 std::ostream& operator<<(std::ostream& os, const CTerminal& terminal);
