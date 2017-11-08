@@ -9,6 +9,8 @@ class CDefinitionList :	public IReadable, public std::vector<CDefinition*>, publ
 {
 public:
 	CDefinitionList();
+	CDefinitionList(const CDefinitionList& other);
+	CDefinitionList(CDefinitionList&&) = default;
 	virtual ~CDefinitionList();
 	std::istream& ReadFrom(std::istream& is) override;
 	void WriteTo(std::ostream& os) const override;

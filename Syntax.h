@@ -11,6 +11,8 @@ class CSyntax :	public std::vector<CSyntaxRule*>, public IReadable, public CGram
 {
 public:
 	CSyntax();
+	CSyntax(const CSyntax& other);
+	CSyntax(CSyntax&&) = default;
 	virtual ~CSyntax();
 
 	std::istream & ReadFrom(std::istream & is) override;

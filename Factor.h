@@ -11,6 +11,8 @@ class CFactor :	public IReadable, public CGrammarObject
 	CPrimary* primary = nullptr;
 public:
 	CFactor();
+	CFactor(const CFactor& other);
+	CFactor(CFactor&&) = default;
 	virtual ~CFactor();
 
 	std::istream & ReadFrom(std::istream & is) override;

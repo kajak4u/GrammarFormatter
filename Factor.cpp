@@ -10,6 +10,13 @@ CFactor::CFactor()
 {
 }
 
+CFactor::CFactor(const CFactor & other)
+	: multiplier(other.multiplier)
+{
+	primary = dynamic_cast<CPrimary*>(other.primary->spawn());
+	*primary = *other.primary;
+}
+
 
 CFactor::~CFactor()
 {

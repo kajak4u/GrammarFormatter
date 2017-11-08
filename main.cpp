@@ -1,12 +1,8 @@
 #include "main.h"
-#include "Terminal.h"
-#include "Group.h"
-#include "MetaIdentifier.h"
-#include "Multiplier.h"
-#include "Syntax.h"
-#include "Special.h"
+#include "Application.h"
 #include <fstream>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -27,53 +23,6 @@ void ExtractLinePos(istream& is, int& line, int& pos, string& lineContent)
 	pos = int(filepos - oldfilepos);
 	is.seekg(filepos, is.beg);
 	lineContent = str;
-}
-#include <regex>
-
-int main(int argc, char* argv[])
-{
-	CTerminal::registerPrefixes();
-	CGroup::registerPrefixes();
-	CMetaIdentifier::registerPrefixes();
-	CMultiplier::registerPrefixes();
-	CSpecial::registerPrefixes();
-
-	if (argc < 3)
-		return -1;
-	ifstream grammar(argv[1], ios::binary);
-	if (!grammar.is_open())
-		return -2;
-	CSyntax syntax;
-	try
-	{
-		syntax.ReadFrom(grammar);
-		cout << "Grammar  loaded correctly" << endl;
-		string message;
-		if (syntax.IsCorrect(ref(message)))
-		{
-			cout << "Grammar is correct" << endl;
-			if (message != "")
-				cout<< "warnings: " << endl
-					<< message << endl;
-		}
-		else
-			cerr<< "Grammar contains errors!" << endl
-				<< message << endl;
-	}
-	catch (exception e)
-	{
-		int line, pos;
-		string lineContent;
-		ExtractLinePos(grammar, line, pos, lineContent);
-		lineContent = regex_replace(lineContent, regex("\t"), " ");
-		cerr << "Error in line " << line << ", char " << pos << endl
-			 << lineContent << endl;
-		if (pos != 0)
-			cerr << string(pos - 1, '=') << "^" << endl;
-		cerr << e.what() << endl;
-	}
-	system("pause");
-	return 0;
 }
 
 void skipComment(std::istream& is)
@@ -138,9 +87,6 @@ void skipWhiteChars(std::istream& is)
 		}
 }
 
-#include <map>
-using namespace std;
-
 Symbol GetSymbol(std::istream & is, int & group, bool alterStream)
 {
 	static const map<string, pair<Symbol,int>> symbols = 
@@ -196,4 +142,22 @@ Symbol GetSymbol(std::istream & is, bool alterStream)
 {
 	int gr;
 	return GetSymbol(is, gr, alterStream);
+}
+
+
+int main(int argc, char* argv[])
+{
+	try
+	{
+		CApplication app(argc, argv);
+		app.Run();
+		system("pause");
+		return 0;
+	}
+	catch (MyException& e)
+	{
+		cerr << e.message;
+		system("pause");
+		return e.retCode;
+	}
 }

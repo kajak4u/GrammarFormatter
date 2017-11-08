@@ -8,6 +8,13 @@ CSyntax::CSyntax()
 {
 }
 
+CSyntax::CSyntax(const CSyntax & other)
+{
+	this->reserve(other.size());
+	for (CSyntaxRule* rule : other)
+		this->push_back(new CSyntaxRule(*rule));
+}
+
 
 CSyntax::~CSyntax()
 {

@@ -7,6 +7,13 @@ CDefinitionList::CDefinitionList()
 {
 }
 
+CDefinitionList::CDefinitionList(const CDefinitionList & other)
+{
+	this->reserve(other.size());
+	for (CDefinition* definition : other)
+		this->push_back(new CDefinition(*definition));
+}
+
 
 CDefinitionList::~CDefinitionList()
 {

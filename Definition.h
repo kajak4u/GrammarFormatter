@@ -10,6 +10,8 @@ class CDefinition :	public std::vector<CTerm*>, public IReadable, public CGramma
 public:
 	CDefinition();
 	CDefinition(std::istream& is);
+	CDefinition(const CDefinition& other);
+	CDefinition(CDefinition&& other) = default;
 	virtual ~CDefinition();
 	std::istream& ReadFrom(std::istream& is) override;
 	void WriteTo(std::ostream& os) const override;

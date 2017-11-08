@@ -14,6 +14,13 @@ CDefinition::CDefinition(std::istream & is)
 	ReadFrom(is);
 }
 
+CDefinition::CDefinition(const CDefinition & other)
+{
+	this->reserve(other.size());
+	for (CTerm* term : other)
+		this->push_back(new CTerm(*term));
+}
+
 
 CDefinition::~CDefinition()
 {
