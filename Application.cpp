@@ -73,14 +73,17 @@ void CApplication::CheckCorrectness(const CSyntax & syntax)
 
 CParsingTable CApplication::CreateParsingTable(const CSyntax & grammar)
 {
-	auto compare = [](const CMetaIdentifier* a, const CMetaIdentifier* b) {return a->GetName() < b->GetName(); };
 	CParsingTable table;
-	const CMetaIdentifier* startSymbol = grammar.GetStartSymbol();
-	auto terminals = grammar.GetAllTerminals();
-	map<const CMetaIdentifier*, unordered_set<const CSyntaxRule*>, CMetaIdentifier::ComparePointers> identifiers(compare);
-	for (const CSyntaxRule* rule : grammar)
-		identifiers[&rule->GetIdentifier()].insert(rule);
+	table.Parse(grammar);
 	return table;
+	//auto compare = [](const CMetaIdentifier* a, const CMetaIdentifier* b) {return a->GetName() < b->GetName(); };
+	//CParsingTable table;
+	//const CMetaIdentifier* startSymbol = grammar.GetStartSymbol();
+	//auto terminals = grammar.GetAllTerminals();
+	//map<const CMetaIdentifier*, unordered_set<const CSyntaxRule*>, CMetaIdentifier::ComparePointers> identifiers(compare);
+	//for (const CSyntaxRule* rule : grammar)
+	//	identifiers[&rule->GetIdentifier()].insert(rule);
+	//return table;
 }
 
 void CApplication::Run()
@@ -101,4 +104,5 @@ void CApplication::Run()
 	if (!code.is_open())
 		throw MyException("Could not open input file", -5);
 	CParsingTable parsingTable = CreateParsingTable(grammar);
+	cout << "Parsing table ready" << endl;
 }

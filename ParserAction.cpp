@@ -4,9 +4,13 @@ using namespace std;
 void CParserAction::AddGoto(const CMetaIdentifier * id, GotoRule nextRule)
 {
 	if (!gotos)
-		gotos = new unordered_map<const CMetaIdentifier*, GotoRule>{ {id, nextRule} };
-	else
-		gotos->insert(make_pair(id, nextRule));
+	{
+		auto compare = [](const CMetaIdentifier* a, const CMetaIdentifier* b) {return a->GetName() < b->GetName(); };
+		gotos = new map<const CMetaIdentifier*, GotoRule, CMetaIdentifier::ComparePointers>(compare);
+	}
+	if (gotos->find(id) != gotos->end())
+		cout << "Warning - symbol " << *id << " already exists, trying to change goto from " << (*gotos)[id] << " to " << nextRule << endl;
+	gotos->insert(make_pair(id, nextRule));
 }
 
 CParserAction::GotoRule CParserAction::GetGoto(const CMetaIdentifier * id) const
@@ -20,9 +24,13 @@ CParserAction::GotoRule CParserAction::GetGoto(const CMetaIdentifier * id) const
 void CParserAction::AddShiftAction(const CTerminal * id, SelectionRule nextRule)
 {
 	if (!actions)
-		actions = new unordered_map<const CTerminal*, GotoRule>{ { id, nextRule } };
-	else
-		actions->insert(make_pair(id, nextRule));
+	{
+		auto compare = [](const CTerminal* a, const CTerminal* b) {return a->GetValue() < b->GetValue(); };
+		actions = new map<const CTerminal*, GotoRule, CTerminal::ComparePointers>(compare);
+	}
+	if (actions->find(id) != actions->end())
+		cout << "Warning - symbol " << *id << " already exists, trying to change action from " << (*actions)[id] << " to " << nextRule << endl;
+	actions->insert(make_pair(id, nextRule));
 }
 
 CParserAction::SelectionRule CParserAction::GetShiftAction(const CTerminal * id) const

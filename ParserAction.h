@@ -1,16 +1,21 @@
 #pragma once
 
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include "Terminal.h"
+#include "MetaIdentifier.h"
 
 class CTerminal;
 class CMetaIdentifier;
 
 struct CParserAction
 {
+public:
 	typedef int SelectionRule, GotoRule, ReductionRule;
-	std::unordered_map<const CTerminal*, SelectionRule>* actions = nullptr;
-	std::unordered_map<const CMetaIdentifier*, GotoRule>* gotos = nullptr;
+	typedef std::map<const CTerminal*, SelectionRule, CTerminal::ComparePointers> ActionTable;
+	typedef std::map<const CMetaIdentifier*, GotoRule, CMetaIdentifier::ComparePointers> GotoTable;
+//private:
+	ActionTable* actions = nullptr;
+	GotoTable* gotos = nullptr;
 	ReductionRule reductionRule = -1;
 public:
 	CParserAction() {}

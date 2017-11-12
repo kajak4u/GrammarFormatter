@@ -6,6 +6,26 @@
 #include "Group.h"
 #include "Special.h"
 
+using namespace std;
+
+void CParsingTable::ParseIdentifier(const CMetaIdentifier & identifier)
+{
+	IdentifiersInMemory[identifier] = nullptr;
+	auto& identifierRules = rulesMap.find(identifier)->second;
+	int ruleOrder = size();
+	this->push_back(new CParserAction());
+	cout << "Identifier " << identifier << " rule -> " << ruleOrder << endl;
+	for (auto& rule : identifierRules)
+		for (const CDefinition* definition : *rule.second)
+		{
+			RulesList endSymbols = Parse(RulesList{ ruleOrder }, definition);
+			for (auto elem : endSymbols)
+			{
+				(*this)[elem]->reductionRule = rule.first;
+			}
+		}
+	IdentifiersInMemory[identifier] = (*this)[ruleOrder];
+}
 
 CParsingTable::CParsingTable()
 {
@@ -17,14 +37,9 @@ CParsingTable::CParsingTable(const CParsingTable & other)
 
 CParsingTable::RulesList CParsingTable::Parse(const RulesList& currentRules, const CDefinition * definition)
 {
-	RulesList result;
+	RulesList result = currentRules;
 	for (const CTerm* term : *definition)
-	{
-		RulesList localRules = currentRules;
-		Parse(localRules, term);
-		for (auto elem : localRules)
-			result.insert(elem);
-	}
+		result = Parse(result, term);
 	return result;
 }
 
@@ -38,7 +53,22 @@ CParsingTable::RulesList CParsingTable::Parse(const RulesList& currentRules, con
 		for (auto elem : currentRules)
 		{
 			CParserAction* currentAction = (*this)[elem];
-			if (int gotoAction = currentAction->GetGoto(identifier) != -1)
+
+			if (IdentifiersInMemory.find(*identifier) == IdentifiersInMemory.end())
+				ParseIdentifier(*identifier);
+			CParserAction* identifierRecord = IdentifiersInMemory[*identifier];
+			if (identifierRecord != nullptr)
+			{
+				if (identifierRecord->actions != nullptr)
+					for (auto& elem : *identifierRecord->actions)
+						currentAction->AddShiftAction(elem.first, elem.second);
+				if (identifierRecord->gotos != nullptr)
+					for (auto& elem : *identifierRecord->gotos)
+						currentAction->AddGoto(elem.first, elem.second);
+			}
+
+			int gotoAction = currentAction->GetGoto(identifier);
+			if (gotoAction != -1)
 				newRules.insert(gotoAction);
 			else
 			{
@@ -53,7 +83,8 @@ CParsingTable::RulesList CParsingTable::Parse(const RulesList& currentRules, con
 		for (auto elem : currentRules)
 		{
 			CParserAction* currentAction = (*this)[elem];
-			if (int shiftAction = currentAction->GetShiftAction(terminal) != -1)
+			int shiftAction = currentAction->GetShiftAction(terminal);
+			if (shiftAction != -1)
 				newRules.insert(shiftAction);
 			else
 			{
@@ -104,12 +135,28 @@ CParsingTable::RulesList CParsingTable::Parse(const RulesList& currentRules, con
 
 void CParsingTable::Parse(const CSyntax & grammar)
 {
-	this->push_back(new CParserAction());
-	for (const CSyntaxRule* rule : grammar)
-	{
-		for (const CDefinition* definition : rule->GetDefinitionList())
-			Parse(RulesList{ 0 }, definition);
-	}
+	if (grammar.empty())
+		return;
+	rulesMap.clear();
+	int nr=0;
+	for (CSyntaxRule* rule : grammar)
+		rulesMap[rule->GetIdentifier()].push_back(make_pair(nr++, &rule->GetDefinitionList()));
+
+	//this->push_back(new CParserAction());
+	ParseIdentifier(grammar[0]->GetIdentifier());
+	//int ruleNo = 0;
+	//for (const CSyntaxRule* rule : grammar)
+	//{
+	//	for (const CDefinition* definition : rule->GetDefinitionList())
+	//	{
+	//		RulesList endSymbols = Parse(RulesList{ 0 }, definition);
+	//		for (auto elem : endSymbols)
+	//		{
+	//			(*this)[elem]->reductionRule = ruleNo;
+	//		}
+	//	}
+	//	ruleNo++;
+	//}
 }
 
 CParsingTable::~CParsingTable()
