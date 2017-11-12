@@ -10,11 +10,34 @@ CFactor::CFactor()
 {
 }
 
+CFactor::CFactor(const CPrimary * primary, int multiplier)
+	: multiplier(multiplier)
+{
+	if (primary != nullptr)
+		this->primary = dynamic_cast<CPrimary*>(primary->spawn(true));
+}
+
 CFactor::CFactor(const CFactor & other)
 	: multiplier(other.multiplier)
 {
-	primary = dynamic_cast<CPrimary*>(other.primary->spawn());
-	*primary = *other.primary;
+	if(other.primary != nullptr)
+		primary = dynamic_cast<CPrimary*>(other.primary->spawn(true));
+}
+
+CFactor::CFactor(CFactor && other)
+	: primary(other.primary), multiplier(other.multiplier)
+{
+	other.primary = nullptr;
+}
+
+int CFactor::GetMultiplier() const
+{
+	return multiplier;
+}
+
+const CPrimary * CFactor::GetPrimary() const
+{
+	return primary;
 }
 
 
@@ -55,7 +78,17 @@ void CFactor::WriteTo(std::ostream & os) const
 void CFactor::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
 {
 	CGrammarObject::ForEach(condition, action);
-	if(primary!=nullptr)
+	if (primary != nullptr)
+	{
+		//workaround for ambiguous const and non-const call
+		[condition, action](const CPrimary* primary) {primary->ForEach(condition, action); }(primary);
+	}
+}
+
+void CFactor::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action)
+{
+	CGrammarObject::ForEach(condition, action);
+	if (primary != nullptr)
 		primary->ForEach(condition, action);
 }
 

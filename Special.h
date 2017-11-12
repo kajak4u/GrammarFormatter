@@ -11,7 +11,7 @@ public:
 
 	std::istream & ReadFrom(std::istream & is) override;
 	void WriteTo(std::ostream & os) const override;
-	ISpawnable * spawn() const override;
+	ISpawnable * spawn(bool copy = false) const override;
 	static void registerPrefixes();
 };
 

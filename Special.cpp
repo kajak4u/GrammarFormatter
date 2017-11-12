@@ -39,9 +39,9 @@ void CSpecial::WriteTo(std::ostream & os) const
 	os << "?" << name << "?";
 }
 
-ISpawnable * CSpecial::spawn() const
+ISpawnable * CSpecial::spawn(bool copy) const
 {
-	return new CSpecial();
+	return copy ? new CSpecial(*this) : new CSpecial();
 }
 
 void CSpecial::registerPrefixes()

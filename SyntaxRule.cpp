@@ -1,9 +1,15 @@
 #include "SyntaxRule.h"
+#include "Definition.h"
 #include "main.h"
 
 using namespace std;
 
 CSyntaxRule::CSyntaxRule()
+{
+}
+
+CSyntaxRule::CSyntaxRule(const CMetaIdentifier & identifier)
+	: identifier(identifier)
 {
 }
 
@@ -20,6 +26,21 @@ CSyntaxRule::~CSyntaxRule()
 const CMetaIdentifier & CSyntaxRule::GetIdentifier() const
 {
 	return identifier;
+}
+
+const CDefinitionList & CSyntaxRule::GetDefinitionList() const
+{
+	return definitionList;
+}
+
+void CSyntaxRule::AddDefinition(CDefinition * definition)
+{
+	definitionList.push_back(definition);
+}
+
+void CSyntaxRule::AddCopyDefinition(const CDefinition * definition)
+{
+	definitionList.push_back(new CDefinition(*definition));
 }
 
 std::istream & CSyntaxRule::ReadFrom(std::istream & is)
@@ -39,6 +60,12 @@ void CSyntaxRule::WriteTo(std::ostream & os) const
 }
 
 void CSyntaxRule::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
+{
+	CGrammarObject::ForEach(condition, action);
+	definitionList.ForEach(condition, action);
+}
+
+void CSyntaxRule::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action)
 {
 	CGrammarObject::ForEach(condition, action);
 	definitionList.ForEach(condition, action);

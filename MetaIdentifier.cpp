@@ -5,6 +5,16 @@
 
 using namespace std;
 
+CMetaIdentifier::CMetaIdentifier(const std::string & name)
+	: name(name)
+{
+}
+
+CMetaIdentifier::CMetaIdentifier(std::string && name)
+	: name(name)
+{
+}
+
 CMetaIdentifier::CMetaIdentifier()
 {
 }
@@ -42,9 +52,9 @@ void CMetaIdentifier::WriteTo(std::ostream & os) const
 	os << name;
 }
 
-ISpawnable * CMetaIdentifier::spawn() const
+ISpawnable * CMetaIdentifier::spawn(bool copy) const
 {
-	return new CMetaIdentifier();
+	return copy ? new CMetaIdentifier(*this) : new CMetaIdentifier();
 }
 
 void CMetaIdentifier::registerPrefixes()

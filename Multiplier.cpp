@@ -26,9 +26,9 @@ std::istream & CMultiplier::ReadFrom(std::istream & is)
 	return is.putback(c);
 }
 
-ISpawnable * CMultiplier::spawn() const
+ISpawnable * CMultiplier::spawn(bool copy) const
 {
-	return new CMultiplier();
+	return copy ? new CMultiplier(*this) : new CMultiplier();
 }
 
 int CMultiplier::GetValue() const

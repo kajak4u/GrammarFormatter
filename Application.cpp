@@ -9,6 +9,10 @@
 #include "main.h"
 #include <regex>
 #include <fstream>
+#include <map>
+#include <unordered_set>
+#include <unordered_map>
+#include "SyntaxRule.h"
 
 using namespace std;
 
@@ -35,7 +39,7 @@ CSyntax CApplication::ReadGrammar(std::istream & grammar)
 	try
 	{
 		syntax.ReadFrom(grammar);
-		cout << "Grammar  loaded correctly" << endl;
+		cout << "Grammar loaded correctly" << endl;
 	}
 	catch (exception e)
 	{
@@ -67,14 +71,34 @@ void CApplication::CheckCorrectness(const CSyntax & syntax)
 		<< message << endl;
 }
 
+CParsingTable CApplication::CreateParsingTable(const CSyntax & grammar)
+{
+	auto compare = [](const CMetaIdentifier* a, const CMetaIdentifier* b) {return a->GetName() < b->GetName(); };
+	CParsingTable table;
+	const CMetaIdentifier* startSymbol = grammar.GetStartSymbol();
+	auto terminals = grammar.GetAllTerminals();
+	map<const CMetaIdentifier*, unordered_set<const CSyntaxRule*>, CMetaIdentifier::ComparePointers> identifiers(compare);
+	for (const CSyntaxRule* rule : grammar)
+		identifiers[&rule->GetIdentifier()].insert(rule);
+	return table;
+}
+
 void CApplication::Run()
 {
 	RegisterAllPrefixes();
-	ifstream grammar(grammarFilename, ios::binary);
-	if (!grammar.is_open())
+	ifstream grammarFile(grammarFilename, ios::binary);
+	if (!grammarFile.is_open())
 		throw MyException("Could not open grammar file", -2);
-	CSyntax syntax = ReadGrammar(grammar);
-	grammar.close();
+	CSyntax grammar = ReadGrammar(grammarFile);
+	grammarFile.close();
+	grammar.PrepareForParsing();
 
-	CheckCorrectness(syntax);
+	CheckCorrectness(grammar);
+
+	cout << grammar;
+
+	ifstream code(codeFilename, ios::binary);
+	if (!code.is_open())
+		throw MyException("Could not open input file", -5);
+	CParsingTable parsingTable = CreateParsingTable(grammar);
 }

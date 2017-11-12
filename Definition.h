@@ -17,6 +17,7 @@ public:
 	void WriteTo(std::ostream& os) const override;
 
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
+	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
 };
 std::ostream& operator<<(std::ostream& os, const CDefinition& def);
 

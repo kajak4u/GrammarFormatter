@@ -1,6 +1,8 @@
 #include "Syntax.h"
 #include "SyntaxRule.h"
 #include "main.h"
+#include "Group.h"
+#include "HelperSyntaxRule.h"
 
 using namespace std;
 
@@ -39,12 +41,36 @@ void CSyntax::WriteTo(std::ostream & os) const
 		os << *rule << endl;
 }
 
+void CSyntax::PrepareForParsing()
+{
+	std::set<CGroup*> groupsToReplace;
+	ForEach(
+		[](const CGrammarObject* symbol)
+		{
+			const CGroup* group = dynamic_cast<const CGroup*>(symbol);
+			return group != nullptr && group->GetType()==OptionRepetition;
+		},
+		[&groupsToReplace](CGrammarObject* symbol) {
+			groupsToReplace.insert(dynamic_cast<CGroup*>(symbol));
+		}
+	);
+	for (CGroup* group : groupsToReplace)
+	{
+		CMetaIdentifier identifier("helperRule" + std::to_string(++helperRulesCounter));
+		CHelperSyntaxRule* helperRule = new CHelperSyntaxRule(identifier, group);
+		this->push_back(helperRule);
+		CGroup* newGroup = helperRule->CreateReplacement();
+		*group = std::move(*newGroup);
+		delete newGroup;
+	}
+}
+
 bool CSyntax::IsCorrect(std::string & errors) const
 {
 	string warnings;
 	bool result = true;
 	auto compare = [](const CMetaIdentifier* a, const CMetaIdentifier* b) {return a->GetName() < b->GetName(); };
-	std::set <const CMetaIdentifier*, bool(*)(const CMetaIdentifier*, const CMetaIdentifier*)>
+	std::set <const CMetaIdentifier*, CMetaIdentifier::ComparePointers>
 		defined(compare),
 		used(compare);
 	for (const CSyntaxRule* rule : *this)
@@ -99,10 +125,51 @@ bool CSyntax::IsCorrect(std::string & errors) const
 	return result;
 }
 
+std::set<const CMetaIdentifier*, CMetaIdentifier::ComparePointers> CSyntax::GetAllIdentifiers() const
+{
+	auto compare = [](const CMetaIdentifier* a, const CMetaIdentifier* b) {return a->GetName() < b->GetName(); };
+	std::set <const CMetaIdentifier*, CMetaIdentifier::ComparePointers> identifiers(compare);
+	for (const CSyntaxRule* rule : *this)
+		identifiers.insert(&rule->GetIdentifier());
+	return identifiers;
+}
+
+std::set<const CTerminal*, CTerminal::ComparePointers> CSyntax::GetAllTerminals() const
+{
+	auto compare = [](const CTerminal* a, const CTerminal* b) {return a->GetValue() < b->GetValue(); };
+	std::set <const CTerminal*, CTerminal::ComparePointers> terminals(compare);
+	for (const CSyntaxRule* rule : *this)
+		rule->ForEach(
+			[](const CGrammarObject* symbol)
+			{
+				return dynamic_cast<const CTerminal*>(symbol) != nullptr;
+			},
+			[&terminals](const CGrammarObject* symbol) {
+				terminals.insert(dynamic_cast<const CTerminal*>(symbol));
+			}
+		);
+	return terminals;
+}
+
+const CMetaIdentifier * CSyntax::GetStartSymbol() const
+{
+	//milczace zalozenie - pierwsza regula definiuje symbol startowy
+	if (empty())
+		return nullptr;
+	return &(*begin())->GetIdentifier();
+}
+
 void CSyntax::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
 {
 	CGrammarObject::ForEach(condition, action);
 	for(const CSyntaxRule* rule : *this)
+		rule->ForEach(condition, action);
+}
+
+void CSyntax::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action)
+{
+	CGrammarObject::ForEach(condition, action);
+	for (CSyntaxRule* rule : *this)
 		rule->ForEach(condition, action);
 }
 

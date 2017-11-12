@@ -5,6 +5,31 @@
 using namespace std;
 
 
+Option CGroup::GetType() const
+{
+	return options;
+}
+
+CGroup::CGroup()
+{
+}
+
+CGroup::CGroup(const CDefinitionList & list, Option type)
+	: definitionList(list), options(type)
+{
+}
+
+CGroup::CGroup(Option type)
+	: options(type)
+{
+}
+//
+//CGroup & CGroup::operator=(const CGroup & other)
+//{
+//	definitionList = other.definitionList;
+//	options = other.options;
+//}
+
 CGroup::~CGroup()
 {
 }
@@ -55,9 +80,14 @@ std::istream& CGroup::ReadFrom(std::istream& is)
 	return is;
 }
 
-ISpawnable* CGroup::spawn() const
+const CDefinitionList & CGroup::getDefinitionList() const
 {
-	return new CGroup();
+	return definitionList;
+}
+
+ISpawnable* CGroup::spawn(bool copy) const
+{
+	return copy ? new CGroup(*this) : new CGroup();
 }
 
 void CGroup::registerPrefixes()
@@ -77,7 +107,14 @@ void CGroup::WriteTo(std::ostream & os) const
 	os << brackets[0] << definitionList << brackets[1];
 }
 
+
 void CGroup::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
+{
+	CGrammarObject::ForEach(condition, action);
+	definitionList.ForEach(condition, action);
+}
+
+void CGroup::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action)
 {
 	CGrammarObject::ForEach(condition, action);
 	definitionList.ForEach(condition, action);

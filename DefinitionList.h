@@ -12,10 +12,12 @@ public:
 	CDefinitionList(const CDefinitionList& other);
 	CDefinitionList(CDefinitionList&&) = default;
 	virtual ~CDefinitionList();
+	CDefinitionList operator=(CDefinitionList&&);
 	std::istream& ReadFrom(std::istream& is) override;
 	void WriteTo(std::ostream& os) const override;
 
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
+	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
 
 };
 

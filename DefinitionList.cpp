@@ -21,6 +21,13 @@ CDefinitionList::~CDefinitionList()
 		delete def;
 }
 
+CDefinitionList CDefinitionList::operator=(CDefinitionList && other)
+{
+	*((vector<CDefinition*>*)this) = std::move((vector<CDefinition*>)other);
+	other.clear();
+	return *this;
+}
+
 std::istream& CDefinitionList::ReadFrom(std::istream& is)
 {
 	do
@@ -47,6 +54,13 @@ void CDefinitionList::ForEach(std::function<bool(const CGrammarObject*)> conditi
 {
 	CGrammarObject::ForEach(condition, action);
 	for (const CDefinition* definition : *this)
+		definition->ForEach(condition, action);
+}
+
+void CDefinitionList::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action)
+{
+	CGrammarObject::ForEach(condition, action);
+	for (CDefinition* definition : *this)
 		definition->ForEach(condition, action);
 }
 

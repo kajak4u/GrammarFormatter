@@ -2,7 +2,7 @@
 
 #include "EnumSet.h"
 
-enum Option { OptionRepetition, OptionOptional };
+enum Option { OptionNone, OptionRepetition, OptionOptional };
 typedef CEnumSet<Option> Options;
 
 enum Symbol

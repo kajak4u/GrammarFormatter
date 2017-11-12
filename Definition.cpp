@@ -57,6 +57,13 @@ void CDefinition::ForEach(std::function<bool(const CGrammarObject*)> condition, 
 		term->ForEach(condition, action);
 }
 
+void CDefinition::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action)
+{
+	CGrammarObject::ForEach(condition, action);
+	for (CTerm* term : *this)
+		term->ForEach(condition, action);
+}
+
 std::ostream & operator<<(std::ostream & os, const CDefinition & def)
 {
 	def.WriteTo(os);

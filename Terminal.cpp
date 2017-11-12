@@ -3,6 +3,11 @@
 
 using namespace std;
 
+const std::string & CTerminal::GetValue() const
+{
+	return value;
+}
+
 CTerminal::~CTerminal()
 {
 }
@@ -18,15 +23,21 @@ std::istream& CTerminal::ReadFrom(std::istream& is)
 	return is;
 }
 
-ISpawnable * CTerminal::spawn() const
+ISpawnable * CTerminal::spawn(bool copy) const
 {
-	return new CTerminal();
+	return copy ? new CTerminal(*this) : new CTerminal();
 }
 
 void CTerminal::registerPrefixes()
 {
 	CRecognizer::registerType(new CTerminal(), "'");
 	CRecognizer::registerType(new CTerminal(), "\"");
+}
+
+CTerminal & CTerminal::operator=(const CTerminal & other)
+{
+	value = other.value;
+	return *this;
 }
 
 void CTerminal::WriteTo(std::ostream & os) const

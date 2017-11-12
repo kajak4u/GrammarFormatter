@@ -13,11 +13,19 @@ class CTerm : public IReadable, public CGrammarObject
 public:
 	CTerm();
 	CTerm(std::istream&);
+	CTerm(CFactor&&);
+	CTerm(const CFactor& factor);
+	CTerm(const CFactor& factor, const CFactor& exception);
 	virtual ~CTerm();
+
+	bool HasException() const;
+	const CFactor& GetFactor() const;
+	const CFactor& GetException() const;
 
 	std::istream & ReadFrom(std::istream & is) override;
 	void WriteTo(std::ostream & os) const override;
 
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
+	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
 };
 std::ostream& operator<<(std::ostream& os, const CTerm& term);

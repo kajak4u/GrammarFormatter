@@ -12,7 +12,7 @@ public:
 	virtual ~CMultiplier();
 
 	std::istream & ReadFrom(std::istream & is) override;
-	ISpawnable * spawn() const override;
+	ISpawnable * spawn(bool copy = false) const override;
 	int GetValue() const;
 	static void registerPrefixes();
 

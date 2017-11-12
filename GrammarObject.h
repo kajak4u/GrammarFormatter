@@ -8,4 +8,8 @@ public:
 		std::function<bool(const CGrammarObject*)> condition, 
 		std::function<void(const CGrammarObject*)> action
 	) const;
+	virtual void ForEach(
+		std::function<bool(const CGrammarObject*)> condition,
+		std::function<void(CGrammarObject*)> action
+	);
 };
