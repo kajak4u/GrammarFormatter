@@ -12,7 +12,6 @@ class CApplication
 	void ProcessCmdArgs(int argc, char* argv[]);
 	CSyntax ReadGrammar(std::istream& file);
 	void CheckCorrectness(const CSyntax& grammar);
-	CParsingTable CreateParsingTable(const CSyntax& grammar);
 public:
 	CApplication(int argc, char* argv[])
 	{

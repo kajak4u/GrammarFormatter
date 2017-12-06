@@ -2,20 +2,22 @@
 #include "Recognizer.h"
 #include "main.h"
 #include <string>
+#include "MetaIdentifierManager.h"
 
 using namespace std;
 
 CMetaIdentifier::CMetaIdentifier(const std::string & name)
-	: name(name)
+	: name(name), item(CMetaIdentifierManager::Register(name))
 {
 }
 
 CMetaIdentifier::CMetaIdentifier(std::string && name)
-	: name(name)
+	: name(name), item(CMetaIdentifierManager::Register(name))
 {
 }
 
 CMetaIdentifier::CMetaIdentifier()
+	: item(nullptr)
 {
 }
 
@@ -68,7 +70,7 @@ void CMetaIdentifier::registerPrefixes()
 
 bool CMetaIdentifier::operator<(const CMetaIdentifier & other) const
 {
-	return name < other.name;
+	return item < other.item;
 }
 
 std::ostream & operator<<(std::ostream & os, const CMetaIdentifier & identifier)

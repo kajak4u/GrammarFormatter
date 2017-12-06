@@ -69,7 +69,7 @@ bool CSyntax::IsCorrect(std::string & errors) const
 {
 	string warnings;
 	bool result = true;
-	auto compare = [](const CMetaIdentifier* a, const CMetaIdentifier* b) {return a->GetName() < b->GetName(); };
+	auto compare = CompareObjects<CMetaIdentifier>();
 	std::set <const CMetaIdentifier*, CMetaIdentifier::ComparePointers>
 		defined(compare),
 		used(compare);
@@ -127,8 +127,7 @@ bool CSyntax::IsCorrect(std::string & errors) const
 
 std::set<const CMetaIdentifier*, CMetaIdentifier::ComparePointers> CSyntax::GetAllIdentifiers() const
 {
-	auto compare = [](const CMetaIdentifier* a, const CMetaIdentifier* b) {return a->GetName() < b->GetName(); };
-	std::set <const CMetaIdentifier*, CMetaIdentifier::ComparePointers> identifiers(compare);
+	std::set <const CMetaIdentifier*, CMetaIdentifier::ComparePointers> identifiers(CompareObjects<CMetaIdentifier>());
 	for (const CSyntaxRule* rule : *this)
 		identifiers.insert(&rule->GetIdentifier());
 	return identifiers;
@@ -136,8 +135,7 @@ std::set<const CMetaIdentifier*, CMetaIdentifier::ComparePointers> CSyntax::GetA
 
 std::set<const CTerminal*, CTerminal::ComparePointers> CSyntax::GetAllTerminals() const
 {
-	auto compare = [](const CTerminal* a, const CTerminal* b) {return a->GetValue() < b->GetValue(); };
-	std::set <const CTerminal*, CTerminal::ComparePointers> terminals(compare);
+	std::set <const CTerminal*, CTerminal::ComparePointers> terminals(CompareObjects<CTerminal>());
 	for (const CSyntaxRule* rule : *this)
 		rule->ForEach(
 			[](const CGrammarObject* symbol)

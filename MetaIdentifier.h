@@ -2,9 +2,12 @@
 
 #include "Primary.h"
 
+class CMetaIdentifierManagerItem;
+
 class CMetaIdentifier : public CPrimary
 {
 	std::string name;
+	CMetaIdentifierManagerItem* item;
 public:
 	typedef bool(*ComparePointers)(const CMetaIdentifier*, const CMetaIdentifier*);
 	CMetaIdentifier(const std::string& name);

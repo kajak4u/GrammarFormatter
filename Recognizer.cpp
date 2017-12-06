@@ -15,6 +15,6 @@ void CRecognizer::registerType(ISpawnable* obj, std::string seq)
 ISpawnable* CRecognizer::CreateFor(std::istream& is)
 {
 	skipWhiteChars(is);
-	const ISpawnable* found = instance().hierarchy.get(is);
+	const ISpawnable* found = instance().hierarchy.Predict(is);
 	return found == nullptr ? nullptr : found->spawn();
 }

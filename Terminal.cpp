@@ -1,7 +1,23 @@
 #include "Terminal.h"
 #include "Recognizer.h"
+#include "TerminalManager.h"
 
 using namespace std;
+
+CTerminal::CTerminal()
+	: item(nullptr)
+{
+}
+
+CTerminal::CTerminal(const std::string & value)
+	:value(value), item(CTerminalManager::Register(value))
+{
+}
+
+CTerminal::CTerminal(std::string && value)
+	: value(value), item(CTerminalManager::Register(value))
+{
+}
 
 const std::string & CTerminal::GetValue() const
 {
@@ -38,6 +54,11 @@ CTerminal & CTerminal::operator=(const CTerminal & other)
 {
 	value = other.value;
 	return *this;
+}
+
+bool CTerminal::operator<(const CTerminal & other) const
+{
+	return item < other.item;
 }
 
 void CTerminal::WriteTo(std::ostream & os) const

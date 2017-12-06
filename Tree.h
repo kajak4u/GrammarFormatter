@@ -23,12 +23,33 @@ public:
 		}
 		current->current = value;
 	}
-	const _VALUE* get(std::istream& is)
+	const _VALUE* Predict(std::istream& is) const
 	{
 		char c = is.get();
 		auto child = children.find(c);
-		const _VALUE* result = child == children.end() ? current : child->second->get(is);
+		const _VALUE* result = child == children.end() ? current : child->second->Predict(is);
 		is.putback(c);
+		return result;
+	}
+	const _VALUE* GetFromStream(std::istream& is) const
+	{
+		static std::string mem = "";
+		char c = is.get();
+		if (is.eof())
+			return current;
+		mem += c;
+		auto child = children.find(c);
+		const _VALUE* result;
+		if (child == children.end())
+		{
+			result = current;
+			is.putback(c);
+		}
+		else
+			result = child->second->GetFromStream(is);
+		if (result == nullptr && !is.eof())
+			throw MyException("Unrecognized symbol '"+mem+"'.", -12);
+		mem.pop_back();
 		return result;
 	}
 };
