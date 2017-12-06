@@ -18,11 +18,14 @@ public:
 	const CMetaIdentifier& GetIdentifier() const;
 	const CDefinitionList& GetDefinitionList() const;
 
-	void AddDefinition(CDefinition* definition);
-	void AddCopyDefinition(const CDefinition* definition);
+	void AddDefinition(IDefinition* definition);
+	void AddCopyDefinition(const IDefinition* definition);
+
+	void Simplify();
 
 	std::istream & ReadFrom(std::istream & is) override;
 	virtual void WriteTo(std::ostream& os) const override;
+
 
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;

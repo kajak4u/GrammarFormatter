@@ -33,14 +33,19 @@ const CDefinitionList & CSyntaxRule::GetDefinitionList() const
 	return definitionList;
 }
 
-void CSyntaxRule::AddDefinition(CDefinition * definition)
+void CSyntaxRule::AddDefinition(IDefinition * definition)
 {
 	definitionList.push_back(definition);
 }
 
-void CSyntaxRule::AddCopyDefinition(const CDefinition * definition)
+void CSyntaxRule::AddCopyDefinition(const IDefinition * definition)
 {
-	definitionList.push_back(new CDefinition(*definition));
+	definitionList.push_back(dynamic_cast<IDefinition*>(definition->spawn(true)));
+}
+
+void CSyntaxRule::Simplify()
+{
+	definitionList.Simplify();
 }
 
 std::istream & CSyntaxRule::ReadFrom(std::istream & is)

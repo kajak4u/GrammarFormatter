@@ -13,24 +13,42 @@ CHelperSyntaxRule::~CHelperSyntaxRule()
 		delete originalRule;
 }
 
-CHelperSyntaxRule::CHelperSyntaxRule(const CMetaIdentifier& helperIdentifier, const CGroup * origin)
+CHelperSyntaxRule::CHelperSyntaxRule(const CMetaIdentifier& helperIdentifier, const CDefinitionList& origin)
 	: CSyntaxRule(helperIdentifier)
 {
-	originalRule = new CGroup(*origin);
-	CGroup *groupWithoutRepetition = new CGroup(origin->getDefinitionList(), OptionNone);
-	CTerm *term = new CTerm(CFactor(groupWithoutRepetition));
-	CTerm *identifierTerm = new CTerm(CFactor(&helperIdentifier));
+	for (const IDefinition* item : origin)
+		AddDefinition(dynamic_cast<IDefinition*>(item->spawn(true)));
+}
 
-	CDefinition* definition = new CDefinition();
-	definition->push_back(term); // H1 -> a
-	AddCopyDefinition(definition);
-	definition->push_back(identifierTerm);
-	AddDefinition(definition); // H1 -> a,H1
+CHelperSyntaxRule::CHelperSyntaxRule(const CMetaIdentifier & helperIdentifier, const CMetaIdentifier & helperIdentifier2, Option option)
+	: CSyntaxRule(helperIdentifier)
+{
+	if (option == OptionRepetition)
+	{
+		// H2 = H1 | [empty]
+		CShortDefinition *shortDef = new CShortDefinition();
+		shortDef->push_back(new CMetaIdentifier(helperIdentifier2));
+
+		AddDefinition(nullptr);
+		AddDefinition(shortDef);
+	}
+	else if (option == OptionOptional)
+	{
+		// identifier, item | [empty] ?
+		CShortDefinition* shortDef = new CShortDefinition();
+		shortDef->push_back(new CMetaIdentifier(helperIdentifier2));
+		shortDef->push_back(new CMetaIdentifier(helperIdentifier));
+		AddDefinition(nullptr);
+		AddDefinition(shortDef);
+	}
 }
 
 void CHelperSyntaxRule::WriteTo(std::ostream & os) const
 {
-	os << GetIdentifier() << " = " << GetDefinitionList() << "; (* origin = "<< *originalRule <<" *)" << endl;
+	if (originalRule != nullptr)
+		os << GetIdentifier() << " = " << GetDefinitionList() << "; (* origin = " << *originalRule << " *)" << endl;
+	else
+		CSyntaxRule::WriteTo(os);
 }
 
 CGroup * CHelperSyntaxRule::CreateReplacement() const

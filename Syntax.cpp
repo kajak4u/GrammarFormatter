@@ -2,6 +2,7 @@
 #include "SyntaxRule.h"
 #include "main.h"
 #include "Group.h"
+#include "Factor.h"
 #include "HelperSyntaxRule.h"
 
 using namespace std;
@@ -43,25 +44,47 @@ void CSyntax::WriteTo(std::ostream & os) const
 
 void CSyntax::PrepareForParsing()
 {
-	std::set<CGroup*> groupsToReplace;
+	std::vector<CFactor*> groupsToReplace;
 	ForEach(
 		[](const CGrammarObject* symbol)
 		{
-			const CGroup* group = dynamic_cast<const CGroup*>(symbol);
-			return group != nullptr && group->GetType()==OptionRepetition;
+			const CFactor* factor = dynamic_cast<const CFactor*>(symbol);
+			return factor != nullptr && dynamic_cast<const CGroup*>(factor->GetPrimary())!=nullptr;
 		},
 		[&groupsToReplace](CGrammarObject* symbol) {
-			groupsToReplace.insert(dynamic_cast<CGroup*>(symbol));
+			groupsToReplace.push_back(dynamic_cast<CFactor*>(symbol));
 		}
 	);
-	for (CGroup* group : groupsToReplace)
+	//idziemy od konca - dlatego, zeby w przypadku zawierania najpierw podmienic grupe wewnetrzna
+	for (auto iter = groupsToReplace.rbegin(); iter!=groupsToReplace.rend(); ++iter)
 	{
-		CMetaIdentifier identifier("helperRule" + std::to_string(++helperRulesCounter));
-		CHelperSyntaxRule* helperRule = new CHelperSyntaxRule(identifier, group);
+		CFactor* factor = *iter;
+		const CGroup* group = dynamic_cast<const CGroup*>(factor->GetPrimary());
+		cerr << "Replace:" << endl << *group << endl << " For: " << endl;
+		CMetaIdentifier identifier("HS#" + to_string(++helperRulesCounter));
+		const CDefinitionList& defList = group->getDefinitionList();
+		CHelperSyntaxRule* helperRule = new CHelperSyntaxRule(identifier, defList);
+		cerr << *helperRule << endl;
 		this->push_back(helperRule);
-		CGroup* newGroup = helperRule->CreateReplacement();
-		*group = std::move(*newGroup);
-		delete newGroup;
+		if (group->GetType() == OptionNone)
+		{
+			factor->SetPrimary(&identifier);
+		}
+		else
+		{
+			CMetaIdentifier identifier2("HS#" + to_string(++helperRulesCounter));
+			CHelperSyntaxRule* helperRule2 = new CHelperSyntaxRule(identifier2, identifier, group->GetType());
+			cerr << " and: " << endl << *helperRule2 << endl;
+			this->push_back(helperRule2);
+			factor->SetPrimary(&identifier2);
+		}
+	}
+
+	for (CSyntaxRule* rule : *this)
+	{
+		cerr << "Simplify: " << endl << *rule << endl;
+		rule->Simplify();
+		cerr << *rule << endl;
 	}
 }
 

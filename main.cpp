@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
 	}
 	catch (MyException& e)
 	{
-		cerr << e.message;
+		cerr << e.message << endl;
 		system("pause");
 		return e.retCode;
 	}

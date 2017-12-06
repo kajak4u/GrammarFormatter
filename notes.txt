@@ -65,3 +65,18 @@ CTerminal
 
 CMetaIdentifier
 	id
+
+
+fajna wersja:
+CSyntax
+	vector<CSyntaxRule>
+
+CSyntaxRule
+	CMetaIdentifier
+	CDefinitionList
+
+CDefinitionList
+	vector<CDefinition>
+
+CDefinition
+	CTerminal | CMetaIdentifier

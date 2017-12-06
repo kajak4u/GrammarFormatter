@@ -16,6 +16,7 @@ public:
 	CFactor(CFactor&&);
 	int GetMultiplier() const;
 	const CPrimary* GetPrimary() const;
+	void SetPrimary(const CPrimary* newPrimary);
 	virtual ~CFactor();
 
 	std::istream & ReadFrom(std::istream & is) override;

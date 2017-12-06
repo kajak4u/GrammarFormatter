@@ -3,9 +3,10 @@
 #include "Readable.h"
 #include <vector>
 #include "GrammarObject.h"
-class CDefinition;
 
-class CDefinitionList :	public IReadable, public std::vector<CDefinition*>, public CGrammarObject
+class IDefinition;
+
+class CDefinitionList :	public IReadable, public std::vector<IDefinition*>, public CGrammarObject
 {
 public:
 	CDefinitionList();
@@ -15,6 +16,7 @@ public:
 	CDefinitionList operator=(CDefinitionList&&);
 	std::istream& ReadFrom(std::istream& is) override;
 	void WriteTo(std::ostream& os) const override;
+	void Simplify();
 
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;

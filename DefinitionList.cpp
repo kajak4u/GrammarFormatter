@@ -10,20 +10,21 @@ CDefinitionList::CDefinitionList()
 CDefinitionList::CDefinitionList(const CDefinitionList & other)
 {
 	this->reserve(other.size());
-	for (CDefinition* definition : other)
-		this->push_back(new CDefinition(*definition));
+	for (IDefinition* definition : other)
+		this->push_back(dynamic_cast<IDefinition*>(definition->spawn(true)));
 }
 
 
 CDefinitionList::~CDefinitionList()
 {
-	for (CDefinition*& def : *this)
-		delete def;
+	for (IDefinition*& def : *this)
+		if(def)
+			delete def;
 }
 
 CDefinitionList CDefinitionList::operator=(CDefinitionList && other)
 {
-	*((vector<CDefinition*>*)this) = std::move((vector<CDefinition*>)other);
+	*((vector<IDefinition*>*)this) = std::move((vector<IDefinition*>)other);
 	other.clear();
 	return *this;
 }
@@ -46,22 +47,43 @@ std::istream& CDefinitionList::ReadFrom(std::istream& is)
 void CDefinitionList::WriteTo(std::ostream & os) const
 {
 	bool first = true;
-	for (const CDefinition* def : *this)
-		os << (first ? first = false, "" : "\n\t| ") << *def;
+	for (const IDefinition* def : *this)
+	{
+		os << (first ? first = false, "" : "\n\t| ");
+		if (def)
+			def->WriteTo(os);
+		else
+			os << "[empty]";
+	}
+}
+
+void CDefinitionList::Simplify()
+{
+	for (IDefinition*& definition : *this)
+	{
+		if (CDefinition* complexDefinition = dynamic_cast<CDefinition*>(definition))
+		{
+			definition = new CShortDefinition(complexDefinition);
+			delete complexDefinition;
+		}
+	}
+
 }
 
 void CDefinitionList::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
 {
 	CGrammarObject::ForEach(condition, action);
-	for (const CDefinition* definition : *this)
-		definition->ForEach(condition, action);
+	for (const IDefinition* definition : *this)
+		if(definition)
+			definition->ForEach(condition, action);
 }
 
 void CDefinitionList::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action)
 {
 	CGrammarObject::ForEach(condition, action);
-	for (CDefinition* definition : *this)
-		definition->ForEach(condition, action);
+	for (IDefinition* definition : *this)
+		if(definition)
+			definition->ForEach(condition, action);
 }
 
 std::ostream & operator<<(std::ostream & os, const CDefinitionList & list)

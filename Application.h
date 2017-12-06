@@ -2,7 +2,6 @@
 
 #include <string>
 #include "Syntax.h"
-#include "ParsingTable.h"
 
 class CApplication
 {

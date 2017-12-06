@@ -40,6 +40,13 @@ const CPrimary * CFactor::GetPrimary() const
 	return primary;
 }
 
+void CFactor::SetPrimary(const CPrimary * newPrimary)
+{
+	if (primary)
+		delete primary;
+	primary = dynamic_cast<CPrimary*>(newPrimary->spawn(true));
+}
+
 
 CFactor::~CFactor()
 {
