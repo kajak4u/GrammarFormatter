@@ -36,6 +36,7 @@ std::istream& CTerminal::ReadFrom(std::istream& is)
 	getline(is, value, c);
 	if (is.fail())
 		throw invalid_argument(string() + "End-of-symbol character not found for terminal symbol '"+value+"'.");
+	item = CTerminalManager::Register(value);
 	return is;
 }
 

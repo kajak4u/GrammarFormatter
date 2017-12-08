@@ -3,6 +3,8 @@
 #include "main.h"
 #include <string>
 #include "MetaIdentifierManager.h"
+#include "Definition.h"
+#include "Terminal.h"
 
 using namespace std;
 
@@ -45,7 +47,7 @@ std::istream & CMetaIdentifier::ReadFrom(std::istream & is)
 	} while (isalnum(c) || c==' ' /*|| c=='-'*/);
 	while (name.back() == ' ')
 		name.pop_back();
-
+	item = CMetaIdentifierManager::Register(name);
 	return is.putback(c);
 }
 
@@ -71,6 +73,48 @@ void CMetaIdentifier::registerPrefixes()
 bool CMetaIdentifier::operator<(const CMetaIdentifier & other) const
 {
 	return item < other.item;
+}
+
+void CMetaIdentifier::MarkAsDefined() const
+{
+	item->defined = true;
+}
+
+void CMetaIdentifier::MarkAsUsed() const
+{
+	item->used = true;
+}
+
+MySet<CTerminal*>& CMetaIdentifier::First() const
+{
+	return item->first;
+}
+
+bool CMetaIdentifier::TryAddFirstFrom(const CShortDefinition * def) const
+{
+	MySet<CTerminal*> newSymbols = GetFirstFrom(def->begin(), def->end());
+	if(newSymbols.IsSubsetOf(First()))
+		return false;
+	First() += newSymbols;
+	return true;
+}
+
+MySet<CTerminal*>& CMetaIdentifier::Follow() const
+{
+	return item->follow;
+}
+
+bool CMetaIdentifier::GetWarnings(MySet<std::string>& undefined, MySet<std::string>& unused)
+{
+	auto& memory = CMetaIdentifierManager::GetMemory();
+	for (auto& keyVal : memory)
+	{
+		if (!keyVal.second->used)
+			unused.insert(keyVal.first);
+		if (!keyVal.second->defined)
+			undefined.insert(keyVal.first);
+	}
+	return !undefined.empty() || unused.size()!=1; // starting symbol is unused
 }
 
 std::ostream & operator<<(std::ostream & os, const CMetaIdentifier & identifier)

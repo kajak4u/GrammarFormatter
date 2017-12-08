@@ -4,9 +4,11 @@
 #include <vector>
 #include "GrammarObject.h"
 #include "Spawnable.h"
+#include "MySet.h"
 
 class CTerm;
 class CPrimary;
+class CTerminal;
 
 class IDefinition : public IReadable, public CGrammarObject, public ISpawnable
 {
@@ -46,3 +48,4 @@ public:
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
 };
 
+MySet<CTerminal*> GetFirstFrom(CShortDefinition::const_iterator begin, CShortDefinition::const_iterator end);

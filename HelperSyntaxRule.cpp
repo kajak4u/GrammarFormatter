@@ -23,7 +23,7 @@ CHelperSyntaxRule::CHelperSyntaxRule(const CMetaIdentifier& helperIdentifier, co
 CHelperSyntaxRule::CHelperSyntaxRule(const CMetaIdentifier & helperIdentifier, const CMetaIdentifier & helperIdentifier2, Option option)
 	: CSyntaxRule(helperIdentifier)
 {
-	if (option == OptionRepetition)
+	if (option == OptionOptional)
 	{
 		// H2 = H1 | [empty]
 		CShortDefinition *shortDef = new CShortDefinition();
@@ -32,7 +32,7 @@ CHelperSyntaxRule::CHelperSyntaxRule(const CMetaIdentifier & helperIdentifier, c
 		AddDefinition(nullptr);
 		AddDefinition(shortDef);
 	}
-	else if (option == OptionOptional)
+	else if (option == OptionRepetition)
 	{
 		// identifier, item | [empty] ?
 		CShortDefinition* shortDef = new CShortDefinition();

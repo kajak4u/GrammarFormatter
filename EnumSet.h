@@ -7,9 +7,9 @@ template<typename ENUM> class CEnumSet : private std::set<ENUM>
 public:
 	bool inline operator&(const ENUM& elem)
 	{
-		return contains(elem);
+		return Contains(elem);
 	}
-	bool inline contains(const ENUM& elem)
+	bool inline Contains(const ENUM& elem)
 	{
 		return find(elem) != end();
 	}

@@ -11,6 +11,7 @@ CSyntaxRule::CSyntaxRule()
 CSyntaxRule::CSyntaxRule(const CMetaIdentifier & identifier)
 	: identifier(identifier)
 {
+	identifier.MarkAsDefined();
 }
 
 CSyntaxRule::CSyntaxRule(std::istream & is)
@@ -51,6 +52,7 @@ void CSyntaxRule::Simplify()
 std::istream & CSyntaxRule::ReadFrom(std::istream & is)
 {
 	identifier.ReadFrom(is);
+	identifier.MarkAsDefined();
 	if (GetSymbol(is, true) != SymbolDefining)
 		throw invalid_argument(string() + " expected defining symbol '=' after identifier '" + identifier.GetName() + "'.");
 	definitionList.ReadFrom(is);

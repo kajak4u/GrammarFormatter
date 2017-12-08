@@ -30,5 +30,17 @@ public:
 		instance.memory[str] = newItem;
 		return newItem;
 	}
+	static const std::unordered_map<std::string, _ITEM*> GetMemory()
+	{
+		auto& instance = Instance();
+		return instance.memory;
+	}
+	static void PrintMemory()
+	{
+		std::cerr << "Memory: " << std::endl;
+		auto& instance = Instance();
+		for (const auto& keyVal : instance.memory)
+			std::cerr << keyVal.first << " -> " << *keyVal.second << std::endl;
+	}
 };
 

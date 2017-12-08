@@ -4,6 +4,7 @@
 #include "Group.h"
 #include "Factor.h"
 #include "HelperSyntaxRule.h"
+#include <map>
 
 using namespace std;
 
@@ -42,7 +43,108 @@ void CSyntax::WriteTo(std::ostream & os) const
 		os << *rule << endl;
 }
 
-void CSyntax::PrepareForParsing()
+#include "Definition.h"
+
+class CShortDefinitionIterator
+{
+	using Iter = CShortDefinition::iterator;
+	Iter _begin;
+	Iter _end;
+public:
+	Iter pos;
+
+	CShortDefinitionIterator(CShortDefinition& def, Iter pos)
+		: _begin(def.begin()), _end(def.end()), pos(pos)
+	{}
+	CShortDefinitionIterator(CShortDefinition& def)
+		: CShortDefinitionIterator(def, def.begin())
+	{}
+	const Iter begin() const { return _begin; }
+	const Iter end() const { return _end; }
+};
+
+#include "MetaIdentifierManager.h"
+
+void CSyntax::CreateSets()
+{
+	//create sets: FIRST(a) and FOLLOW(a) for each identifier a
+
+	//FIRST first step - add terminals and empty symbol, add symbols to collection
+	std::map<const CShortDefinition*, const CMetaIdentifier*> startingWithSymbol;
+	for (CSyntaxRule* rule : *this)
+	{
+		auto& identifier = rule->GetIdentifier();
+		auto& defList = rule->GetDefinitionList();
+		for (IDefinition* def : defList)
+		{
+			if (def == nullptr)
+				identifier.First() += nullptr;
+			else
+			{
+				CShortDefinition* sdef = dynamic_cast<CShortDefinition*>(def);
+				if (sdef == nullptr)
+					throw MyException("Only shortdefinitions allowed\n" __FILE__, __LINE__);
+				if (sdef->size() == 0)
+					throw MyException("Unexpected empty definition\n" __FILE__, __LINE__);
+				CPrimary* primary = *sdef->begin();
+				if (CTerminal* terminal = dynamic_cast<CTerminal*>(primary))
+					identifier.First() += terminal;
+				else if (dynamic_cast<CMetaIdentifier*>(primary))
+					startingWithSymbol.insert({sdef, &identifier});
+			}
+		}
+	}
+	//FIRST second step - add terminals from productions until there are no changes
+	for (bool changed = true; !(changed = !changed);)
+		for (auto& keyVal : startingWithSymbol)
+			changed = keyVal.second->TryAddFirstFrom(keyVal.first) || changed;
+	
+	//FOLLOW first step - add terminals from productions, add iterators to collection
+	std::set<std::pair<const CMetaIdentifier*, const CMetaIdentifier*> > followedPairs;
+	for (CSyntaxRule* rule : *this)
+	{
+		auto& ruleIdentifier = rule->GetIdentifier();
+		auto& defList = rule->GetDefinitionList();
+		for (IDefinition* def : defList)
+		{
+			CShortDefinition* sdef = dynamic_cast<CShortDefinition*>(def);
+			if (sdef == nullptr)
+				continue;
+			for (auto& iter = sdef->begin(), nextIter=iter; iter != sdef->end(); ++iter)
+			{
+				++nextIter;
+				CMetaIdentifier* currentId = dynamic_cast<CMetaIdentifier*>(*iter);
+				if (!currentId)
+					continue; //we look for x,[nonterminal],y
+				CTerminal* nextTerminal = (nextIter == sdef->end() ? nullptr : dynamic_cast<CTerminal*>(*nextIter));
+				if (nextTerminal)
+					currentId->Follow() += nextTerminal;
+				else // (*nextIter == sdef->end() || dynamic_cast<CMetaIdentifier*>(*nextIter))
+				{
+					MySet<CTerminal*> firstFromFollowing = GetFirstFrom(nextIter, sdef->end());
+					if (!firstFromFollowing.Contains(nullptr))
+						currentId->Follow() += firstFromFollowing;
+					else
+					{
+						currentId->Follow() += (firstFromFollowing - nullptr);
+						followedPairs.insert({currentId, &ruleIdentifier});
+					}
+				}
+			}
+		}
+	}
+
+	//FOLLOW second step - add terminals from productions until there are no changes
+	for(bool changed=true; !(changed=!changed);)
+		for (auto& elem : followedPairs)
+			if (!elem.second->Follow().IsSubsetOf(elem.first->Follow()))
+			{
+				changed = true;
+				elem.first->Follow() += elem.second->Follow();
+			}
+}
+
+void CSyntax::Simplify()
 {
 	std::vector<CFactor*> groupsToReplace;
 	ForEach(
@@ -65,18 +167,23 @@ void CSyntax::PrepareForParsing()
 		const CDefinitionList& defList = group->getDefinitionList();
 		CHelperSyntaxRule* helperRule = new CHelperSyntaxRule(identifier, defList);
 		cerr << *helperRule << endl;
+		identifier.MarkAsDefined();
 		this->push_back(helperRule);
 		if (group->GetType() == OptionNone)
 		{
 			factor->SetPrimary(&identifier);
+			identifier.MarkAsUsed();
 		}
 		else
 		{
 			CMetaIdentifier identifier2("HS#" + to_string(++helperRulesCounter));
 			CHelperSyntaxRule* helperRule2 = new CHelperSyntaxRule(identifier2, identifier, group->GetType());
 			cerr << " and: " << endl << *helperRule2 << endl;
+			identifier.MarkAsUsed();
+			identifier2.MarkAsDefined();
 			this->push_back(helperRule2);
 			factor->SetPrimary(&identifier2);
+			identifier2.MarkAsUsed();
 		}
 	}
 
@@ -88,64 +195,41 @@ void CSyntax::PrepareForParsing()
 	}
 }
 
-bool CSyntax::IsCorrect(std::string & errors) const
+bool CSyntax::IsCorrect(std::string & errors)
 {
-	string warnings;
-	bool result = true;
-	auto compare = CompareObjects<CMetaIdentifier>();
-	std::set <const CMetaIdentifier*, CMetaIdentifier::ComparePointers>
-		defined(compare),
-		used(compare);
-	for (const CSyntaxRule* rule : *this)
+	MySet<string> undefined, unused;
+	if (!CMetaIdentifier::GetWarnings(undefined, unused))
 	{
-		defined.insert(&rule->GetIdentifier());
-		rule->ForEach(
-			[](const CGrammarObject* symbol)
-			{
-				return dynamic_cast<const CMetaIdentifier*>(symbol) != nullptr;
-			},
-			[&used](const CGrammarObject* symbol) {
-				used.insert(dynamic_cast<const CMetaIdentifier*>(symbol));
-			}
-		);
+		CMetaIdentifier* currentStartSymbol = new CMetaIdentifier(*unused.begin());
+		CShortDefinition* def = new CShortDefinition();
+		def->push_back(currentStartSymbol);
+		def->push_back(new CTerminal("$"));
+		CMetaIdentifier newStartSymbol = CMetaIdentifier("S#");
+		CSyntaxRule* newRule = new CSyntaxRule(newStartSymbol);
+		newRule->AddDefinition(def);
+		currentStartSymbol->MarkAsUsed();
+		push_back(newRule);
+		cerr << "Start symbol is " << *currentStartSymbol << endl;
+		startSymbol = newStartSymbol;
+		return true;
 	}
-	auto defined_iter = defined.begin(), used_iter = used.begin();
-	while(defined_iter != defined.end() && used_iter != used.end())
+	if (!undefined.empty())
 	{
-		if (**defined_iter < **used_iter)
-		{
-			warnings += string(warnings == "" ? "" : "\n") + "Warning: symbol " + (*defined_iter)->GetName() + " was never used.";
-			++defined_iter;
-		}
-		else if (**used_iter < **defined_iter)
-		{
-			result = false;
-			errors += string(errors == "" ? "" : "\n") + "Error: symbol " + (*used_iter)->GetName() + " was not declared.";
-			string usedIn;
-			for (const CSyntaxRule* rule : *this)
-				rule->ForEach(
-					[&used_iter](const CGrammarObject* symbol)
-					{
-						auto obj = dynamic_cast<const CMetaIdentifier*>(symbol);
-						return obj != nullptr && obj->GetName() == (*used_iter)->GetName();
-					},
-					[&usedIn, &rule](const CGrammarObject*)
-					{
-						usedIn += (usedIn==""?"":", ") + rule->GetIdentifier().GetName();
-					}
-				);
-			errors += "\n\tReferenced in definition list of: " + usedIn;
-			++used_iter;
-		}
-		else // (**defined_iter == **used_iter)
-		{
-			++defined_iter;
-			++used_iter;
-		}
+		for(auto& name : undefined)
+			errors += string(errors == "" ? "" : "\n") + "Error: symbol " + name + " was not declared.";
 	}
-	if (errors == "")
-		errors = warnings;
-	return result;
+	else if (unused.empty())
+	{
+		errors += string(errors == "" ? "" : "\n") + "Error - cannot deduce start symbol - no unused symbols.\n"
+			+"\tNote: there should be exactly one symbol defined but not used.";
+	}
+	else
+	{
+		for (auto& name : unused)
+			errors += string(errors == "" ? "" : "\n") + "Error: symbol " + name + " was never used.";
+		errors += "\n\tNote: there should be exactly one symbol defined but not used.";
+	}
+	return false;
 }
 
 std::set<const CMetaIdentifier*, CMetaIdentifier::ComparePointers> CSyntax::GetAllIdentifiers() const
@@ -172,12 +256,9 @@ std::set<const CTerminal*, CTerminal::ComparePointers> CSyntax::GetAllTerminals(
 	return terminals;
 }
 
-const CMetaIdentifier * CSyntax::GetStartSymbol() const
+const CMetaIdentifier CSyntax::GetStartSymbol() const
 {
-	//milczace zalozenie - pierwsza regula definiuje symbol startowy
-	if (empty())
-		return nullptr;
-	return &(*begin())->GetIdentifier();
+	return startSymbol;
 }
 
 void CSyntax::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const

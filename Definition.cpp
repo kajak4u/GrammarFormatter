@@ -103,6 +103,8 @@ CShortDefinition::CShortDefinition(CDefinition * previous)
 		auto terminal = dynamic_cast<const CTerminal*>(primary);
 		if (identifier == nullptr && terminal == nullptr)
 			throw MyException("Expected terminal or identifier" __FILE__, __LINE__);
+		else if (identifier)
+			identifier->MarkAsUsed();
 		for (int i = 0; i < factor.GetMultiplier(); ++i)
 		{
 			push_back(dynamic_cast<CPrimary*>(primary->spawn(true)));
@@ -166,4 +168,53 @@ void CShortDefinition::ForEach(function<bool(const CGrammarObject*)> condition, 
 	CGrammarObject::ForEach(condition, action);
 	for (CPrimary* primary : *this)
 		primary->ForEach(condition, action);
+}
+
+
+MySet<CTerminal*> GetFirstFrom(CShortDefinition::const_iterator iter, CShortDefinition::const_iterator end)
+{
+	MySet<CTerminal*> res;
+	//loop until encounters a nonterminal without [empty] or a terminal
+	bool canBeEmpty;
+	cerr << "Get first from definition:";
+	for (auto it = iter; it != end; ++it)
+	{
+		cerr << " ";
+		(*it)->WriteTo(cerr);
+	}
+	cerr << endl;
+	for (canBeEmpty = true; !(canBeEmpty = !canBeEmpty) && iter != end; ++iter)
+	{
+		CMetaIdentifier* nonterminal = dynamic_cast<CMetaIdentifier*>(*iter);
+		if (nonterminal == nullptr)
+		{
+			cerr << "add terminal ";
+			(*iter)->WriteTo(cerr);
+			cerr << endl;
+			res += dynamic_cast<CTerminal*>(*iter);
+		}
+		else if (canBeEmpty = nonterminal->First().Contains(nullptr))
+		{
+			cerr << "add without empty:";
+			for(auto& elem : nonterminal->First())
+				if (elem)
+					cerr << " " << *elem;
+			cerr << endl;
+			res += (nonterminal->First() - nullptr);
+		}
+		else
+		{
+			cerr << "add fully:";
+			for (auto& elem : nonterminal->First())
+				cerr << " " << *elem;
+			cerr << endl;
+			res += nonterminal->First();
+		}
+	}
+	if (!canBeEmpty)
+	{
+		cerr << "add also [empty]" << endl;
+		res += nullptr;
+	}
+	return res;
 }

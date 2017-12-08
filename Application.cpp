@@ -56,7 +56,7 @@ CSyntax CApplication::ReadGrammar(std::istream & grammar)
 	return syntax;
 }
 
-void CApplication::CheckCorrectness(const CSyntax & syntax)
+void CApplication::CheckCorrectness(CSyntax & syntax)
 {
 	string message;
 	if (!syntax.IsCorrect(ref(message)))
@@ -71,6 +71,7 @@ void CApplication::CheckCorrectness(const CSyntax & syntax)
 		<< message << endl;
 }
 
+#include "MetaIdentifierManager.h"
 void CApplication::Run()
 {
 	RegisterAllPrefixes();
@@ -79,11 +80,14 @@ void CApplication::Run()
 		throw MyException("Could not open grammar file", -2);
 	CSyntax grammar = ReadGrammar(grammarFile);
 	grammarFile.close();
-	grammar.PrepareForParsing();
+	grammar.Simplify();
 
 	CheckCorrectness(grammar);
+	grammar.CreateSets();
 
-	//cout << grammar;
+	CMetaIdentifierManager::PrintMemory();
+
+	cout << grammar;
 
 	ifstream codeFile(codeFilename, ios::binary);
 	if (!codeFile.is_open())
