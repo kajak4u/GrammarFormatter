@@ -48,4 +48,4 @@ public:
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
 };
 
-MySet<CTerminal*> GetFirstFrom(CShortDefinition::const_iterator begin, CShortDefinition::const_iterator end);
+MySet<CTerminal*> GetFirstFrom(std::vector<CPrimary*>::const_iterator begin, std::vector<CPrimary*>::const_iterator end);

@@ -75,9 +75,9 @@ bool CMetaIdentifier::operator<(const CMetaIdentifier & other) const
 	return item < other.item;
 }
 
-void CMetaIdentifier::MarkAsDefined() const
+void CMetaIdentifier::MarkAsDefinedBy(const IDefinition* def) const
 {
-	item->defined = true;
+	item->definitions.insert(def);
 }
 
 void CMetaIdentifier::MarkAsUsed() const
@@ -104,6 +104,11 @@ MySet<CTerminal*>& CMetaIdentifier::Follow() const
 	return item->follow;
 }
 
+const MySet<const IDefinition*>& CMetaIdentifier::GetDefinitions() const
+{
+	return item->definitions;
+}
+
 bool CMetaIdentifier::GetWarnings(MySet<std::string>& undefined, MySet<std::string>& unused)
 {
 	auto& memory = CMetaIdentifierManager::GetMemory();
@@ -111,7 +116,7 @@ bool CMetaIdentifier::GetWarnings(MySet<std::string>& undefined, MySet<std::stri
 	{
 		if (!keyVal.second->used)
 			unused.insert(keyVal.first);
-		if (!keyVal.second->defined)
+		if (keyVal.second->definitions.empty())
 			undefined.insert(keyVal.first);
 	}
 	return !undefined.empty() || unused.size()!=1; // starting symbol is unused

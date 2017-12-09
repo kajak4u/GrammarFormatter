@@ -171,7 +171,7 @@ void CShortDefinition::ForEach(function<bool(const CGrammarObject*)> condition, 
 }
 
 
-MySet<CTerminal*> GetFirstFrom(CShortDefinition::const_iterator iter, CShortDefinition::const_iterator end)
+MySet<CTerminal*> GetFirstFrom(std::vector<CPrimary*>::const_iterator iter, std::vector<CPrimary*>::const_iterator end)
 {
 	MySet<CTerminal*> res;
 	//loop until encounters a nonterminal without [empty] or a terminal

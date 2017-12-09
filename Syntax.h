@@ -14,7 +14,7 @@ class CSyntax :	public std::vector<CSyntaxRule*>, public IReadable, public CGram
 {
 	int helperRulesCounter = 0;
 	CMetaIdentifier startSymbol;
-
+	using Base = std::vector<CSyntaxRule*>;
 public:
 	CSyntax();
 	CSyntax(const CSyntax& other);

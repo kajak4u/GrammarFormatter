@@ -13,6 +13,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "SyntaxRule.h"
+#include "Parser.h"
 
 using namespace std;
 
@@ -88,6 +89,9 @@ void CApplication::Run()
 	CMetaIdentifierManager::PrintMemory();
 
 	cout << grammar;
+
+	CParser parser;
+	parser.Parse(grammar);
 
 	ifstream codeFile(codeFilename, ios::binary);
 	if (!codeFile.is_open())

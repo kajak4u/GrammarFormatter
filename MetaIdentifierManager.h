@@ -3,12 +3,13 @@
 #include "MySet.h"
 
 class CTerminal;
+class IDefinition;
 
 struct CMetaIdentifierManagerItem
 {
 	MySet<CTerminal*> first;
 	MySet<CTerminal*> follow;
-	bool defined = false;
+	MySet<const IDefinition*> definitions;
 	bool used = false;
 };
 std::ostream& operator<<(std::ostream& os, const CMetaIdentifierManagerItem& item);

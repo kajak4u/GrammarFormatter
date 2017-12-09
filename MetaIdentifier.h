@@ -6,6 +6,7 @@
 struct CMetaIdentifierManagerItem;
 class CTerminal;
 class CShortDefinition;
+class IDefinition;
 
 
 class CMetaIdentifier : public CPrimary
@@ -25,13 +26,14 @@ public:
 	ISpawnable * spawn(bool copy = false) const override;
 	static void registerPrefixes();
 	bool operator<(const CMetaIdentifier& other) const;
-	void MarkAsDefined() const;
+	void MarkAsDefinedBy(const IDefinition*) const;
 	void MarkAsUsed() const;
 
 	MySet<CTerminal*>& First() const;
 	bool TryAddFirstFrom(const CShortDefinition* def) const;
 	MySet<CTerminal*>& Follow() const;
 
+	const MySet<const IDefinition*>& GetDefinitions() const;
 	static bool GetWarnings(MySet<std::string>& undefined, MySet<std::string>& unused);
 };
 

@@ -8,6 +8,11 @@ void skipWhiteChars(std::istream& is);
 Symbol GetSymbol(std::istream& is, int& group, bool alterStream);
 Symbol GetSymbol(std::istream& is, bool alterStream);
 
+template<typename _T> auto DereferenceOrNull(const typename _T::const_iterator iter, const _T& collection)
+{
+	return iter == collection.end() ? nullptr : *iter;
+}
+
 template<typename _T> auto CompareObjects()
 {
 	using Type = bool(const _T*, const _T*);

@@ -116,7 +116,7 @@ void CSyntax::CreateSets()
 				CMetaIdentifier* currentId = dynamic_cast<CMetaIdentifier*>(*iter);
 				if (!currentId)
 					continue; //we look for x,[nonterminal],y
-				CTerminal* nextTerminal = (nextIter == sdef->end() ? nullptr : dynamic_cast<CTerminal*>(*nextIter));
+				CTerminal* nextTerminal = dynamic_cast<CTerminal*>(DereferenceOrNull(nextIter, *sdef));
 				if (nextTerminal)
 					currentId->Follow() += nextTerminal;
 				else // (*nextIter == sdef->end() || dynamic_cast<CMetaIdentifier*>(*nextIter))
@@ -167,7 +167,6 @@ void CSyntax::Simplify()
 		const CDefinitionList& defList = group->getDefinitionList();
 		CHelperSyntaxRule* helperRule = new CHelperSyntaxRule(identifier, defList);
 		cerr << *helperRule << endl;
-		identifier.MarkAsDefined();
 		this->push_back(helperRule);
 		if (group->GetType() == OptionNone)
 		{
@@ -180,7 +179,6 @@ void CSyntax::Simplify()
 			CHelperSyntaxRule* helperRule2 = new CHelperSyntaxRule(identifier2, identifier, group->GetType());
 			cerr << " and: " << endl << *helperRule2 << endl;
 			identifier.MarkAsUsed();
-			identifier2.MarkAsDefined();
 			this->push_back(helperRule2);
 			factor->SetPrimary(&identifier2);
 			identifier2.MarkAsUsed();
@@ -207,6 +205,7 @@ bool CSyntax::IsCorrect(std::string & errors)
 		CMetaIdentifier newStartSymbol = CMetaIdentifier("S#");
 		CSyntaxRule* newRule = new CSyntaxRule(newStartSymbol);
 		newRule->AddDefinition(def);
+		newRule->Simplify();
 		currentStartSymbol->MarkAsUsed();
 		push_back(newRule);
 		cerr << "Start symbol is " << *currentStartSymbol << endl;

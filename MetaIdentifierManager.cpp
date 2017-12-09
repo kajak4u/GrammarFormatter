@@ -16,6 +16,6 @@ std::ostream& operator<<(std::ostream& os, const CMetaIdentifierManagerItem& ite
 			os << *elem << " ";
 		else
 			os << "[] ";
-	os << "};\t" << (item.used ? "" : "not ") << "used; " << (item.defined ? "" : "not ") << "defined";
+	os << "};\t" << (item.used ? "" : "not ") << "used; " << (!item.definitions.empty() ? "" : "not ") << "defined";
 	return os;
 }
