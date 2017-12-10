@@ -67,6 +67,21 @@ void CTerminal::WriteTo(std::ostream & os) const
 	os << "\"" << value << "\"";
 }
 
+CTerminal * CTerminal::CreateUnique()
+{
+	auto& memory = CTerminalManager::GetMemory();
+	int i=1;
+	while (memory.find(string(i, '$'))!=memory.end())
+		++i;
+	return new CTerminal(string(i, '$'));
+}
+
+bool CTerminal::Equals(const CPrimary * other) const
+{
+	const CTerminal* mi = dynamic_cast<const CTerminal*>(other);
+	return mi != nullptr && mi->item == item;
+}
+
 std::ostream & operator<<(std::ostream & os, const CTerminal & terminal)
 {
 	terminal.WriteTo(os);

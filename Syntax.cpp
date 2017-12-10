@@ -201,7 +201,6 @@ bool CSyntax::IsCorrect(std::string & errors)
 		CMetaIdentifier* currentStartSymbol = new CMetaIdentifier(*unused.begin());
 		CShortDefinition* def = new CShortDefinition();
 		def->push_back(currentStartSymbol);
-		def->push_back(new CTerminal("$"));
 		CMetaIdentifier newStartSymbol = CMetaIdentifier("S#");
 		CSyntaxRule* newRule = new CSyntaxRule(newStartSymbol);
 		newRule->AddDefinition(def);

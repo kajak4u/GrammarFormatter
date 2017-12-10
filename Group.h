@@ -25,6 +25,7 @@ public:
 	ISpawnable* spawn(bool copy = false) const override;
 	static void registerPrefixes();
 	void WriteTo(std::ostream & os) const override;
+	bool Equals(const CPrimary * other) const override;
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const;
 	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
 };

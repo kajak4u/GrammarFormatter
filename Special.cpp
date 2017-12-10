@@ -49,6 +49,12 @@ void CSpecial::registerPrefixes()
 	CRecognizer::registerType(new CSpecial(), "?");
 }
 
+bool CSpecial::Equals(const CPrimary * other) const
+{
+	const CSpecial* mi = dynamic_cast<const CSpecial*>(other);
+	return mi != nullptr && mi->name == name;
+}
+
 std::ostream & operator<<(std::ostream & os, const CSpecial & special)
 {
 	special.WriteTo(os);

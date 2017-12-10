@@ -120,6 +120,12 @@ void CGroup::ForEach(std::function<bool(const CGrammarObject*)> condition, std::
 	definitionList.ForEach(condition, action);
 }
 
+bool CGroup::Equals(const CPrimary * other) const
+{
+	const CGroup* mi = dynamic_cast<const CGroup*>(other);
+	return mi != nullptr && mi->options == options && mi->definitionList == definitionList;
+}
+
 std::ostream & operator<<(std::ostream & os, const CGroup & group)
 {
 	group.WriteTo(os);

@@ -24,6 +24,7 @@ public:
 	std::istream & ReadFrom(std::istream & is) override;
 	void WriteTo(std::ostream& os) const override;
 	ISpawnable * spawn(bool copy = false) const override;
+	bool Equals(const CPrimary * other) const override;
 	static void registerPrefixes();
 	bool operator<(const CMetaIdentifier& other) const;
 	void MarkAsDefinedBy(const IDefinition*) const;

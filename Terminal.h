@@ -25,5 +25,7 @@ public:
 	bool operator<(const CTerminal& other) const;
 
 	void WriteTo(std::ostream & os) const override;
+	bool Equals(const CPrimary * other) const override;
+	static CTerminal* CreateUnique();
 };
 std::ostream& operator<<(std::ostream& os, const CTerminal& terminal);

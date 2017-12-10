@@ -122,6 +122,12 @@ bool CMetaIdentifier::GetWarnings(MySet<std::string>& undefined, MySet<std::stri
 	return !undefined.empty() || unused.size()!=1; // starting symbol is unused
 }
 
+bool CMetaIdentifier::Equals(const CPrimary * other) const
+{
+	const CMetaIdentifier* mi = dynamic_cast<const CMetaIdentifier*>(other);
+	return mi != nullptr && mi->item == item;
+}
+
 std::ostream & operator<<(std::ostream & os, const CMetaIdentifier & identifier)
 {
 	identifier.WriteTo(os);
