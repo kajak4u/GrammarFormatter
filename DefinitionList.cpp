@@ -1,93 +1,98 @@
 #include "DefinitionList.h"
 #include "main.h"
-#include "Definition.h"
+#include "ComplexDefinition.h"
+#include "ShortDefinition.h"
 
-
-CDefinitionList::CDefinitionList()
+namespace GrammarSymbols
 {
-}
 
-CDefinitionList::CDefinitionList(const CDefinitionList & other)
-{
-	this->reserve(other.size());
-	for (IDefinition* definition : other)
-		this->push_back(dynamic_cast<IDefinition*>(definition->spawn(true)));
-}
-
-
-CDefinitionList::~CDefinitionList()
-{
-	for (IDefinition*& def : *this)
-		if(def)
-			delete def;
-}
-
-CDefinitionList CDefinitionList::operator=(CDefinitionList && other)
-{
-	*((vector<IDefinition*>*)this) = std::move((vector<IDefinition*>)other);
-	other.clear();
-	return *this;
-}
-
-std::istream& CDefinitionList::ReadFrom(std::istream& is)
-{
-	do
+	CDefinitionList::CDefinitionList()
 	{
-		this->push_back(new CDefinition(is));
-		skipWhiteChars(is);
-		//usun symbol ze strumienia tylko jesli jest to separator
-		if (GetSymbol(is, false) == SymbolSeparator)
-			GetSymbol(is, true);
-		else
-			break;
-	} while (true);
-	return is;
-}
-
-void CDefinitionList::WriteTo(std::ostream & os) const
-{
-	bool first = true;
-	for (const IDefinition* def : *this)
-	{
-		os << (first ? first = false, "" : "\n\t| ");
-		if (def)
-			def->WriteTo(os);
-		else
-			os << "[empty]";
 	}
-}
 
-void CDefinitionList::Simplify()
-{
-	for (IDefinition*& definition : *this)
+	CDefinitionList::CDefinitionList(const CDefinitionList & other)
 	{
-		if (CDefinition* complexDefinition = dynamic_cast<CDefinition*>(definition))
+		this->reserve(other.size());
+		for (IDefinition* definition : other)
+			this->push_back(dynamic_cast<IDefinition*>(definition->spawn(true)));
+	}
+
+
+	CDefinitionList::~CDefinitionList()
+	{
+		for (IDefinition*& def : *this)
+			if(def)
+				delete def;
+	}
+
+	CDefinitionList CDefinitionList::operator=(CDefinitionList && other)
+	{
+		*((vector<IDefinition*>*)this) = _STD move((vector<IDefinition*>)other);
+		other.clear();
+		return *this;
+	}
+
+	_STD istream& CDefinitionList::ReadFrom(_STD istream& is)
+	{
+		do
 		{
-			definition = new CShortDefinition(complexDefinition);
-			delete complexDefinition;
+			this->push_back(new CComplexDefinition(is));
+			skipWhiteChars(is);
+			//usun symbol ze strumienia tylko jesli jest to separator
+			if (GetSymbol(is, false) == SymbolSeparator)
+				GetSymbol(is, true);
+			else
+				break;
+		} while (true);
+		return is;
+	}
+
+	void CDefinitionList::WriteTo(_STD ostream & os) const
+	{
+		bool first = true;
+		for (const IDefinition* def : *this)
+		{
+			os << (first ? first = false, "" : "\n\t| ");
+			if (def)
+				def->WriteTo(os);
+			else
+				os << "[empty]";
 		}
 	}
 
-}
+	void CDefinitionList::Simplify()
+	{
+		for (IDefinition*& definition : *this)
+		{
+			if (CComplexDefinition* complexDefinition = dynamic_cast<CComplexDefinition*>(definition))
+			{
+				definition = new CShortDefinition(complexDefinition);
+				delete complexDefinition;
+			}
+		}
 
-void CDefinitionList::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
-{
-	CGrammarObject::ForEach(condition, action);
-	for (const IDefinition* definition : *this)
-		if(definition)
-			definition->ForEach(condition, action);
-}
+	}
 
-void CDefinitionList::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action)
-{
-	CGrammarObject::ForEach(condition, action);
-	for (IDefinition* definition : *this)
-		if(definition)
-			definition->ForEach(condition, action);
-}
+	void CDefinitionList::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const
+	{
+		CGrammarObject::ForEach(condition, action);
+		for (const IDefinition* definition : *this)
+			if(definition)
+				definition->ForEach(condition, action);
+	}
 
-std::ostream & operator<<(std::ostream & os, const CDefinitionList & list)
-{
-	list.WriteTo(os);
-	return os;
+	void CDefinitionList::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action)
+	{
+		CGrammarObject::ForEach(condition, action);
+		for (IDefinition* definition : *this)
+			if(definition)
+				definition->ForEach(condition, action);
+	}
+
+	_STD ostream & operator<<(_STD ostream & os, const CDefinitionList & list)
+	{
+		list.WriteTo(os);
+		return os;
+	}
+
 }

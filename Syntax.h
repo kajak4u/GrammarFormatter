@@ -8,30 +8,33 @@
 #include "Terminal.h"
 #include "MetaIdentifier.h"
 
-class CSyntaxRule;
-
-class CSyntax :	public std::vector<CSyntaxRule*>, public IReadable, public CGrammarObject
+namespace GrammarSymbols
 {
-	int helperRulesCounter = 0;
-	CMetaIdentifier startSymbol;
-	using Base = std::vector<CSyntaxRule*>;
-public:
-	CSyntax();
-	CSyntax(const CSyntax& other);
-	CSyntax(CSyntax&&) = default;
-	virtual ~CSyntax();
+	class CSyntaxRule;
 
-	std::istream & ReadFrom(std::istream & is) override;
-	void WriteTo(std::ostream & os) const override;
-	void Simplify();
-	void CreateSets();
-	bool IsCorrect(std::string& errors);
-	std::set<const CMetaIdentifier*, CMetaIdentifier::ComparePointers> GetAllIdentifiers() const;
-	std::set<const CTerminal*, CTerminal::ComparePointers> GetAllTerminals() const;
-	const CMetaIdentifier GetStartSymbol() const;
+	class CSyntax : public _STD vector<CSyntaxRule*>, public IReadable, public CGrammarObject
+	{
+		int helperRulesCounter = 0;
+		CMetaIdentifier startSymbol;
+		using Base = _STD vector<CSyntaxRule*>;
+	public:
+		CSyntax();
+		CSyntax(const CSyntax& other);
+		CSyntax(CSyntax&&) = default;
+		virtual ~CSyntax();
 
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
-};
+		_STD istream & ReadFrom(_STD istream & is) override;
+		void WriteTo(_STD ostream & os) const override;
+		void Simplify();
+		void CreateSets();
+		bool IsCorrect(_STD string& errors);
+		_STD set<const CMetaIdentifier*, CMetaIdentifier::ComparePointers> GetAllIdentifiers() const;
+		_STD set<const CTerminal*, CTerminal::ComparePointers> GetAllTerminals() const;
+		const CMetaIdentifier GetStartSymbol() const;
 
-std::ostream& operator<<(std::ostream& os, const CSyntax& syntax);
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const override;
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action) override;
+	};
+
+	_STD ostream& operator<<(_STD ostream& os, const CSyntax& syntax);
+}

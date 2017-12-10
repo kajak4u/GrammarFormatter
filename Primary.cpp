@@ -1,12 +1,13 @@
 #include "Primary.h"
 
-
-
-CPrimary::CPrimary()
+namespace GrammarSymbols
 {
-}
+	CPrimary::CPrimary()
+	{
+	}
 
 
-CPrimary::~CPrimary()
-{
+	CPrimary::~CPrimary()
+	{
+	}
 }

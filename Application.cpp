@@ -16,6 +16,7 @@
 #include "Parser.h"
 
 using namespace std;
+using namespace GrammarSymbols;
 
 void CApplication::RegisterAllPrefixes()
 {
@@ -34,7 +35,7 @@ void CApplication::ProcessCmdArgs(int argc, char* argv[])
 	codeFilename = argv[2];
 }
 
-CSyntax CApplication::ReadGrammar(std::istream & grammar)
+CSyntax CApplication::ReadGrammar(_STD istream & grammar)
 {
 	CSyntax syntax;
 	try

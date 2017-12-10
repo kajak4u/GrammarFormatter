@@ -1,9 +1,13 @@
 #pragma once
 
-class CSyntax;
-class CTerminal;
-#include "Definition.h"
+#include "ShortDefinition.h"
 #include "Terminal.h"
+
+namespace GrammarSymbols {
+	class CSyntax;
+	class CTerminal;
+}
+using namespace GrammarSymbols;
 
 struct CSituation
 {
@@ -18,7 +22,7 @@ struct CSituation
 	{}
 	CSituation nextPos() const
 	{
-		return CSituation(def, std::next(pos), allowed);
+		return CSituation(def, _STD next(pos), allowed);
 	}
 
 	bool operator<(const CSituation& other) const
@@ -34,7 +38,7 @@ struct CSituation
 			&& !(*allowed < *other.allowed || *other.allowed < *allowed);
 	}
 };
-std::ostream& operator<<(std::ostream& os, const CSituation& situation);
+_STD ostream& operator<<(_STD ostream& os, const CSituation& situation);
 
 class CParser
 {

@@ -1,10 +1,9 @@
 #pragma once
 #include <unordered_map>
 
-
 template<typename _ITEM> class CObjectManager
 {
-	std::unordered_map<std::string, _ITEM*> memory;
+	_STD unordered_map <_STD string, _ITEM* > memory;
 	CObjectManager() {}
 	~CObjectManager()
 	{
@@ -20,7 +19,7 @@ template<typename _ITEM> class CObjectManager
 		return instance;
 	}
 public:
-	static _ITEM* Register(const std::string& str)
+	static _ITEM* Register(const _STD string& str)
 	{
 		auto& instance = Instance();
 		auto iter = instance.memory.find(str);
@@ -30,17 +29,16 @@ public:
 		instance.memory[str] = newItem;
 		return newItem;
 	}
-	static const std::unordered_map<std::string, _ITEM*> GetMemory()
+	static const _STD unordered_map<_STD string, _ITEM*> GetMemory()
 	{
 		auto& instance = Instance();
 		return instance.memory;
 	}
 	static void PrintMemory()
 	{
-		std::cerr << "Memory: " << std::endl;
+		_STD cerr << "Memory: " << _STD endl;
 		auto& instance = Instance();
 		for (const auto& keyVal : instance.memory)
-			std::cerr << keyVal.first << " -> " << *keyVal.second << std::endl;
+			_STD cerr << keyVal.first << " -> " << *keyVal.second << _STD endl;
 	}
 };
-

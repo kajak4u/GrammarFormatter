@@ -6,29 +6,34 @@
 #include <functional>
 #include "GrammarObject.h"
 
-class CSyntaxRule : public IReadable, public CGrammarObject
+using namespace std;
+
+namespace GrammarSymbols
 {
-	CMetaIdentifier identifier;
-	CDefinitionList definitionList;
-public:
-	CSyntaxRule();
-	CSyntaxRule(const CMetaIdentifier& identifier);
-	CSyntaxRule(std::istream& is);
-	virtual ~CSyntaxRule();
-	const CMetaIdentifier& GetIdentifier() const;
-	const CDefinitionList& GetDefinitionList() const;
+	class CSyntaxRule : public IReadable, public CGrammarObject
+	{
+		CMetaIdentifier identifier;
+		CDefinitionList definitionList;
+	public:
+		CSyntaxRule();
+		CSyntaxRule(const CMetaIdentifier& identifier);
+		CSyntaxRule(_STD istream& is);
+		virtual ~CSyntaxRule();
+		const CMetaIdentifier& GetIdentifier() const;
+		const CDefinitionList& GetDefinitionList() const;
 
-	void AddDefinition(IDefinition* definition);
-	void AddCopyDefinition(const IDefinition* definition);
+		void AddDefinition(IDefinition* definition);
+		void AddCopyDefinition(const IDefinition* definition);
 
-	void Simplify();
+		void Simplify();
 
-	std::istream & ReadFrom(std::istream & is) override;
-	virtual void WriteTo(std::ostream& os) const override;
+		_STD istream & ReadFrom(_STD istream & is) override;
+		virtual void WriteTo(_STD ostream& os) const override;
 
 
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const override;
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action) override;
 
-};
-std::ostream& operator<<(std::ostream& os, const CSyntaxRule& rule);
+	};
+	_STD ostream& operator<<(_STD ostream& os, const CSyntaxRule& rule);
+}

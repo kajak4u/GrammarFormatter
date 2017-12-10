@@ -3,10 +3,10 @@
 #include <iostream>
 #include "Enums.h"
 
-void ExtractLinePos(std::istream& is, int& line, int& pos, std::string& lineContent);
-void skipWhiteChars(std::istream& is);
-Symbol GetSymbol(std::istream& is, int& group, bool alterStream);
-Symbol GetSymbol(std::istream& is, bool alterStream);
+void ExtractLinePos(_STD istream& is, int& line, int& pos, _STD string& lineContent);
+void skipWhiteChars(_STD istream& is);
+Symbol GetSymbol(_STD istream& is, int& group, bool alterStream);
+Symbol GetSymbol(_STD istream& is, bool alterStream);
 
 template<typename _T> auto DereferenceOrNull(const typename _T::const_iterator iter, const _T& collection)
 {
@@ -22,9 +22,9 @@ template<typename _T> auto CompareObjects()
 class MyException
 {
 public:
-	std::string message;
+	_STD string message;
 	int retCode;
-	MyException(const std::string& message, int retCode)
+	MyException(const _STD string& message, int retCode)
 		: message(message), retCode(retCode)
 	{}
 };

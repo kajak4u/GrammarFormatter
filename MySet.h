@@ -3,7 +3,7 @@
 #include <set>
 #include <algorithm>
 
-template<typename _T> class MySet : public std::set<_T>
+template<typename _T> class MySet : public _STD set<_T>
 {
 public:
 	using Self = MySet<_T>;
@@ -13,7 +13,7 @@ public:
 	}
 	bool IsSubsetOf(const Self& superset)
 	{
-		return std::includes(superset.begin(), superset.end(), begin(), end());
+		return _STD includes(superset.begin(), superset.end(), begin(), end());
 	}
 
 	Self& operator+=(const _T& item)

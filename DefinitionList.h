@@ -4,23 +4,26 @@
 #include <vector>
 #include "GrammarObject.h"
 
-class IDefinition;
-
-class CDefinitionList :	public IReadable, public std::vector<IDefinition*>, public CGrammarObject
+namespace GrammarSymbols
 {
-public:
-	CDefinitionList();
-	CDefinitionList(const CDefinitionList& other);
-	CDefinitionList(CDefinitionList&&) = default;
-	virtual ~CDefinitionList();
-	CDefinitionList operator=(CDefinitionList&&);
-	std::istream& ReadFrom(std::istream& is) override;
-	void WriteTo(std::ostream& os) const override;
-	void Simplify();
+	class IDefinition;
 
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
+	class CDefinitionList : public IReadable, public _STD vector<IDefinition*>, public CGrammarObject
+	{
+	public:
+		CDefinitionList();
+		CDefinitionList(const CDefinitionList& other);
+		CDefinitionList(CDefinitionList&&) = default;
+		virtual ~CDefinitionList();
+		CDefinitionList operator=(CDefinitionList&&);
+		_STD istream& ReadFrom(_STD istream& is) override;
+		void WriteTo(_STD ostream& os) const override;
+		void Simplify();
 
-};
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const override;
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action) override;
 
-std::ostream& operator<<(std::ostream& os, const CDefinitionList& list);
+	};
+
+	_STD ostream& operator<<(_STD ostream& os, const CDefinitionList& list);
+}

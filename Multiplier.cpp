@@ -4,51 +4,54 @@
 
 using namespace std;
 
-CMultiplier::CMultiplier()
+namespace GrammarSymbols
 {
-}
-
-
-CMultiplier::~CMultiplier()
-{
-}
-
-std::istream & CMultiplier::ReadFrom(std::istream & is)
-{
-	string str;
-	char c = is.get();
-	while (isdigit(c))
+	CMultiplier::CMultiplier()
 	{
-		str += c;
-		c = is.get();
 	}
-	value = stoi(str);
-	return is.putback(c);
-}
 
-ISpawnable * CMultiplier::spawn(bool copy) const
-{
-	return copy ? new CMultiplier(*this) : new CMultiplier();
-}
 
-int CMultiplier::GetValue() const
-{
-	return value;
-}
+	CMultiplier::~CMultiplier()
+	{
+	}
 
-void CMultiplier::registerPrefixes()
-{
-	for (char c = '0'; c <= '9'; ++c)
-		CRecognizer::registerType(new CMultiplier(), string{ c });
-}
+	_STD istream & CMultiplier::ReadFrom(_STD istream & is)
+	{
+		string str;
+		char c = is.get();
+		while (isdigit(c))
+		{
+			str += c;
+			c = is.get();
+		}
+		value = stoi(str);
+		return is.putback(c);
+	}
 
-void CMultiplier::WriteTo(std::ostream & os) const
-{
-	os << value;
-}
+	ISpawnable * CMultiplier::spawn(bool copy) const
+	{
+		return copy ? new CMultiplier(*this) : new CMultiplier();
+	}
 
-std::ostream & operator<<(std::ostream & os, const CMultiplier & mult)
-{
-	mult.WriteTo(os);
-	return os;
+	int CMultiplier::GetValue() const
+	{
+		return value;
+	}
+
+	void CMultiplier::registerPrefixes()
+	{
+		for (char c = '0'; c <= '9'; ++c)
+			CRecognizer::registerType(new CMultiplier(), string{ c });
+	}
+
+	void CMultiplier::WriteTo(_STD ostream & os) const
+	{
+		os << value;
+	}
+
+	_STD ostream & operator<<(_STD ostream & os, const CMultiplier & mult)
+	{
+		mult.WriteTo(os);
+		return os;
+	}
 }

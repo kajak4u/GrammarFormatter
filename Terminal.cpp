@@ -4,86 +4,89 @@
 
 using namespace std;
 
-CTerminal::CTerminal()
-	: item(nullptr)
+namespace GrammarSymbols
 {
-}
+	CTerminal::CTerminal()
+		: item(nullptr)
+	{
+	}
 
-CTerminal::CTerminal(const std::string & value)
-	:value(value), item(CTerminalManager::Register(value))
-{
-}
+	CTerminal::CTerminal(const _STD string & value)
+		: value(value), item(CTerminalManager::Register(value))
+	{
+	}
 
-CTerminal::CTerminal(std::string && value)
-	: value(value), item(CTerminalManager::Register(value))
-{
-}
+	CTerminal::CTerminal(_STD string && value)
+		: value(value), item(CTerminalManager::Register(value))
+	{
+	}
 
-const std::string & CTerminal::GetValue() const
-{
-	return value;
-}
+	const _STD string & CTerminal::GetValue() const
+	{
+		return value;
+	}
 
-CTerminal::~CTerminal()
-{
-}
+	CTerminal::~CTerminal()
+	{
+	}
 
-std::istream& CTerminal::ReadFrom(std::istream& is)
-{
-	char c = is.get();
-	if (c != '"' && c!='\'')
-		throw invalid_argument(string()+"Terminal symbol should begin with single or double quote, '" + c + "' found instead.");
-	getline(is, value, c);
-	if (is.fail())
-		throw invalid_argument(string() + "End-of-symbol character not found for terminal symbol '"+value+"'.");
-	item = CTerminalManager::Register(value);
-	return is;
-}
+	_STD istream& CTerminal::ReadFrom(_STD istream& is)
+	{
+		char c = is.get();
+		if (c != '"' && c != '\'')
+			throw invalid_argument(string() + "Terminal symbol should begin with single or double quote, '" + c + "' found instead.");
+		getline(is, value, c);
+		if (is.fail())
+			throw invalid_argument(string() + "End-of-symbol character not found for terminal symbol '" + value + "'.");
+		item = CTerminalManager::Register(value);
+		return is;
+	}
 
-ISpawnable * CTerminal::spawn(bool copy) const
-{
-	return copy ? new CTerminal(*this) : new CTerminal();
-}
+	ISpawnable * CTerminal::spawn(bool copy) const
+	{
+		return copy ? new CTerminal(*this) : new CTerminal();
+	}
 
-void CTerminal::registerPrefixes()
-{
-	CRecognizer::registerType(new CTerminal(), "'");
-	CRecognizer::registerType(new CTerminal(), "\"");
-}
+	void CTerminal::registerPrefixes()
+	{
+		CRecognizer::registerType(new CTerminal(), "'");
+		CRecognizer::registerType(new CTerminal(), "\"");
+	}
 
-CTerminal & CTerminal::operator=(const CTerminal & other)
-{
-	value = other.value;
-	return *this;
-}
+	CTerminal & CTerminal::operator=(const CTerminal & other)
+	{
+		value = other.value;
+		return *this;
+	}
 
-bool CTerminal::operator<(const CTerminal & other) const
-{
-	return item < other.item;
-}
+	bool CTerminal::operator<(const CTerminal & other) const
+	{
+		return item < other.item;
+	}
 
-void CTerminal::WriteTo(std::ostream & os) const
-{
-	os << "\"" << value << "\"";
-}
+	void CTerminal::WriteTo(_STD ostream & os) const
+	{
+		os << "\"" << value << "\"";
+	}
 
-CTerminal * CTerminal::CreateUnique()
-{
-	auto& memory = CTerminalManager::GetMemory();
-	int i=1;
-	while (memory.find(string(i, '$'))!=memory.end())
-		++i;
-	return new CTerminal(string(i, '$'));
-}
+	CTerminal * CTerminal::CreateUnique()
+	{
+		auto& memory = CTerminalManager::GetMemory();
+		int i = 1;
+		while (memory.find(string(i, '$')) != memory.end())
+			++i;
+		return new CTerminal(string(i, '$'));
+	}
 
-bool CTerminal::Equals(const CPrimary * other) const
-{
-	const CTerminal* mi = dynamic_cast<const CTerminal*>(other);
-	return mi != nullptr && mi->item == item;
-}
+	bool CTerminal::Equals(const CPrimary * other) const
+	{
+		const CTerminal* mi = dynamic_cast<const CTerminal*>(other);
+		return mi != nullptr && mi->item == item;
+	}
 
-std::ostream & operator<<(std::ostream & os, const CTerminal & terminal)
-{
-	terminal.WriteTo(os);
-	return os;
+	_STD ostream & operator<<(_STD ostream & os, const CTerminal & terminal)
+	{
+		terminal.WriteTo(os);
+		return os;
+	}
 }

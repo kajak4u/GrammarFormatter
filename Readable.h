@@ -5,8 +5,8 @@
 class IReadable
 {
 public:
-	virtual std::istream& ReadFrom(std::istream& is) = 0;
-	virtual void WriteTo(std::ostream& os) const = 0;
+	virtual _STD istream& ReadFrom(_STD istream& is) = 0;
+	virtual void WriteTo(_STD ostream& os) const = 0;
 	virtual ~IReadable();
 };
-std::istream& operator<<(std::istream& is, IReadable& obj);
+_STD istream& operator<<(_STD istream& is, IReadable& obj);

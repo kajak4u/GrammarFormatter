@@ -4,18 +4,21 @@
 #include "Readable.h"
 #include "GrammarObject.h"
 
-class CMultiplier : public ISpawnable, public IReadable, public CGrammarObject
+namespace GrammarSymbols
 {
-	int value;
-public:
-	CMultiplier();
-	virtual ~CMultiplier();
+	class CMultiplier : public ISpawnable, public IReadable, public CGrammarObject
+	{
+		int value;
+	public:
+		CMultiplier();
+		virtual ~CMultiplier();
 
-	std::istream & ReadFrom(std::istream & is) override;
-	ISpawnable * spawn(bool copy = false) const override;
-	int GetValue() const;
-	static void registerPrefixes();
+		_STD istream & ReadFrom(_STD istream & is) override;
+		ISpawnable * spawn(bool copy = false) const override;
+		int GetValue() const;
+		static void registerPrefixes();
 
-	void WriteTo(std::ostream & os) const override;
-};
-std::ostream& operator<<(std::ostream& os, const CMultiplier& mult);
+		void WriteTo(_STD ostream & os) const override;
+	};
+	_STD ostream& operator<<(_STD ostream& os, const CMultiplier& mult);
+}

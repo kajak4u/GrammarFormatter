@@ -2,7 +2,7 @@
 
 IReadable::~IReadable() {}
 
-std::istream& operator<<(std::istream& is, IReadable& obj)
+_STD istream& operator<<(_STD istream& is, IReadable& obj)
 {
 	return obj.ReadFrom(is);
 }

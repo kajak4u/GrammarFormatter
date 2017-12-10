@@ -1,9 +1,6 @@
 #pragma once
 
-#include "EnumSet.h"
-
 enum Option { OptionNone, OptionRepetition, OptionOptional };
-typedef CEnumSet<Option> Options;
 
 enum Symbol
 {

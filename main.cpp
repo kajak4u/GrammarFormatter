@@ -8,11 +8,11 @@ using namespace std;
 
 void ExtractLinePos(istream& is, int& line, int& pos, string& lineContent)
 {
-	std::streamoff filepos = is.tellg();
+	_STD streamoff filepos = is.tellg();
 	is.seekg(0, is.beg);
 	line = 0;
 	string str;
-	std::streamoff oldfilepos = 0;
+	_STD streamoff oldfilepos = 0;
 	do
 	{
 		oldfilepos = is.tellg();
@@ -25,7 +25,7 @@ void ExtractLinePos(istream& is, int& line, int& pos, string& lineContent)
 	lineContent = str;
 }
 
-void skipComment(std::istream& is)
+void skipComment(_STD istream& is)
 {
 	string s = { (char)is.get(), (char)is.get() };
 	if (s != "(*")
@@ -59,7 +59,7 @@ void skipComment(std::istream& is)
 	}
 }
 
-void skipWhiteChars(std::istream& is)
+void skipWhiteChars(_STD istream& is)
 {
 	char c, c2;
 	while (!is.eof())
@@ -87,7 +87,7 @@ void skipWhiteChars(std::istream& is)
 		}
 }
 
-Symbol GetSymbol(std::istream & is, int & group, bool alterStream)
+Symbol GetSymbol(_STD istream & is, int & group, bool alterStream)
 {
 	static const map<string, pair<Symbol,int>> symbols = 
 	{
@@ -138,7 +138,7 @@ Symbol GetSymbol(std::istream & is, int & group, bool alterStream)
 	return result->second.first;
 }
 
-Symbol GetSymbol(std::istream & is, bool alterStream)
+Symbol GetSymbol(_STD istream & is, bool alterStream)
 {
 	int gr;
 	return GetSymbol(is, gr, alterStream);

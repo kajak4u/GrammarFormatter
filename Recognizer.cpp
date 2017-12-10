@@ -1,20 +1,23 @@
 #include "Recognizer.h"
 #include "main.h"
 
-CRecognizer& CRecognizer::instance()
+namespace GrammarSymbols
 {
-	static CRecognizer instance;
-	return instance;
-}
+	CRecognizer& CRecognizer::instance()
+	{
+		static CRecognizer instance;
+		return instance;
+	}
 
-void CRecognizer::registerType(ISpawnable* obj, std::string seq)
-{
-	instance().hierarchy.add(seq, obj);
-}
+	void CRecognizer::registerType(ISpawnable* obj, _STD string seq)
+	{
+		instance().hierarchy.add(seq, obj);
+	}
 
-ISpawnable* CRecognizer::CreateFor(std::istream& is)
-{
-	skipWhiteChars(is);
-	const ISpawnable* found = instance().hierarchy.Predict(is);
-	return found == nullptr ? nullptr : found->spawn();
+	ISpawnable* CRecognizer::CreateFor(_STD istream& is)
+	{
+		skipWhiteChars(is);
+		const ISpawnable* found = instance().hierarchy.Predict(is);
+		return found == nullptr ? nullptr : found->spawn();
+	}
 }

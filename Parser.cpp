@@ -15,11 +15,11 @@ CParser::CSituations CParser::Closure(const CSituations & situations)
 		toProcess -= situation;
 		if (CMetaIdentifier* B = dynamic_cast<CMetaIdentifier*>(DereferenceOrNull(situation.pos, *situation.def)))
 		{
-			auto beta = DereferenceOrNull(std::next(situation.pos), *situation.def);
+			auto beta = DereferenceOrNull(_STD next(situation.pos), *situation.def);
 			auto a = situation.allowed;
 			const MySet<const IDefinition*>& definitions = B->GetDefinitions();
 			vector<CPrimary*> v = { beta, a };
-			MySet<CTerminal*> terminals = GetFirstFrom(std::next(v.begin(), beta == nullptr), v.end());
+			MySet<CTerminal*> terminals = GetFirstFrom(_STD next(v.begin(), beta == nullptr), v.end());
 			for (auto& definition : definitions)
 			{
 				CSituation newSituation(dynamic_cast<const CShortDefinition*>(definition));
@@ -59,7 +59,7 @@ void CParser::Parse(const CSyntax & grammar)
 			startSituations.insert(CSituation(def, endingTerminal));
 	}
 	vector<CSituations*> sets;
-	sets.push_back(new CSituations(std::move(Closure(startSituations))));
+	sets.push_back(new CSituations(_STD move(Closure(startSituations))));
 	auto compareCSituations = [](const CSituations* s1, const CSituations* s2)
 	{
 		if (s1->size() != s2->size())
@@ -88,7 +88,7 @@ void CParser::Parse(const CSyntax & grammar)
 		{
 			CSituations newSituations = Goto(*situations, symbol);
 			if (!newSituations.empty() && !Contains(sets, &newSituations))
-				sets.push_back(new CSituations(std::move(newSituations)));
+				sets.push_back(new CSituations(_STD move(newSituations)));
 		}
 	}
 	cerr << "Zbiory sytuacji:" << endl;
@@ -109,7 +109,7 @@ CParser::~CParser()
 {
 }
 
-std::ostream & operator<<(std::ostream & os, const CSituation & situation)
+_STD ostream & operator<<(_STD ostream & os, const CSituation & situation)
 {
 	for (auto iter = situation.def->begin(); iter != situation.def->end(); ++iter)
 	{

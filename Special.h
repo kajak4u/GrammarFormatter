@@ -2,18 +2,21 @@
 
 #include "Primary.h"
 
-class CSpecial : public CPrimary
+namespace GrammarSymbols
 {
-	std::string name;
-public:
-	CSpecial();
-	virtual ~CSpecial();
+	class CSpecial : public CPrimary
+	{
+		_STD string name;
+	public:
+		CSpecial();
+		virtual ~CSpecial();
 
-	std::istream & ReadFrom(std::istream & is) override;
-	void WriteTo(std::ostream & os) const override;
-	ISpawnable * spawn(bool copy = false) const override;
-	bool Equals(const CPrimary * other) const override;
-	static void registerPrefixes();
-};
+		_STD istream & ReadFrom(_STD istream & is) override;
+		void WriteTo(_STD ostream & os) const override;
+		ISpawnable * spawn(bool copy = false) const override;
+		bool Equals(const CPrimary * other) const override;
+		static void registerPrefixes();
+	};
 
-std::ostream& operator<<(std::ostream& os, const CSpecial& special);
+	_STD ostream& operator<<(_STD ostream& os, const CSpecial& special);
+}

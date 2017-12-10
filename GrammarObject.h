@@ -1,15 +1,18 @@
 #pragma once
 #include <functional>
 
-class CGrammarObject
+namespace GrammarSymbols
 {
-public:
-	virtual void ForEach(
-		std::function<bool(const CGrammarObject*)> condition, 
-		std::function<void(const CGrammarObject*)> action
-	) const;
-	virtual void ForEach(
-		std::function<bool(const CGrammarObject*)> condition,
-		std::function<void(CGrammarObject*)> action
-	);
-};
+	class CGrammarObject
+	{
+	public:
+		virtual void ForEach(
+			_STD function<bool(const CGrammarObject*)> condition,
+			_STD function<void(const CGrammarObject*)> action
+		) const;
+		virtual void ForEach(
+			_STD function<bool(const CGrammarObject*)> condition,
+			_STD function<void(CGrammarObject*)> action
+		);
+	};
+}

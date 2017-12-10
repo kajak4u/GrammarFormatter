@@ -1,13 +1,16 @@
 #include "GrammarObject.h"
 
-void CGrammarObject::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const
+namespace GrammarSymbols
 {
-	if (condition(this))
-		action(this);
-}
+	void CGrammarObject::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const
+	{
+		if (condition(this))
+			action(this);
+	}
 
-void CGrammarObject::ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action)
-{
-	if (condition(this))
-		action(this);
+	void CGrammarObject::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action)
+	{
+		if (condition(this))
+			action(this);
+	}
 }

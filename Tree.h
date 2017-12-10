@@ -5,14 +5,14 @@
 template<typename _VALUE> class CTree
 {
 	const _VALUE* current = nullptr;
-	std::map<char, CTree*> children;
+	_STD map<char, CTree*> children;
 public:
 	~CTree()
 	{
 		if (current)
 			delete current;
 	}
-	void add(const std::string& index, const _VALUE* value)
+	void add(const _STD string& index, const _VALUE* value)
 	{
 		CTree<_VALUE>* current = this;
 		for (auto i : index)
@@ -23,7 +23,7 @@ public:
 		}
 		current->current = value;
 	}
-	const _VALUE* Predict(std::istream& is) const
+	const _VALUE* Predict(_STD istream& is) const
 	{
 		char c = is.get();
 		auto child = children.find(c);
@@ -31,9 +31,9 @@ public:
 		is.putback(c);
 		return result;
 	}
-	const _VALUE* GetFromStream(std::istream& is) const
+	const _VALUE* GetFromStream(_STD istream& is) const
 	{
-		static std::string mem = "";
+		static _STD string mem = "";
 		char c = is.get();
 		if (is.eof())
 			return current;

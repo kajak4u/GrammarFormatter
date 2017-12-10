@@ -5,27 +5,30 @@
 #include <functional>
 #include "GrammarObject.h"
 
-class CTerm : public IReadable, public CGrammarObject
+namespace GrammarSymbols
 {
-	CFactor factor;
-	bool hasException = false;
-	CFactor exception;
-public:
-	CTerm();
-	CTerm(std::istream&);
-	CTerm(CFactor&&);
-	CTerm(const CFactor& factor);
-	CTerm(const CFactor& factor, const CFactor& exception);
-	virtual ~CTerm();
+	class CTerm : public IReadable, public CGrammarObject
+	{
+		CFactor factor;
+		bool hasException = false;
+		CFactor exception;
+	public:
+		CTerm();
+		CTerm(_STD istream&);
+		CTerm(CFactor&&);
+		CTerm(const CFactor& factor);
+		CTerm(const CFactor& factor, const CFactor& exception);
+		virtual ~CTerm();
 
-	bool HasException() const;
-	const CFactor& GetFactor() const;
-	const CFactor& GetException() const;
+		bool HasException() const;
+		const CFactor& GetFactor() const;
+		const CFactor& GetException() const;
 
-	std::istream & ReadFrom(std::istream & is) override;
-	void WriteTo(std::ostream & os) const override;
+		_STD istream & ReadFrom(_STD istream & is) override;
+		void WriteTo(_STD ostream & os) const override;
 
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
-};
-std::ostream& operator<<(std::ostream& os, const CTerm& term);
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const override;
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action) override;
+	};
+	_STD ostream& operator<<(_STD ostream& os, const CTerm& term);
+}

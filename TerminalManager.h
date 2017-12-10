@@ -1,10 +1,13 @@
 #pragma once
 #include "ObjectManager.h"
 
-class CTerminalManagerItem
+namespace GrammarSymbols
 {
+	class CTerminalManagerItem
+	{
 
-};
-std::ostream& operator<<(std::ostream& os, const CTerminalManagerItem&);
+	};
+	_STD ostream& operator<<(_STD ostream& os, const CTerminalManagerItem&);
 
-using CTerminalManager = CObjectManager<CTerminalManagerItem>;
+	using CTerminalManager = CObjectManager<CTerminalManagerItem>;
+}

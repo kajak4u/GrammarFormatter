@@ -5,12 +5,12 @@
 
 class CApplication
 {
-	std::string grammarFilename;
-	std::string codeFilename;
+	_STD string grammarFilename;
+	_STD string codeFilename;
 	void RegisterAllPrefixes();
 	void ProcessCmdArgs(int argc, char* argv[]);
-	CSyntax ReadGrammar(std::istream& file);
-	void CheckCorrectness(CSyntax& grammar);
+	GrammarSymbols::CSyntax ReadGrammar(_STD istream& file);
+	void CheckCorrectness(GrammarSymbols::CSyntax& grammar);
 public:
 	CApplication(int argc, char* argv[])
 	{

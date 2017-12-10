@@ -4,28 +4,31 @@
 #include "Primary.h"
 #include "GrammarObject.h"
 
-class CTerminalManagerItem;
-
-class CTerminal : public CPrimary
+namespace GrammarSymbols
 {
-	std::string value;
-	CTerminalManagerItem* item;
-public:
-	CTerminal();
-	CTerminal(const std::string& value);
-	CTerminal(std::string&& value);
-	typedef bool(*ComparePointers)(const CTerminal*, const CTerminal*);
-	const std::string& GetValue() const;
-	virtual ~CTerminal();
-	std::istream& ReadFrom(std::istream& is) override;
-	ISpawnable * spawn(bool copy = false) const override;
-	static void registerPrefixes();
-	CTerminal& operator=(const CTerminal& other);
+	class CTerminalManagerItem;
 
-	bool operator<(const CTerminal& other) const;
+	class CTerminal : public CPrimary
+	{
+		_STD string value;
+		CTerminalManagerItem* item;
+	public:
+		CTerminal();
+		CTerminal(const _STD string& value);
+		CTerminal(_STD string&& value);
+		typedef bool(*ComparePointers)(const CTerminal*, const CTerminal*);
+		const _STD string& GetValue() const;
+		virtual ~CTerminal();
+		_STD istream& ReadFrom(_STD istream& is) override;
+		ISpawnable * spawn(bool copy = false) const override;
+		static void registerPrefixes();
+		CTerminal& operator=(const CTerminal& other);
 
-	void WriteTo(std::ostream & os) const override;
-	bool Equals(const CPrimary * other) const override;
-	static CTerminal* CreateUnique();
-};
-std::ostream& operator<<(std::ostream& os, const CTerminal& terminal);
+		bool operator<(const CTerminal& other) const;
+
+		void WriteTo(_STD ostream & os) const override;
+		bool Equals(const CPrimary * other) const override;
+		static CTerminal* CreateUnique();
+	};
+	_STD ostream& operator<<(_STD ostream& os, const CTerminal& terminal);
+}

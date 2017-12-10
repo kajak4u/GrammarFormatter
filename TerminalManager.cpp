@@ -1,7 +1,9 @@
 #include "TerminalManager.h"
 
-std::ostream& operator<<(std::ostream& os, const CTerminalManagerItem&)
+namespace GrammarSymbols
 {
-	return os;
+	_STD ostream& operator<<(_STD ostream& os, const CTerminalManagerItem&)
+	{
+		return os;
+	}
 }
-

@@ -5,26 +5,30 @@
 #include <functional>
 #include "GrammarObject.h"
 
-class CFactor :	public IReadable, public CGrammarObject
+namespace GrammarSymbols
 {
-	int multiplier = 1;
-	CPrimary* primary = nullptr;
-public:
-	CFactor();
-	CFactor(const CPrimary* primary, int multiplier = 1);
-	CFactor(const CFactor& other);
-	CFactor(CFactor&&);
-	int GetMultiplier() const;
-	const CPrimary* GetPrimary() const;
-	void SetPrimary(const CPrimary* newPrimary);
-	virtual ~CFactor();
 
-	std::istream & ReadFrom(std::istream & is) override;
-	void WriteTo(std::ostream & os) const override;
+	class CFactor : public IReadable, public CGrammarObject
+	{
+		int multiplier = 1;
+		CPrimary* primary = nullptr;
+	public:
+		CFactor();
+		CFactor(const CPrimary* primary, int multiplier = 1);
+		CFactor(const CFactor& other);
+		CFactor(CFactor&&);
+		int GetMultiplier() const;
+		const CPrimary* GetPrimary() const;
+		void SetPrimary(const CPrimary* newPrimary);
+		virtual ~CFactor();
 
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(const CGrammarObject*)> action) const override;
-	void ForEach(std::function<bool(const CGrammarObject*)> condition, std::function<void(CGrammarObject*)> action) override;
+		_STD istream & ReadFrom(_STD istream & is) override;
+		void WriteTo(_STD ostream & os) const override;
 
-};
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const override;
+		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action) override;
 
-std::ostream& operator<<(std::ostream& os, const CFactor& factor);
+	};
+
+	_STD ostream& operator<<(_STD ostream& os, const CFactor& factor);
+}
