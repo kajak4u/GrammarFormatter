@@ -47,25 +47,6 @@ namespace GrammarSymbols
 			os << *rule << endl;
 	}
 
-
-	class CShortDefinitionIterator
-	{
-		using Iter = CShortDefinition::iterator;
-		Iter _begin;
-		Iter _end;
-	public:
-		Iter pos;
-
-		CShortDefinitionIterator(CShortDefinition& def, Iter pos)
-			: _begin(def.begin()), _end(def.end()), pos(pos)
-		{}
-		CShortDefinitionIterator(CShortDefinition& def)
-			: CShortDefinitionIterator(def, def.begin())
-		{}
-		const Iter begin() const { return _begin; }
-		const Iter end() const { return _end; }
-	};
-
 	void CSyntax::CreateSets()
 	{
 		//create sets: FIRST(a) and FOLLOW(a) for each identifier a

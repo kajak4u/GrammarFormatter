@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010"> 
-  <Type Name="CMetaIdentifier">
+  <Type Name="GrammarSymbols::CMetaIdentifier">
     <DisplayString>{name}</DisplayString>
   </Type>
-  <Type Name="CMetaIdentifier*">
+  <Type Name="GrammarSymbols::CMetaIdentifier*">
     <DisplayString></DisplayString>
   </Type>
-  <Type Name="CTerminal">
+  <Type Name="GrammarSymbols::CTerminal">
     <DisplayString>"{value}"</DisplayString>
   </Type>
-  <Type Name="CTerm">
+  <Type Name="GrammarSymbols::CTerm">
     <DisplayString Condition="hasException">{factor} - {exception}</DisplayString>
     <DisplayString>{factor}</DisplayString>
   </Type>
-  <Type Name="CFactor">
+  <Type Name="GrammarSymbols::CFactor">
     <DisplayString Condition="multiplier==1">{*primary}</DisplayString>
     <DisplayString>{multiplier}*{*primary}</DisplayString>
+  </Type>
+  <Type Name="CShiftAction">
+    <DisplayString>→ {newState->situations}</DisplayString>
+  </Type>
+  <Type Name="CGoto">
+    <DisplayString>→ {newState->situations}</DisplayString>
   </Type>
 </AutoVisualizer>

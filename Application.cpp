@@ -92,7 +92,7 @@ void CApplication::Run()
 	cout << grammar;
 
 	CParser parser;
-	parser.Parse(grammar);
+	parser.CreateParsingTable(grammar);
 
 	ifstream codeFile(codeFilename, ios::binary);
 	if (!codeFile.is_open())

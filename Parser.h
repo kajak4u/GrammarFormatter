@@ -6,23 +6,25 @@
 namespace GrammarSymbols {
 	class CSyntax;
 	class CTerminal;
+	class CMetaIdentifier;
 }
 using namespace GrammarSymbols;
 
 struct CSituation
 {
+	const CMetaIdentifier* result;
 	const CShortDefinition* def;
 	CShortDefinition::const_iterator pos;
 	CTerminal* allowed;
-	CSituation(const CShortDefinition* def, CShortDefinition::const_iterator pos, CTerminal* allowed)
-		: def(def), pos(pos), allowed(allowed)
+	CSituation(const CMetaIdentifier* result, const CShortDefinition* def, CShortDefinition::const_iterator pos, CTerminal* allowed)
+		: result(result), def(def), pos(pos), allowed(allowed)
 	{}
-	CSituation(const CShortDefinition* def, CTerminal* allowed=nullptr)
-		: CSituation(def, def->begin(), allowed)
+	CSituation(const CMetaIdentifier* result, const CShortDefinition* def, CTerminal* allowed=nullptr)
+		: CSituation(result, def, def->begin(), allowed)
 	{}
 	CSituation nextPos() const
 	{
-		return CSituation(def, _STD next(pos), allowed);
+		return CSituation(result, def, _STD next(pos), allowed);
 	}
 
 	bool operator<(const CSituation& other) const
@@ -40,14 +42,15 @@ struct CSituation
 };
 _STD ostream& operator<<(_STD ostream& os, const CSituation& situation);
 
+using CSituations = MySet<CSituation>;
+
 class CParser
 {
-	using CSituations = MySet<CSituation>;
 	CSituations Closure(const CSituations& situations);
 	CSituations Goto(const CSituations& situations, const CPrimary* symbol);
 public:
 	CParser();
-	void Parse(const CSyntax& grammar);
+	void CreateParsingTable(const CSyntax& grammar);
 	~CParser();
 };
 
