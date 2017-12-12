@@ -59,20 +59,20 @@ namespace GrammarSymbols
 			auto& defList = rule->GetDefinitionList();
 			for (IDefinition* def : defList)
 			{
-				if (def == nullptr)
+				CShortDefinition* sdef = dynamic_cast<CShortDefinition*>(def);
+				if (sdef == nullptr)
+					throw MyException("Only shortdefinitions allowed\n" __FILE__, __LINE__);
+				if (sdef->empty())
 					identifier.First() += nullptr;
 				else
 				{
-					CShortDefinition* sdef = dynamic_cast<CShortDefinition*>(def);
-					if (sdef == nullptr)
-						throw MyException("Only shortdefinitions allowed\n" __FILE__, __LINE__);
-					if (sdef->size() == 0)
-						throw MyException("Unexpected empty definition\n" __FILE__, __LINE__);
 					CPrimary* primary = *sdef->begin();
 					if (CTerminal* terminal = dynamic_cast<CTerminal*>(primary))
 						identifier.First() += terminal;
 					else if (dynamic_cast<CMetaIdentifier*>(primary))
 						startingWithSymbol.insert({ sdef, &identifier });
+					else
+						throw MyException("Unexpected null pointer in definition\n" __FILE__, __LINE__);
 				}
 			}
 		}
@@ -90,8 +90,6 @@ namespace GrammarSymbols
 			for (IDefinition* def : defList)
 			{
 				CShortDefinition* sdef = dynamic_cast<CShortDefinition*>(def);
-				if (sdef == nullptr)
-					continue;
 				for (auto& iter = sdef->begin(), nextIter = iter; iter != sdef->end(); ++iter)
 				{
 					++nextIter;
@@ -103,7 +101,7 @@ namespace GrammarSymbols
 						currentId->Follow() += nextTerminal;
 					else // (*nextIter == sdef->end() || dynamic_cast<CMetaIdentifier*>(*nextIter))
 					{
-						MySet<CTerminal*> firstFromFollowing = GetFirstFrom(nextIter, sdef->end());
+						MySet<CTerminal*, CompareObjects<CTerminal>> firstFromFollowing = GetFirstFrom(nextIter, sdef->end());
 						if (!firstFromFollowing.Contains(nullptr))
 							currentId->Follow() += firstFromFollowing;
 						else
@@ -184,6 +182,7 @@ namespace GrammarSymbols
 			CShortDefinition* def = new CShortDefinition();
 			def->push_back(currentStartSymbol);
 			CMetaIdentifier newStartSymbol = CMetaIdentifier("S#");
+			newStartSymbol.Follow() += CTerminal::Unique();
 			CSyntaxRule* newRule = new CSyntaxRule(newStartSymbol);
 			newRule->AddDefinition(def);
 			newRule->Simplify();
@@ -212,17 +211,17 @@ namespace GrammarSymbols
 		return false;
 	}
 
-	set<const CMetaIdentifier*, CMetaIdentifier::ComparePointers> CSyntax::GetAllIdentifiers() const
+	/*set <const CMetaIdentifier*, CompareObjects<CMetaIdentifier>> CSyntax::GetAllIdentifiers() const
 	{
-		set <const CMetaIdentifier*, CMetaIdentifier::ComparePointers> identifiers(CompareObjects<CMetaIdentifier>());
+		set <const CMetaIdentifier*, CompareObjects<CMetaIdentifier>> identifiers;
 		for (const CSyntaxRule* rule : *this)
 			identifiers.insert(&rule->GetIdentifier());
 		return identifiers;
 	}
 
-	set<const CTerminal*, CTerminal::ComparePointers> CSyntax::GetAllTerminals() const
+	set <const CTerminal*, CompareObjects<CTerminal>> CSyntax::GetAllTerminals() const
 	{
-		set <const CTerminal*, CTerminal::ComparePointers> terminals(CompareObjects<CTerminal>());
+		set <const CTerminal*, CompareObjects<CTerminal>> terminals;
 		for (const CSyntaxRule* rule : *this)
 			rule->ForEach(
 				[](const CGrammarObject* symbol)
@@ -234,7 +233,7 @@ namespace GrammarSymbols
 		}
 		);
 		return terminals;
-	}
+	}*/
 
 	const CMetaIdentifier CSyntax::GetStartSymbol() const
 	{

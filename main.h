@@ -13,11 +13,13 @@ template<typename _T> auto DereferenceOrNull(const typename _T::const_iterator i
 	return iter == collection.end() ? nullptr : *iter;
 }
 
-template<typename _T> auto CompareObjects()
+template<class _T> struct CompareObjects
 {
-	using Type = bool(const _T*, const _T*);
-	return [](const _T* a, const _T* b) {return *a < *b; };
-}
+	constexpr bool operator()(const _T* _Left, const _T* _Right) const
+	{
+		return _Left==nullptr ? _Right !=nullptr : _Right ==nullptr ? false : *_Left < *_Right;
+	}
+};
 
 class MyException
 {

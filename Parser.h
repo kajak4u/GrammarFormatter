@@ -2,13 +2,18 @@
 
 #include "ShortDefinition.h"
 #include "Terminal.h"
+#include <iostream>
 
 namespace GrammarSymbols {
 	class CSyntax;
 	class CTerminal;
 	class CMetaIdentifier;
+	class CShortDefinition;
+	class CPrimary;
 }
 using namespace GrammarSymbols;
+
+class CParsingState;
 
 struct CSituation
 {
@@ -44,13 +49,59 @@ _STD ostream& operator<<(_STD ostream& os, const CSituation& situation);
 
 using CSituations = MySet<CSituation>;
 
+class CDrzewo
+{
+	CParsingState* state;
+public:
+	CParsingState* const GetState() const { return state; }
+	void SetState(CParsingState* newState) { state = newState; }
+	CDrzewo(CParsingState* state)
+		: state(state)
+	{}
+	virtual ~CDrzewo() {}
+};
+class CNode : public CDrzewo
+{
+public:
+	using SubTree = std::vector<std::pair<CPrimary*, CDrzewo*>>;
+private:
+	const CMetaIdentifier* identifier;
+	SubTree subtree;
+public:
+	CNode(const CMetaIdentifier* identifier, const SubTree& subtree, CParsingState* state)
+		: CDrzewo(state), identifier(identifier), subtree(subtree)
+	{}
+	virtual ~CNode() {}
+	const CMetaIdentifier* GetIdentifier() const;
+	const SubTree& getSubTree() const;
+};
+class CLeaf : public CDrzewo
+{
+	CTerminal* terminal;
+public:
+	CLeaf(CTerminal* terminal, CParsingState* state)
+		: CDrzewo(state), terminal(terminal)
+	{}
+	virtual ~CLeaf() {}
+	const CTerminal* GetTerminal() const;
+};
+
 class CParser
 {
-	CSituations Closure(const CSituations& situations);
-	CSituations Goto(const CSituations& situations, const CPrimary* symbol);
+	CParsingState* currentState;
+	bool accepted = false;
+	std::vector<CDrzewo*> stack;
+	CTerminal* currentTerminal = nullptr;
 public:
-	CParser();
-	void CreateParsingTable(const CSyntax& grammar);
+	void ChangeStateTo(CParsingState* state);
+	void AddStateToStack(CParsingState* newState);
+	void Accept();
+	bool Accepted() const;
+	void Reduce(const CMetaIdentifier*, const CShortDefinition*);
+
+	void Process(_STD istream& file);
+
+	CParser(CParsingState* startState);
 	~CParser();
 };
 

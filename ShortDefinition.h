@@ -3,6 +3,7 @@
 #include <vector>
 #include "Definition.h"
 #include "MySet.h"
+#include "main.h"
 
 namespace GrammarSymbols
 {
@@ -27,5 +28,5 @@ namespace GrammarSymbols
 		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action) override;
 	};
 
-	MySet<CTerminal*> GetFirstFrom(_STD vector<CPrimary*>::const_iterator begin, _STD vector<CPrimary*>::const_iterator end);
+	MySet<CTerminal*, CompareObjects<CTerminal>> GetFirstFrom(_STD vector<CPrimary*>::const_iterator begin, _STD vector<CPrimary*>::const_iterator end);
 }

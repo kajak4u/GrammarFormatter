@@ -32,7 +32,7 @@ namespace GrammarSymbols
 			CShortDefinition *shortDef = new CShortDefinition();
 			shortDef->push_back(new CMetaIdentifier(helperIdentifier2));
 
-			AddDefinition(nullptr);
+			AddDefinition(new CShortDefinition());
 			AddDefinition(shortDef);
 		}
 		else if (option == OptionRepetition)
@@ -41,7 +41,7 @@ namespace GrammarSymbols
 			CShortDefinition* shortDef = new CShortDefinition();
 			shortDef->push_back(new CMetaIdentifier(helperIdentifier2));
 			shortDef->push_back(new CMetaIdentifier(helperIdentifier));
-			AddDefinition(nullptr);
+			AddDefinition(new CShortDefinition());
 			AddDefinition(shortDef);
 		}
 	}

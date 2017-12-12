@@ -1,9 +1,9 @@
 #pragma once
-#include <unordered_map>
+#include <map>
 
 template<typename _ITEM> class CObjectManager
 {
-	_STD unordered_map <_STD string, _ITEM* > memory;
+	_STD map <_STD string, _ITEM* > memory;
 	CObjectManager() {}
 	~CObjectManager()
 	{
@@ -29,7 +29,7 @@ public:
 		instance.memory[str] = newItem;
 		return newItem;
 	}
-	static const _STD unordered_map<_STD string, _ITEM*> GetMemory()
+	static const _STD map<_STD string, _ITEM*> GetMemory()
 	{
 		auto& instance = Instance();
 		return instance.memory;

@@ -31,13 +31,14 @@ namespace GrammarSymbols
 			const CPrimary* primary = factor.GetPrimary();
 			auto identifier = dynamic_cast<const CMetaIdentifier*>(primary);
 			auto terminal = dynamic_cast<const CTerminal*>(primary);
-			if (identifier == nullptr && terminal == nullptr)
+			if (primary != nullptr && identifier == nullptr && terminal == nullptr)
 				throw MyException("Expected terminal or identifier" __FILE__, __LINE__);
 			else if (identifier)
 				identifier->MarkAsUsed();
 			for (int i = 0; i < factor.GetMultiplier(); ++i)
 			{
-				push_back(dynamic_cast<CPrimary*>(primary->spawn(true)));
+				if(primary!=nullptr)
+					push_back(dynamic_cast<CPrimary*>(primary->spawn(true)));
 			}
 		}
 	}
@@ -76,7 +77,10 @@ namespace GrammarSymbols
 		for (const CPrimary* primary : *this)
 		{
 			os << (first ? first = false, "" : ", ");
-			primary->WriteTo(os);
+			if (primary != nullptr)
+				primary->WriteTo(os);
+			else
+				os << "[empty]";
 		}
 	}
 
@@ -101,9 +105,9 @@ namespace GrammarSymbols
 	}
 
 
-	MySet<CTerminal*> GetFirstFrom(_STD vector<CPrimary*>::const_iterator iter, _STD vector<CPrimary*>::const_iterator end)
+	MySet<CTerminal*, CompareObjects<CTerminal>> GetFirstFrom(_STD vector<CPrimary*>::const_iterator iter, _STD vector<CPrimary*>::const_iterator end)
 	{
-		MySet<CTerminal*> res;
+		MySet<CTerminal*, CompareObjects<CTerminal>> res;
 		//loop until encounters a nonterminal without [empty] or a terminal
 		bool canBeEmpty;
 		cerr << "Get first from definition:";

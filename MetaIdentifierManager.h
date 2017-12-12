@@ -1,6 +1,7 @@
 #pragma once
 #include "ObjectManager.h"
 #include "MySet.h"
+#include "main.h"
 
 namespace GrammarSymbols
 {
@@ -10,8 +11,8 @@ namespace GrammarSymbols
 
 	struct CMetaIdentifierManagerItem
 	{
-		MySet<CTerminal*> first;
-		MySet<CTerminal*> follow;
+		MySet<CTerminal*, CompareObjects<CTerminal>> first;
+		MySet<CTerminal*, CompareObjects<CTerminal>> follow;
 		MySet<const IDefinition*> definitions;
 		bool used = false;
 	};

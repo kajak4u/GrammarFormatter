@@ -28,8 +28,8 @@ namespace GrammarSymbols
 		void Simplify();
 		void CreateSets();
 		bool IsCorrect(_STD string& errors);
-		_STD set<const CMetaIdentifier*, CMetaIdentifier::ComparePointers> GetAllIdentifiers() const;
-		_STD set<const CTerminal*, CTerminal::ComparePointers> GetAllTerminals() const;
+//		_STD set<const CMetaIdentifier*, CMetaIdentifier::ComparePointers> GetAllIdentifiers() const;
+//		_STD set<const CTerminal*, CTerminal::ComparePointers> GetAllTerminals() const;
 		const CMetaIdentifier GetStartSymbol() const;
 
 		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const override;

@@ -3,17 +3,19 @@
 #include <set>
 #include <algorithm>
 
-template<typename _T> class MySet : public _STD set<_T>
+template<typename _T, class _Pr = std::less<_T>> class MySet : public _STD set<_T, _Pr>
 {
 public:
-	using Self = MySet<_T>;
+	MySet() : set() {}
+	MySet(_Pr compare) : set(compare) {}
+	using Self = MySet<_T, _Pr>;
 	bool Contains(const _T& item)
 	{
 		return find(item) != end();
 	}
 	bool IsSubsetOf(const Self& superset)
 	{
-		return _STD includes(superset.begin(), superset.end(), begin(), end());
+		return _STD includes(superset.begin(), superset.end(), begin(), end(), _Pr());
 	}
 
 	Self& operator+=(const _T& item)

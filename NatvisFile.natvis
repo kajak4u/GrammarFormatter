@@ -18,9 +18,16 @@
     <DisplayString>{multiplier}*{*primary}</DisplayString>
   </Type>
   <Type Name="CShiftAction">
-    <DisplayString>→ {newState->situations}</DisplayString>
+    <DisplayString>shift→{*newState}</DisplayString>
   </Type>
   <Type Name="CGoto">
     <DisplayString>→ {newState->situations}</DisplayString>
+  </Type>
+  <Type Name="CParsingState">
+    <DisplayString>[{id}] situations={*situations}, act.={actions}, go.={gotos}</DisplayString>
+  </Type>
+  <Type Name="CDrzewo">
+    <DisplayString Condition="state==nullptr">S [null]</DisplayString>
+    <DisplayString>S {*state}</DisplayString>
   </Type>
 </AutoVisualizer>

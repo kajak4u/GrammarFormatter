@@ -88,21 +88,21 @@ namespace GrammarSymbols
 		item->used = true;
 	}
 
-	MySet<CTerminal*>& CMetaIdentifier::First() const
+	MySet<CTerminal*, CompareObjects<CTerminal>>& CMetaIdentifier::First() const
 	{
 		return item->first;
 	}
 
 	bool CMetaIdentifier::TryAddFirstFrom(const CShortDefinition * def) const
 	{
-		MySet<CTerminal*> newSymbols = GetFirstFrom(def->begin(), def->end());
+		MySet<CTerminal*, CompareObjects<CTerminal>> newSymbols = GetFirstFrom(def->begin(), def->end());
 		if (newSymbols.IsSubsetOf(First()))
 			return false;
 		First() += newSymbols;
 		return true;
 	}
 
-	MySet<CTerminal*>& CMetaIdentifier::Follow() const
+	MySet<CTerminal*, CompareObjects<CTerminal>>& CMetaIdentifier::Follow() const
 	{
 		return item->follow;
 	}
@@ -129,6 +129,16 @@ namespace GrammarSymbols
 	{
 		const CMetaIdentifier* mi = dynamic_cast<const CMetaIdentifier*>(other);
 		return mi != nullptr && mi->item == item;
+	}
+
+	int CMetaIdentifier::Compare(const CPrimary * other) const
+	{
+		if (const CMetaIdentifier* id = dynamic_cast<const CMetaIdentifier*>(other))
+			return item - id->item;
+		else if (dynamic_cast<const CTerminal*>(other))
+			return 1;
+		else
+			return CPrimary::Compare(other);
 	}
 
 	_STD ostream & operator<<(_STD ostream & os, const CMetaIdentifier & identifier)

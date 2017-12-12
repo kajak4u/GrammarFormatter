@@ -2,202 +2,119 @@
 
 #include "Syntax.h"
 #include "main.h"
+#include "ParsingTable.h"
 using namespace std;
 
-CSituations CParser::Closure(const CSituations & situations)
+void CParser::ChangeStateTo(CParsingState * state)
 {
-	CSituations toProcess = situations;
-	CSituations processed;
-	while (!toProcess.empty())
+	stack.back()->SetState(state);
+	currentState = state;
+}
+
+void CParser::AddStateToStack(CParsingState * newState)
+{
+	stack.push_back(new CLeaf(currentTerminal, newState));
+	currentState = newState;
+	currentTerminal = nullptr;
+}
+
+void CParser::Accept()
+{
+	accepted = true;
+	currentTerminal = nullptr;
+}
+
+bool CParser::Accepted() const
+{
+	return accepted;
+}
+
+void CParser::Reduce(const CMetaIdentifier *identifier, const CShortDefinition *definition)
+{
+	CNode::SubTree subtree;
+	subtree.reserve(definition->size());
+	auto separator = std::prev(stack.end(), definition->size());
+	auto definitionIter = definition->begin();
+	for (auto stackIter = separator; stackIter != stack.end(); ++stackIter, ++definitionIter)
+		subtree.push_back({ *definitionIter, *stackIter });
+	stack.erase(separator, stack.end());
+	currentState = stack.back()->GetState();
+	auto nextStateIter = currentState->gotos.find(identifier);
+	if (nextStateIter == currentState->gotos.end())
+		throw MyException(string() + "Syntax error - unexpected symbol " + identifier->GetName() + ".", 0);
+	stack.push_back(new CNode(identifier, subtree, nullptr));
+	nextStateIter->second->Perform(*this);
+}
+
+#include "ParsingTable.h"
+
+void PrintDrzewo(CDrzewo* item, int intend)
+{
+	if (CLeaf* leaf = dynamic_cast<CLeaf*>(item))
 	{
-		CSituation situation = *toProcess.begin();
-		processed += situation;
-		toProcess -= situation;
-		if (CMetaIdentifier* B = dynamic_cast<CMetaIdentifier*>(DereferenceOrNull(situation.pos, *situation.def)))
+		cerr << string(intend, ' ') << *leaf->GetTerminal() << endl;
+	}
+	else if (CNode* node = dynamic_cast<CNode*>(item))
+	{
+		cerr << string(intend, ' ') << *node->GetIdentifier() << " => {" << endl;
+		auto& subtree = node->getSubTree();
+		for (auto& subtreeitem : subtree)
 		{
-			auto beta = DereferenceOrNull(_STD next(situation.pos), *situation.def);
-			auto a = situation.allowed;
-			const MySet<const IDefinition*>& definitions = B->GetDefinitions();
-			vector<CPrimary*> v = { beta, a };
-			MySet<CTerminal*> terminals = GetFirstFrom(_STD next(v.begin(), beta == nullptr), v.end());
-			for (auto& definition : definitions)
-			{
-				CSituation newSituation(B, dynamic_cast<const CShortDefinition*>(definition));
-				for (auto& terminal : terminals)
-				{
-					newSituation.allowed = terminal;
-					if (!processed.Contains(newSituation))
-						toProcess += newSituation;
-				}
-			}
-		}
-	}
-	return processed;
-}
-
-CSituations CParser::Goto(const CSituations & I, const CPrimary * symbol)
-{
-	CSituations J;
-	for (const CSituation& situation : I)
-		if(symbol->Equals(DereferenceOrNull(situation.pos, *situation.def)))
-			J.insert(situation.nextPos());
-	return Closure(J);
-}
-
-CParser::CParser()
-{
-}
-
-#include <map>
-
-
-class CAction
-{
-public:
-	virtual void Perform(CParser& parser) = 0;
-};
-class CParsingState;
-class CGoto
-{
-	CParsingState* newState;
-public:
-	CGoto(CParsingState* newState)
-		: newState(newState)
-	{}
-	void Perform(CParser& parser)
-	{
-//		parser.ChangeStateTo(newState);
-	}
-};
-
-
-class CParsingState
-{
-public:
-	CSituations* situations;
-	_STD map<const CTerminal*, CAction*> actions;
-	_STD map<const CMetaIdentifier*, CGoto*> gotos;
-	CParsingState(CSituations* situations)
-		: situations(situations)
-	{}
-};
-
-class CShiftAction : public CAction
-{
-	CParsingState* newState;
-public:
-	CShiftAction(CParsingState* newState)
-		: newState(newState)
-	{}
-	// Inherited via CAction
-	virtual void Perform(CParser & parser) override
-	{
-//		parser.AddSymbolToStack();
-//		parser.ChangeStateTo(newState);
-	}
-};
-class CAcceptAction : public CAction
-{
-public:
-	// Inherited via CAction
-	virtual void Perform(CParser & parser) override
-	{
-//		parser.Accept();
-	}
-};
-class CReduceAction : public CAction
-{
-	const CMetaIdentifier* result;
-	const CShortDefinition* definition;
-public:
-	CReduceAction(const CMetaIdentifier* result, const CShortDefinition* definition)
-		: result(result), definition(definition)
-	{}
-	// Inherited via CAction
-	virtual void Perform(CParser & parser) override
-	{
-//		parser.ReduceFrom(definition);
-//		parser.AddToStack(result);
-	}
-};
-
-class CParsingTable : public vector<CParsingState*>
-{
-public:
-	CParsingState* AddOrGet(CSituations* situations)
-	{
-		auto compareCSituations = [](const CSituations* s1, const CSituations* s2)
-		{
-			if (s1->size() != s2->size())
-				return false;
-			for (auto i1 = s1->begin(), i2 = s2->begin(); i1 != s1->end(); ++i1, ++i2)
-				if (!(*i1 == *i2))
-					return false;
-			return true;
-		};
-		for (auto& elem : *this)
-			if (compareCSituations(elem->situations, situations))
-				return elem;
-		
-		push_back(new CParsingState(new CSituations(std::move(*situations))));
-		return back();
-	}
-};
-
-void CParser::CreateParsingTable(const CSyntax & grammar)
-{
-	auto& startSymbol = grammar.GetStartSymbol();
-	auto& definitions = startSymbol.GetDefinitions();
-	CSituations startSituations;
-	CTerminal* endingTerminal = CTerminal::CreateUnique();
-	for (auto& elem : definitions)
-	{
-		if (const CShortDefinition* def = dynamic_cast<const CShortDefinition*>(elem))
-			startSituations.insert(CSituation(&startSymbol, def, endingTerminal));
-	}
-	CParsingTable sets;
-	sets.push_back(new CParsingState(new CSituations(_STD move(Closure(startSituations)))));
-
-	for (unsigned i=0;i<sets.size();++i)
-	{
-		auto& state = *sets[i];
-		auto& situations = *state.situations;
-		MySet<CPrimary*> symbols;
-		for (const CSituation& situation : situations)
-			if (situation.pos == situation.def->end())
-			{
-				if (startSymbol.Equals(situation.result) && endingTerminal->Equals(situation.allowed))
-					state.actions[endingTerminal] = new CAcceptAction();
-				else
-					state.actions[situation.allowed] = new CReduceAction(situation.result, situation.def);
-			}
+			/*cerr << string(intend + 2, ' ');
+			if (subtreeitem.first != nullptr)
+				subtreeitem.first->WriteTo(cerr);
 			else
-				symbols += *situation.pos;
-		for (CPrimary* const& symbol : symbols)
-		{
-			CSituations newSituations = Goto(situations, symbol);
-			if (newSituations.empty())
-				continue;
-			CParsingState* newState = sets.AddOrGet(&newSituations);
-			if (const CMetaIdentifier* identifier = dynamic_cast<const CMetaIdentifier*>(symbol))
-				state.gotos[identifier] = new CGoto(newState);
-			else if (const CTerminal* terminal = dynamic_cast<const CTerminal*>(symbol))
-				state.actions[terminal] = new CShiftAction(newState);
+				cerr << " [empty]";
+			cerr << " = " << endl;*/
+			PrintDrzewo(subtreeitem.second, intend + 2);
 		}
+		cerr << string(intend, ' ') << "}" << endl;
 	}
-	cerr << "Zbiory sytuacji:" << endl;
-	int i = -1;
-	for (auto& situations : sets)
-	{
-		cerr << "## i" << (++i) << endl;
-		for (auto& situation : *situations->situations)
-		{
-			cerr << "  " << situation << endl;
-		}
-	}
-
+	else
+		cerr << string(intend, ' ') << "[empty node]" << endl;
 }
 
+void PrintStack(const std::vector<CDrzewo*>& stack)
+{
+	for (auto item : stack)
+	{
+		PrintDrzewo(item, 0);
+	}
+}
+
+void CParser::Process(istream & file)
+{
+	//Recognize between 
+	//	SELECT (SEL) as field
+	//	SELECT (SELECT xkey FROM sslp LIMIT 1)
+	skipWhiteChars(file);
+	bool lastRun = false;
+	while (!file.eof() || (lastRun=!lastRun))
+	{
+		if (lastRun)
+			currentTerminal = CTerminal::Unique();
+		else
+			currentTerminal = CTerminal::Recognize(file);
+		cerr << "Recognized terminal: " << *currentTerminal << endl;
+		skipWhiteChars(file);
+		while (currentTerminal != nullptr)
+		{
+			auto iter = currentState->actions.find(currentTerminal);
+			if (iter == currentState->actions.end())
+				throw MyException(string() + "Syntax error - unexpected terminal " + currentTerminal->GetValue() + ".", 0);
+			iter->second->Perform(*this);
+
+			PrintStack(stack);
+		}
+	}
+}
+
+
+CParser::CParser(CParsingState * startState)
+	: currentState(startState)
+{
+	stack.push_back(new CDrzewo(startState));
+}
 
 CParser::~CParser()
 {
@@ -209,10 +126,28 @@ _STD ostream & operator<<(_STD ostream & os, const CSituation & situation)
 	for (auto iter = situation.def->begin(); iter != situation.def->end(); ++iter)
 	{
 		os << (iter == situation.pos ? " * " : " ");
-		(*iter)->WriteTo(os);
+		if (*iter == nullptr)
+			os << "[empty]";
+		else
+			(*iter)->WriteTo(os);
 	}
 	if (situation.pos == situation.def->end())
 		os << " *";
 	os << ", " << *situation.allowed;
 	return os;
+}
+
+const CMetaIdentifier * CNode::GetIdentifier() const
+{
+	return identifier;
+}
+
+const CNode::SubTree & CNode::getSubTree() const
+{
+	return subtree;
+}
+
+const CTerminal * CLeaf::GetTerminal() const
+{
+	return terminal;
 }

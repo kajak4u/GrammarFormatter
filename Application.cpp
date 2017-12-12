@@ -10,10 +10,8 @@
 #include <regex>
 #include <fstream>
 #include <map>
-#include <unordered_set>
-#include <unordered_map>
 #include "SyntaxRule.h"
-#include "Parser.h"
+#include "ParsingTable.h"
 
 using namespace std;
 using namespace GrammarSymbols;
@@ -91,10 +89,21 @@ void CApplication::Run()
 
 	cout << grammar;
 
-	CParser parser;
-	parser.CreateParsingTable(grammar);
+
+	CParsingTable table(grammar);
+
+	cerr << "Parsing table: " << endl
+		<< table << endl;
 
 	ifstream codeFile(codeFilename, ios::binary);
 	if (!codeFile.is_open())
 		throw MyException("Could not open input file", -5);
+
+	CParser parser(table[0]);
+	parser.Process(codeFile);
+
+	if (parser.Accepted())
+		cout << "The input file is correct." << endl;
+	else
+		cout << "The input file is not grammaticaly correct." << endl;
 }

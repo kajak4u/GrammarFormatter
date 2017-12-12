@@ -10,6 +10,8 @@ namespace GrammarSymbols
 	{
 	public:
 		virtual bool Equals(const CPrimary* other) const = 0;
+		virtual int Compare(const CPrimary* other) const { return this-other; };
+		virtual bool operator<(const CPrimary& other) const { return Compare(&other) < 0; };
 		CPrimary();
 		virtual ~CPrimary();
 	};

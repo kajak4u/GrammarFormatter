@@ -1,11 +1,14 @@
 #include "Terminal.h"
 #include "Recognizer.h"
 #include "TerminalManager.h"
+#include "MetaIdentifier.h"
 
 using namespace std;
 
 namespace GrammarSymbols
 {
+	CTerminal* CTerminal::unique = nullptr;
+
 	CTerminal::CTerminal()
 		: item(nullptr)
 	{
@@ -69,19 +72,49 @@ namespace GrammarSymbols
 		os << "\"" << value << "\"";
 	}
 
-	CTerminal * CTerminal::CreateUnique()
+	CTerminal * CTerminal::Unique()
 	{
+		if (unique == nullptr)
+		{
+			auto& memory = CTerminalManager::GetMemory();
+			int i = 1;
+			while (memory.find(string(i, '$')) != memory.end())
+				++i;
+			unique = new CTerminal(string(i, '$'));
+		}
+		return unique;
+	}
+
+	CTerminal * CTerminal::Recognize(_STD istream& is)
+	{
+		char c = is.get();
 		auto& memory = CTerminalManager::GetMemory();
-		int i = 1;
-		while (memory.find(string(i, '$')) != memory.end())
-			++i;
-		return new CTerminal(string(i, '$'));
+		string name;
+		while (memory.lower_bound(name+c) != memory.upper_bound(name+c+char(255)))
+		{
+			name += c;
+			c = is.get();
+		}
+		is.putback(c);
+		if(name.empty())
+			return nullptr;
+		return new CTerminal(name);
 	}
 
 	bool CTerminal::Equals(const CPrimary * other) const
 	{
 		const CTerminal* mi = dynamic_cast<const CTerminal*>(other);
 		return mi != nullptr && mi->item == item;
+	}
+
+	int CTerminal::Compare(const CPrimary * other) const
+	{
+		if (const CTerminal* term = dynamic_cast<const CTerminal*>(other))
+			return item-term->item;
+		else if (dynamic_cast<const CMetaIdentifier*>(other))
+			return -1;
+		else
+			return CPrimary::Compare(other);
 	}
 
 	_STD ostream & operator<<(_STD ostream & os, const CTerminal & terminal)

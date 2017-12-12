@@ -12,11 +12,11 @@ namespace GrammarSymbols
 	{
 		_STD string value;
 		CTerminalManagerItem* item;
+		static CTerminal* unique;
 	public:
 		CTerminal();
 		CTerminal(const _STD string& value);
 		CTerminal(_STD string&& value);
-		typedef bool(*ComparePointers)(const CTerminal*, const CTerminal*);
 		const _STD string& GetValue() const;
 		virtual ~CTerminal();
 		_STD istream& ReadFrom(_STD istream& is) override;
@@ -28,7 +28,9 @@ namespace GrammarSymbols
 
 		void WriteTo(_STD ostream & os) const override;
 		bool Equals(const CPrimary * other) const override;
-		static CTerminal* CreateUnique();
+		int Compare(const CPrimary* other) const override;
+		static CTerminal* Unique();
+		static CTerminal* Recognize(_STD istream& is);
 	};
 	_STD ostream& operator<<(_STD ostream& os, const CTerminal& terminal);
 }
