@@ -9,6 +9,11 @@ namespace GrammarSymbols
 		return instance;
 	}
 
+	void CRecognizer::FreeMemory()
+	{
+		instance().hierarchy.clear();
+	}
+
 	void CRecognizer::registerType(ISpawnable* obj, _STD string seq)
 	{
 		instance().hierarchy.add(seq, obj);

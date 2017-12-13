@@ -52,14 +52,14 @@ CSituations CParsingTable::Goto(const CSituations & I, const CPrimary * symbol)
 
 CParsingTable::CParsingTable(const GrammarSymbols::CSyntax & grammar)
 {
-	auto& startSymbol = grammar.GetStartSymbol();
-	auto& definitions = startSymbol.GetDefinitions();
+	auto startSymbol = grammar.GetStartSymbol();
+	auto& definitions = startSymbol->GetDefinitions();
 	CSituations startSituations;
 	CTerminal* endingTerminal = CTerminal::Unique();
 	for (auto& elem : definitions)
 	{
 		if (const CShortDefinition* def = dynamic_cast<const CShortDefinition*>(elem))
-			startSituations.insert(CSituation(new CMetaIdentifier(startSymbol), def, endingTerminal));
+			startSituations.insert(CSituation(startSymbol, def, endingTerminal));
 	}
 	this->push_back(new CParsingState(new CSituations(_STD move(Closure(startSituations)))));
 
@@ -74,7 +74,7 @@ CParsingTable::CParsingTable(const GrammarSymbols::CSyntax & grammar)
 			{
 				if (true || !situation.def->empty())
 				{
-					if (startSymbol.Equals(situation.result) && endingTerminal->Equals(situation.allowed))
+					if (startSymbol->Equals(situation.result) && endingTerminal->Equals(situation.allowed))
 						state.actions[endingTerminal] = new CAcceptAction();
 					else
 						state.actions[situation.allowed] = new CReduceAction(situation.result, situation.def);
@@ -94,6 +94,12 @@ CParsingTable::CParsingTable(const GrammarSymbols::CSyntax & grammar)
 				state.actions[terminal] = new CShiftAction(newState);
 		}
 	}
+}
+
+CParsingTable::~CParsingTable()
+{
+	for (auto& state : *this)
+		delete state;
 }
 
 CParsingState * CParsingTable::AddOrGet(CSituations * situations)
@@ -137,10 +143,12 @@ CGoto::CGoto(CParsingState* newState)
 
 void CGoto::Perform(CParser & parser)
 {
+#ifdef DEBUG_PARSING
 #ifdef _DEBUG
 	cerr << "Goto " << newState->id << endl;
 #else
 	cerr << "Goto " << endl;
+#endif
 #endif
 	parser.ChangeStateTo(newState);
 }
@@ -151,17 +159,21 @@ CShiftAction::CShiftAction(CParsingState * newState)
 
 void CShiftAction::Perform(CParser & parser)
 {
+#ifdef DEBUG_PARSING
 #ifdef _DEBUG
 	cerr << "Shift " << newState->id << endl;
 #else
 	cerr << "Shift " << endl;
+#endif
 #endif
 	parser.AddStateToStack(newState);
 }
 
 void CAcceptAction::Perform(CParser & parser)
 {
+#ifdef DEBUG_PARSING
 	cerr << "Accept " << endl;
+#endif
 	parser.Accept();
 }
 
@@ -171,8 +183,24 @@ CReduceAction::CReduceAction(const CMetaIdentifier * result, const CShortDefinit
 
 void CReduceAction::Perform(CParser & parser)
 {
+#ifdef DEBUG_PARSING
 	cerr << "Reduce from " << *result << " = ";
 	definition->WriteTo(cerr);
 	cerr << endl;
+#endif
 	parser.Reduce(result, definition);
+}
+
+CParsingState::~CParsingState()
+{
+	delete situations;
+	// nie usuwamy [first], bo one byly kopiowane z gramatyki
+	for (auto& keyVal : actions)
+	{
+		delete keyVal.second;
+	}
+	for (auto& keyVal : gotos)
+	{
+		delete keyVal.second;
+	}
 }

@@ -35,6 +35,7 @@ public:
 	CParsingState(CSituations* situations)
 		: situations(situations)
 	{}
+	~CParsingState();
 #ifdef _DEBUG
 	int id;
 	CParsingState(int id, CSituations* situations)
@@ -70,6 +71,7 @@ class CParsingTable : public std::vector<CParsingState*>
 	CSituations Goto(const CSituations& situations, const CPrimary* symbol);
 public:
 	CParsingTable(const GrammarSymbols::CSyntax& grammar);
+	~CParsingTable();
 	CParsingState* AddOrGet(CSituations* situations);
 };
 _STD ostream& operator<<(_STD ostream& os, const CParsingTable& table);

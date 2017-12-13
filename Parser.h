@@ -71,7 +71,11 @@ public:
 	CNode(const CMetaIdentifier* identifier, const SubTree& subtree, CParsingState* state)
 		: CDrzewo(state), identifier(identifier), subtree(subtree)
 	{}
-	virtual ~CNode() {}
+	virtual ~CNode()
+	{
+		for (auto& elem : subtree)
+			delete elem.second;
+	}
 	const CMetaIdentifier* GetIdentifier() const;
 	const SubTree& getSubTree() const;
 };
@@ -82,7 +86,7 @@ public:
 	CLeaf(CTerminal* terminal, CParsingState* state)
 		: CDrzewo(state), terminal(terminal)
 	{}
-	virtual ~CLeaf() {}
+	virtual ~CLeaf() { delete terminal; }
 	const CTerminal* GetTerminal() const;
 };
 

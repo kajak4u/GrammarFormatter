@@ -9,8 +9,16 @@ template<typename _VALUE> class CTree
 public:
 	~CTree()
 	{
+		clear();
+	}
+	void clear()
+	{
+		for (auto& node : children)
+			delete node.second;
+		children.clear();
 		if (current)
 			delete current;
+		current = nullptr;
 	}
 	void add(const _STD string& index, const _VALUE* value)
 	{

@@ -12,6 +12,7 @@
 #include <map>
 #include "SyntaxRule.h"
 #include "ParsingTable.h"
+#include "Recognizer.h"
 
 using namespace std;
 using namespace GrammarSymbols;
@@ -23,6 +24,11 @@ void CApplication::RegisterAllPrefixes()
 	CMetaIdentifier::registerPrefixes();
 	CMultiplier::registerPrefixes();
 	CSpecial::registerPrefixes();
+}
+
+void CApplication::UnregisterAllPrefixes()
+{
+	CRecognizer::FreeMemory();
 }
 
 void CApplication::ProcessCmdArgs(int argc, char* argv[])
@@ -84,20 +90,22 @@ void CApplication::Run()
 
 	CheckCorrectness(grammar);
 	grammar.CreateSets();
-
+#ifdef DEBUG_PRINTMEM
 	CMetaIdentifierManager::PrintMemory();
-
 	cout << grammar;
+#endif
 
 
 	CParsingTable table(grammar);
-
+#ifdef DEBUG_PRINTMEM
 	cerr << "Parsing table: " << endl
 		<< table << endl;
+#endif
 
 	ifstream codeFile(codeFilename, ios::binary);
 	if (!codeFile.is_open())
 		throw MyException("Could not open input file", -5);
+
 
 	CParser parser(table[0]);
 	parser.Process(codeFile);
@@ -106,4 +114,6 @@ void CApplication::Run()
 		cout << "The input file is correct." << endl;
 	else
 		cout << "The input file is not grammaticaly correct." << endl;
+
+	UnregisterAllPrefixes();
 }

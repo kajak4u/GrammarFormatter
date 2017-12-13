@@ -60,12 +60,6 @@ void PrintDrzewo(CDrzewo* item, int intend)
 		auto& subtree = node->getSubTree();
 		for (auto& subtreeitem : subtree)
 		{
-			/*cerr << string(intend + 2, ' ');
-			if (subtreeitem.first != nullptr)
-				subtreeitem.first->WriteTo(cerr);
-			else
-				cerr << " [empty]";
-			cerr << " = " << endl;*/
 			PrintDrzewo(subtreeitem.second, intend + 2);
 		}
 		cerr << string(intend, ' ') << "}" << endl;
@@ -84,9 +78,6 @@ void PrintStack(const std::vector<CDrzewo*>& stack)
 
 void CParser::Process(istream & file)
 {
-	//Recognize between 
-	//	SELECT (SEL) as field
-	//	SELECT (SELECT xkey FROM sslp LIMIT 1)
 	skipWhiteChars(file);
 	bool lastRun = false;
 	while (!file.eof() || (lastRun=!lastRun))
@@ -95,7 +86,9 @@ void CParser::Process(istream & file)
 			currentTerminal = CTerminal::Unique();
 		else
 			currentTerminal = CTerminal::Recognize(file);
+#ifdef DEBUG_PARSING
 		cerr << "Recognized terminal: " << *currentTerminal << endl;
+#endif
 		skipWhiteChars(file);
 		while (currentTerminal != nullptr)
 		{
@@ -103,8 +96,9 @@ void CParser::Process(istream & file)
 			if (iter == currentState->actions.end())
 				throw MyException(string() + "Syntax error - unexpected terminal " + currentTerminal->GetValue() + ".", 0);
 			iter->second->Perform(*this);
-
+#ifdef DEBUG_PARSING
 			PrintStack(stack);
+#endif
 		}
 	}
 }
@@ -118,6 +112,8 @@ CParser::CParser(CParsingState * startState)
 
 CParser::~CParser()
 {
+	for (auto& elem : stack)
+		delete elem;
 }
 
 _STD ostream & operator<<(_STD ostream & os, const CSituation & situation)

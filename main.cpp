@@ -4,6 +4,16 @@
 #include <string>
 #include <map>
 
+/*
+ * available debug macros:
+ * DEBUG_MEMLEAKS - prints CGrammarSymbol usage
+ * DEBUG_PARSINGTABLE - prints steps of creating parsing table
+ * DEBUG_SIMPLIFY - prints steps of rules simplifying
+ * DEBUG_PRINTMEM - prints content of collections
+ * DEBUG_PARSING - prints steps of parsing process
+ *
+**/
+
 using namespace std;
 
 void ExtractLinePos(istream& is, int& line, int& pos, string& lineContent)
@@ -151,6 +161,9 @@ int main(int argc, char* argv[])
 	{
 		CApplication app(argc, argv);
 		app.Run();
+#ifdef DEBUG_MEMLEAKS
+		GrammarSymbols::CGrammarObject::PrintCounter();
+#endif
 		system("pause");
 		return 0;
 	}

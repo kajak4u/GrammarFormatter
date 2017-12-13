@@ -110,6 +110,7 @@ namespace GrammarSymbols
 		MySet<CTerminal*, CompareObjects<CTerminal>> res;
 		//loop until encounters a nonterminal without [empty] or a terminal
 		bool canBeEmpty;
+#ifdef DEBUG_PARSINGTABLE
 		cerr << "Get first from definition:";
 		for (auto it = iter; it != end; ++it)
 		{
@@ -117,37 +118,46 @@ namespace GrammarSymbols
 			(*it)->WriteTo(cerr);
 		}
 		cerr << endl;
+#endif
 		for (canBeEmpty = true; !(canBeEmpty = !canBeEmpty) && iter != end; ++iter)
 		{
 			CMetaIdentifier* nonterminal = dynamic_cast<CMetaIdentifier*>(*iter);
 			if (nonterminal == nullptr)
 			{
+#ifdef DEBUG_PARSINGTABLE
 				cerr << "add terminal ";
 				(*iter)->WriteTo(cerr);
 				cerr << endl;
+#endif
 				res += dynamic_cast<CTerminal*>(*iter);
 			}
 			else if (canBeEmpty = nonterminal->First().Contains(nullptr))
 			{
+#ifdef DEBUG_PARSINGTABLE
 				cerr << "add without empty:";
 				for (auto& elem : nonterminal->First())
 					if (elem)
 						cerr << " " << *elem;
 				cerr << endl;
+#endif
 				res += (nonterminal->First() - nullptr);
 			}
 			else
 			{
+#ifdef DEBUG_PARSINGTABLE
 				cerr << "add fully:";
 				for (auto& elem : nonterminal->First())
 					cerr << " " << *elem;
 				cerr << endl;
+#endif
 				res += nonterminal->First();
 			}
 		}
 		if (!canBeEmpty)
 		{
+#ifdef DEBUG_PARSINGTABLE
 			cerr << "add also [empty]" << endl;
+#endif
 			res += nullptr;
 		}
 		return res;

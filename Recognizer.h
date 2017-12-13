@@ -15,6 +15,7 @@ namespace GrammarSymbols
 		CRecognizer& operator=(CRecognizer &&) = delete;
 
 		static CRecognizer& instance();
+		static void FreeMemory();
 		static void registerType(ISpawnable* obj, _STD string seq);
 		static ISpawnable* CreateFor(_STD istream& is);
 	};

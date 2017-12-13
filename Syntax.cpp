@@ -142,7 +142,9 @@ namespace GrammarSymbols
 		{
 			CFactor* factor = *iter;
 			const CGroup* group = dynamic_cast<const CGroup*>(factor->GetPrimary());
+#ifdef DEBUG_SIMPLIFY
 			cerr << "Replace:" << endl << *group << endl << " For: " << endl;
+#endif
 			CMetaIdentifier identifier("HS#" + to_string(++helperRulesCounter));
 			const CDefinitionList& defList = group->getDefinitionList();
 			CHelperSyntaxRule* helperRule = new CHelperSyntaxRule(identifier, defList);
@@ -157,7 +159,9 @@ namespace GrammarSymbols
 			{
 				CMetaIdentifier identifier2("HS#" + to_string(++helperRulesCounter));
 				CHelperSyntaxRule* helperRule2 = new CHelperSyntaxRule(identifier2, identifier, group->GetType());
+#ifdef DEBUG_SIMPLIFY
 				cerr << " and: " << endl << *helperRule2 << endl;
+#endif
 				identifier.MarkAsUsed();
 				this->push_back(helperRule2);
 				factor->SetPrimary(&identifier2);
@@ -167,9 +171,13 @@ namespace GrammarSymbols
 
 		for (CSyntaxRule* rule : *this)
 		{
+#ifdef DEBUG_SIMPLIFY
 			cerr << "Simplify: " << endl << *rule << endl;
 			rule->Simplify();
 			cerr << *rule << endl;
+#else
+			rule->Simplify();
+#endif
 		}
 	}
 
@@ -188,7 +196,9 @@ namespace GrammarSymbols
 			newRule->Simplify();
 			currentStartSymbol->MarkAsUsed();
 			push_back(newRule);
+#ifdef DEBUG_PRINTMEM
 			cerr << "Start symbol is " << *currentStartSymbol << endl;
+#endif
 			startSymbol = newStartSymbol;
 			return true;
 		}
@@ -211,33 +221,9 @@ namespace GrammarSymbols
 		return false;
 	}
 
-	/*set <const CMetaIdentifier*, CompareObjects<CMetaIdentifier>> CSyntax::GetAllIdentifiers() const
+	const CMetaIdentifier* CSyntax::GetStartSymbol() const
 	{
-		set <const CMetaIdentifier*, CompareObjects<CMetaIdentifier>> identifiers;
-		for (const CSyntaxRule* rule : *this)
-			identifiers.insert(&rule->GetIdentifier());
-		return identifiers;
-	}
-
-	set <const CTerminal*, CompareObjects<CTerminal>> CSyntax::GetAllTerminals() const
-	{
-		set <const CTerminal*, CompareObjects<CTerminal>> terminals;
-		for (const CSyntaxRule* rule : *this)
-			rule->ForEach(
-				[](const CGrammarObject* symbol)
-		{
-			return dynamic_cast<const CTerminal*>(symbol) != nullptr;
-		},
-				[&terminals](const CGrammarObject* symbol) {
-			terminals.insert(dynamic_cast<const CTerminal*>(symbol));
-		}
-		);
-		return terminals;
-	}*/
-
-	const CMetaIdentifier CSyntax::GetStartSymbol() const
-	{
-		return startSymbol;
+		return &startSymbol;
 	}
 
 	void CSyntax::ForEach(function<bool(const CGrammarObject*)> condition, function<void(const CGrammarObject*)> action) const
