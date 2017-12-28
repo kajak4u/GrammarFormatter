@@ -111,7 +111,7 @@ namespace GrammarSymbols
 	{
 		if (const CTerminal* term = dynamic_cast<const CTerminal*>(other))
 			return item-term->item;
-		else if (dynamic_cast<const CMetaIdentifier*>(other))
+		else if (is<const CDefinedGrammarSymbol*>(other))
 			return -1;
 		else
 			return CPrimary::Compare(other);

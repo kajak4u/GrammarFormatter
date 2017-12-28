@@ -9,6 +9,7 @@ namespace GrammarSymbols {
 	class CTerminal;
 	class CMetaIdentifier;
 	class CShortDefinition;
+	class CDefinedGrammarSymbol;
 	class CPrimary;
 }
 using namespace GrammarSymbols;
@@ -17,14 +18,14 @@ class CParsingState;
 
 struct CSituation
 {
-	const CMetaIdentifier* result;
+	const CDefinedGrammarSymbol* result;
 	const CShortDefinition* def;
 	CShortDefinition::const_iterator pos;
 	CTerminal* allowed;
-	CSituation(const CMetaIdentifier* result, const CShortDefinition* def, CShortDefinition::const_iterator pos, CTerminal* allowed)
+	CSituation(const CDefinedGrammarSymbol* result, const CShortDefinition* def, CShortDefinition::const_iterator pos, CTerminal* allowed)
 		: result(result), def(def), pos(pos), allowed(allowed)
 	{}
-	CSituation(const CMetaIdentifier* result, const CShortDefinition* def, CTerminal* allowed=nullptr)
+	CSituation(const CDefinedGrammarSymbol* result, const CShortDefinition* def, CTerminal* allowed=nullptr)
 		: CSituation(result, def, def->begin(), allowed)
 	{}
 	CSituation nextPos() const
@@ -65,10 +66,10 @@ class CNode : public CDrzewo
 public:
 	using SubTree = std::vector<std::pair<CPrimary*, CDrzewo*>>;
 private:
-	const CMetaIdentifier* identifier;
+	const CDefinedGrammarSymbol* identifier;
 	SubTree subtree;
 public:
-	CNode(const CMetaIdentifier* identifier, const SubTree& subtree, CParsingState* state)
+	CNode(const CDefinedGrammarSymbol* identifier, const SubTree& subtree, CParsingState* state)
 		: CDrzewo(state), identifier(identifier), subtree(subtree)
 	{}
 	virtual ~CNode()
@@ -76,7 +77,7 @@ public:
 		for (auto& elem : subtree)
 			delete elem.second;
 	}
-	const CMetaIdentifier* GetIdentifier() const;
+	const CDefinedGrammarSymbol* GetIdentifier() const;
 	const SubTree& getSubTree() const;
 };
 class CLeaf : public CDrzewo
@@ -101,11 +102,12 @@ public:
 	void AddStateToStack(CParsingState* newState);
 	void Accept();
 	bool Accepted() const;
-	void Reduce(const CMetaIdentifier*, const CShortDefinition*);
+	void Reduce(const CDefinedGrammarSymbol*, const CShortDefinition*);
 
 	void Process(_STD istream& file);
 
 	CParser(CParsingState* startState);
+	void WriteFormattedTo(_STD ostream& os) const;
 	~CParser();
 };
 

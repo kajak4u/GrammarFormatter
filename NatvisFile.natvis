@@ -3,6 +3,9 @@
   <Type Name="GrammarSymbols::CMetaIdentifier">
     <DisplayString>{name}</DisplayString>
   </Type>
+  <Type Name="GrammarSymbols::CSpecial">
+    <DisplayString>?{name}?</DisplayString>
+  </Type>
   <Type Name="GrammarSymbols::CMetaIdentifier*">
     <DisplayString></DisplayString>
   </Type>

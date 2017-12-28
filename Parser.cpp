@@ -3,6 +3,7 @@
 #include "Syntax.h"
 #include "main.h"
 #include "ParsingTable.h"
+#include "Special.h"
 using namespace std;
 
 void CParser::ChangeStateTo(CParsingState * state)
@@ -29,14 +30,14 @@ bool CParser::Accepted() const
 	return accepted;
 }
 
-void CParser::Reduce(const CMetaIdentifier *identifier, const CShortDefinition *definition)
+void CParser::Reduce(const CDefinedGrammarSymbol *identifier, const CShortDefinition *definition)
 {
 	CNode::SubTree subtree;
 	subtree.reserve(definition->size());
 	auto separator = std::prev(stack.end(), definition->size());
 	auto definitionIter = definition->begin();
-	for (auto stackIter = separator; stackIter != stack.end(); ++stackIter, ++definitionIter)
-		subtree.push_back({ *definitionIter, *stackIter });
+	for (auto stackIter = separator; stackIter != stack.end(); ++definitionIter)
+		subtree.push_back({ *definitionIter, *stackIter++ });
 	stack.erase(separator, stack.end());
 	currentState = stack.back()->GetState();
 	auto nextStateIter = currentState->gotos.find(identifier);
@@ -133,7 +134,7 @@ _STD ostream & operator<<(_STD ostream & os, const CSituation & situation)
 	return os;
 }
 
-const CMetaIdentifier * CNode::GetIdentifier() const
+const CDefinedGrammarSymbol * CNode::GetIdentifier() const
 {
 	return identifier;
 }
@@ -146,4 +147,59 @@ const CNode::SubTree & CNode::getSubTree() const
 const CTerminal * CLeaf::GetTerminal() const
 {
 	return terminal;
+}
+
+void CParser::WriteFormattedTo(std::ostream & os) const
+{
+	if (stack.size() != 2)
+		throw MyException("Invalid stack size.\n" __FILE__, __LINE__);
+	CNode* treeTop = dynamic_cast<CNode*>(stack.back());
+	if (treeTop == nullptr)
+		throw MyException("Invalid stack content.\n" __FILE__, __LINE__);
+	int intend = 0;
+	vector<pair<CNode::SubTree::const_iterator, CNode::SubTree::const_iterator>> hierarchy = { { treeTop->getSubTree().begin(), treeTop->getSubTree().end() } };
+	while (!hierarchy.empty())
+	{
+		if (hierarchy.back().first == hierarchy.back().second)
+		{
+			hierarchy.pop_back();
+			continue;
+		}
+		auto& elem = hierarchy.back().first++;
+		if (CSpecial* special = dynamic_cast<CSpecial*>(elem->first))
+		{
+			switch (special->getFormat())
+			{
+			case FormatTab:
+				os << "\t";
+				break;
+			case FormatSpace:
+				os << " ";
+				break;
+			case FormatNewLine:
+				os << "\n" << string(intend * 2, ' ');
+				break;
+			case FormatIntend:
+				++intend;
+				break;
+			case FormatDedend:
+				if(intend)
+					--intend;
+				break;
+			default:
+				break;
+			}
+		}
+		else if (CTerminal* terminal = dynamic_cast<CTerminal*>(elem->first))
+		{
+			os << terminal->GetValue();
+		}
+		else if (CMetaIdentifier* identifier = dynamic_cast<CMetaIdentifier*>(elem->first))
+		{
+			if(CNode* node = dynamic_cast<CNode*>(elem->second))
+				hierarchy.push_back({ node->getSubTree().begin(), node->getSubTree().end() });
+		}
+		else
+			throw MyException("Unexpected node in hierarchy\n" __FILE__, __LINE__);
+	}
 }

@@ -1,6 +1,7 @@
 #include "ParsingTable.h"
 #include "main.h"
 #include "ShortDefinition.h"
+#include "Special.h"
 
 using namespace std;
 
@@ -14,16 +15,22 @@ CSituations CParsingTable::Closure(const CSituations & situations)
 		CSituation situation = *toProcess.begin();
 		processed += situation;
 		toProcess -= situation;
-		if (CMetaIdentifier* B = dynamic_cast<CMetaIdentifier*>(DereferenceOrNull(situation.pos, *situation.def)))
+		if (CDefinedGrammarSymbol* B = dynamic_cast<CDefinedGrammarSymbol*>(DereferenceOrNull(situation.pos, *situation.def)))
 		{
-			auto beta = DereferenceOrNull(_STD next(situation.pos), *situation.def);
+			auto iter = _STD next(situation.pos);
+			auto beta = DereferenceOrNull(iter, *situation.def);
 			auto a = situation.allowed;
 			const MySet<const IDefinition*>& definitions = B->GetDefinitions();
 			vector<CPrimary*> v = { beta, a };
-			MySet<CTerminal*, CompareObjects<CTerminal>> terminals = GetFirstFrom(_STD next(v.begin(), beta == nullptr), v.end());
+			MySet<CTerminal*, CompareObjects<CTerminal>> terminals = GetFirstFrom(iter, situation.def->end());//GetFirstFrom(_STD next(v.begin(), beta == nullptr), v.end());
+			if (terminals.Contains(nullptr))
+			{
+				terminals -= nullptr;
+				terminals += a;
+			}
 			for (auto& definition : definitions)
 			{
-				CSituation newSituation(B, dynamic_cast<const CShortDefinition*>(definition));
+				CSituation newSituation = CSituation(B, dynamic_cast<const CShortDefinition*>(definition));
 				for (auto& terminal : terminals)
 				{
 					newSituation.allowed = terminal;
@@ -88,7 +95,7 @@ CParsingTable::CParsingTable(const GrammarSymbols::CSyntax & grammar)
 			if (newSituations.empty())
 				continue;
 			CParsingState* newState = this->AddOrGet(&newSituations);
-			if (const CMetaIdentifier* identifier = dynamic_cast<const CMetaIdentifier*>(symbol))
+			if (const CDefinedGrammarSymbol* identifier = dynamic_cast<const CDefinedGrammarSymbol*>(symbol))
 				state.gotos[identifier] = new CGoto(newState);
 			else if (const CTerminal* terminal = dynamic_cast<const CTerminal*>(symbol))
 				state.actions[terminal] = new CShiftAction(newState);
@@ -177,7 +184,7 @@ void CAcceptAction::Perform(CParser & parser)
 	parser.Accept();
 }
 
-CReduceAction::CReduceAction(const CMetaIdentifier * result, const CShortDefinition * definition)
+CReduceAction::CReduceAction(const CDefinedGrammarSymbol * result, const CShortDefinition * definition)
 	: result(result), definition(definition)
 {}
 

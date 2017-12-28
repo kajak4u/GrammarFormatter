@@ -1,12 +1,16 @@
 #pragma once
 
-#include "Primary.h"
+#include "DefinedGrammarSymbol.h"
+#include "Enums.h"
+#include <map>
 
 namespace GrammarSymbols
 {
-	class CSpecial : public CPrimary
+	class CSpecial : public CDefinedGrammarSymbol
 	{
 		_STD string name;
+		static _STD map<_STD string, FormatEffect> formatMap;
+		FormatEffect format = FormatNone;
 	public:
 		CSpecial();
 		virtual ~CSpecial();
@@ -16,6 +20,9 @@ namespace GrammarSymbols
 		ISpawnable * spawn(bool copy = false) const override;
 		bool Equals(const CPrimary * other) const override;
 		static void registerPrefixes();
+		FormatEffect getFormat() const;
+
+		const std::string & GetName() const override;
 	};
 
 	_STD ostream& operator<<(_STD ostream& os, const CSpecial& special);

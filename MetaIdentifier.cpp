@@ -5,6 +5,7 @@
 #include "MetaIdentifierManager.h"
 #include "ShortDefinition.h"
 #include "Terminal.h"
+#include "Special.h"
 
 using namespace std;
 
@@ -12,17 +13,18 @@ namespace GrammarSymbols
 {
 
 	CMetaIdentifier::CMetaIdentifier(const _STD string & name)
-		: name(name), item(CMetaIdentifierManager::Register(name))
+		: name(name)
 	{
+		Register();
 	}
 
 	CMetaIdentifier::CMetaIdentifier(_STD string && name)
-		: name(name), item(CMetaIdentifierManager::Register(name))
+		: name(name)
 	{
+		Register();
 	}
 
 	CMetaIdentifier::CMetaIdentifier()
-		: item(nullptr)
 	{
 	}
 
@@ -50,7 +52,7 @@ namespace GrammarSymbols
 		} while (isalnum(c) || c == ' ' /*|| c=='-'*/);
 		while (name.back() == ' ')
 			name.pop_back();
-		item = CMetaIdentifierManager::Register(name);
+		Register();
 		return is.putback(c);
 	}
 
@@ -75,41 +77,17 @@ namespace GrammarSymbols
 
 	bool CMetaIdentifier::operator<(const CMetaIdentifier & other) const
 	{
-		return item < other.item;
+		return GetItem() < other.GetItem();
 	}
 
 	void CMetaIdentifier::MarkAsDefinedBy(const IDefinition* def) const
 	{
-		item->definitions.insert(def);
+		GetItem()->definitions.insert(def);
 	}
 
 	void CMetaIdentifier::MarkAsUsed() const
 	{
-		item->used = true;
-	}
-
-	MySet<CTerminal*, CompareObjects<CTerminal>>& CMetaIdentifier::First() const
-	{
-		return item->first;
-	}
-
-	bool CMetaIdentifier::TryAddFirstFrom(const CShortDefinition * def) const
-	{
-		MySet<CTerminal*, CompareObjects<CTerminal>> newSymbols = GetFirstFrom(def->begin(), def->end());
-		if (newSymbols.IsSubsetOf(First()))
-			return false;
-		First() += newSymbols;
-		return true;
-	}
-
-	MySet<CTerminal*, CompareObjects<CTerminal>>& CMetaIdentifier::Follow() const
-	{
-		return item->follow;
-	}
-
-	const MySet<const IDefinition*>& CMetaIdentifier::GetDefinitions() const
-	{
-		return item->definitions;
+		GetItem()->used = true;
 	}
 
 	bool CMetaIdentifier::GetWarnings(MySet<_STD string>& undefined, MySet<_STD string>& unused)
@@ -128,17 +106,7 @@ namespace GrammarSymbols
 	bool CMetaIdentifier::Equals(const CPrimary * other) const
 	{
 		const CMetaIdentifier* mi = dynamic_cast<const CMetaIdentifier*>(other);
-		return mi != nullptr && mi->item == item;
-	}
-
-	int CMetaIdentifier::Compare(const CPrimary * other) const
-	{
-		if (const CMetaIdentifier* id = dynamic_cast<const CMetaIdentifier*>(other))
-			return item - id->item;
-		else if (dynamic_cast<const CTerminal*>(other))
-			return 1;
-		else
-			return CPrimary::Compare(other);
+		return mi != nullptr && mi->GetItem() == GetItem();
 	}
 
 	_STD ostream & operator<<(_STD ostream & os, const CMetaIdentifier & identifier)

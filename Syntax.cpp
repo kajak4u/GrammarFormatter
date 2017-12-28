@@ -2,6 +2,7 @@
 #include "ShortDefinition.h"
 #include "Syntax.h"
 #include "SyntaxRule.h"
+#include "Special.h"
 #include "main.h"
 #include "Group.h"
 #include "Factor.h"
@@ -52,48 +53,52 @@ namespace GrammarSymbols
 		//create sets: FIRST(a) and FOLLOW(a) for each identifier a
 
 		//FIRST first step - add terminals and empty symbol, add symbols to collection
-		map<const CShortDefinition*, const CMetaIdentifier*> startingWithSymbol;
-		for (CSyntaxRule* rule : *this)
+		map<const CShortDefinition*, const CDefinedGrammarSymbol*> startingWithSymbol;
+		CDefinedGrammarSymbol::ForEach([&startingWithSymbol](const CDefinedGrammarSymbol* symbol)
 		{
-			auto& identifier = rule->GetIdentifier();
-			auto& defList = rule->GetDefinitionList();
-			for (IDefinition* def : defList)
+			auto& defList = symbol->GetDefinitions();
+			for (const IDefinition* def : defList)
 			{
-				CShortDefinition* sdef = dynamic_cast<CShortDefinition*>(def);
+				const CShortDefinition* sdef = dynamic_cast<const CShortDefinition*>(def);
 				if (sdef == nullptr)
 					throw MyException("Only shortdefinitions allowed\n" __FILE__, __LINE__);
 				if (sdef->empty())
-					identifier.First() += nullptr;
+					symbol->First() += nullptr;
 				else
 				{
-					CPrimary* primary = *sdef->begin();
-					if (CTerminal* terminal = dynamic_cast<CTerminal*>(primary))
-						identifier.First() += terminal;
-					else if (dynamic_cast<CMetaIdentifier*>(primary))
-						startingWithSymbol.insert({ sdef, &identifier });
+					auto primary = sdef->begin();
+					if (primary == sdef->end())
+						symbol->First() += nullptr;
+					else if (CTerminal* terminal = dynamic_cast<CTerminal*>(*primary))
+						symbol->First() += terminal;
+					else if (dynamic_cast<CDefinedGrammarSymbol*>(*primary))
+						startingWithSymbol.insert({ sdef, dynamic_cast<CDefinedGrammarSymbol*>(symbol->spawn(true)) });
 					else
 						throw MyException("Unexpected null pointer in definition\n" __FILE__, __LINE__);
 				}
 			}
-		}
+		});
+
 		//FIRST second step - add terminals from productions until there are no changes
 		for (bool changed = true; !(changed = !changed);)
 			for (auto& keyVal : startingWithSymbol)
 				changed = keyVal.second->TryAddFirstFrom(keyVal.first) || changed;
+		//clear memory
+		for (auto& keyVal : startingWithSymbol)
+			delete keyVal.second;
 
 		//FOLLOW first step - add terminals from productions, add iterators to collection
-		set<pair<const CMetaIdentifier*, const CMetaIdentifier*> > followedPairs;
-		for (CSyntaxRule* rule : *this)
+		set<pair<const CDefinedGrammarSymbol*, const CDefinedGrammarSymbol*> > followedPairs;
+		CDefinedGrammarSymbol::ForEach([&followedPairs](const CDefinedGrammarSymbol* symbol)
 		{
-			auto& ruleIdentifier = rule->GetIdentifier();
-			auto& defList = rule->GetDefinitionList();
-			for (IDefinition* def : defList)
+			auto& defList = symbol->GetDefinitions();
+			for (const IDefinition* def : defList)
 			{
-				CShortDefinition* sdef = dynamic_cast<CShortDefinition*>(def);
+				const CShortDefinition* sdef = dynamic_cast<const CShortDefinition*>(def);
 				for (auto& iter = sdef->begin(), nextIter = iter; iter != sdef->end(); ++iter)
 				{
 					++nextIter;
-					CMetaIdentifier* currentId = dynamic_cast<CMetaIdentifier*>(*iter);
+					CDefinedGrammarSymbol* currentId = dynamic_cast<CDefinedGrammarSymbol*>(*iter);
 					if (!currentId)
 						continue; //we look for x,[nonterminal],y
 					CTerminal* nextTerminal = dynamic_cast<CTerminal*>(DereferenceOrNull(nextIter, *sdef));
@@ -107,12 +112,12 @@ namespace GrammarSymbols
 						else
 						{
 							currentId->Follow() += (firstFromFollowing - nullptr);
-							followedPairs.insert({ currentId, &ruleIdentifier });
+							followedPairs.insert({ currentId, dynamic_cast<CDefinedGrammarSymbol*>(symbol->spawn(true)) });
 						}
 					}
 				}
 			}
-		}
+		});
 
 		//FOLLOW second step - add terminals from productions until there are no changes
 		for (bool changed = true; !(changed = !changed);)
@@ -122,6 +127,9 @@ namespace GrammarSymbols
 					changed = true;
 					elem.first->Follow() += elem.second->Follow();
 				}
+		//clear memory
+		for (auto& keyVal : followedPairs)
+			delete keyVal.second;
 	}
 
 	void CSyntax::Simplify()
@@ -131,7 +139,7 @@ namespace GrammarSymbols
 			[](const CGrammarObject* symbol)
 		{
 			const CFactor* factor = dynamic_cast<const CFactor*>(symbol);
-			return factor != nullptr && dynamic_cast<const CGroup*>(factor->GetPrimary()) != nullptr;
+			return factor != nullptr && is<const CGroup*>(factor->GetPrimary());
 		},
 			[&groupsToReplace](CGrammarObject* symbol) {
 			groupsToReplace.push_back(dynamic_cast<CFactor*>(symbol));

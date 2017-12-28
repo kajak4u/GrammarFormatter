@@ -22,3 +22,13 @@ enum Symbol
 	SymbolSpecial,		// ?
 	SymbolTerminator	// ; .
 };
+
+enum FormatEffect
+{
+	FormatNone,
+	FormatTab,
+	FormatSpace,
+	FormatNewLine,
+	FormatIntend,
+	FormatDedend
+};

@@ -31,7 +31,7 @@ class CParsingState
 public:
 	CSituations* situations;
 	_STD map<const CTerminal*, CAction*, CompareObjects<CTerminal>> actions;
-	_STD map<const CMetaIdentifier*, CGoto*, CompareObjects<CMetaIdentifier>> gotos;
+	_STD map<const CDefinedGrammarSymbol*, CGoto*, CompareObjects<CDefinedGrammarSymbol>> gotos;
 	CParsingState(CSituations* situations)
 		: situations(situations)
 	{}
@@ -58,10 +58,10 @@ public:
 };
 class CReduceAction : public CAction
 {
-	const CMetaIdentifier* result;
+	const CDefinedGrammarSymbol* result;
 	const CShortDefinition* definition;
 public:
-	CReduceAction(const CMetaIdentifier* result, const CShortDefinition* definition);
+	CReduceAction(const CDefinedGrammarSymbol* result, const CShortDefinition* definition);
 	virtual void Perform(CParser & parser) override;
 };
 

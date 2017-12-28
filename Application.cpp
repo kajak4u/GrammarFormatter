@@ -110,10 +110,13 @@ void CApplication::Run()
 	CParser parser(table[0]);
 	parser.Process(codeFile);
 
-	if (parser.Accepted())
-		cout << "The input file is correct." << endl;
-	else
+	if (!parser.Accepted())
 		cout << "The input file is not grammaticaly correct." << endl;
+	else
+	{
+		cout << "The input file is correct." << endl;
+		parser.WriteFormattedTo(cout);
+	}
 
 	UnregisterAllPrefixes();
 }

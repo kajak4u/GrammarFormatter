@@ -1,6 +1,7 @@
 #include "ShortDefinition.h"
 #include "ComplexDefinition.h"
 #include "Terminal.h"
+#include "Special.h"
 #include "Term.h"
 #include "main.h"
 #include "MetaIdentifier.h"
@@ -31,8 +32,9 @@ namespace GrammarSymbols
 			const CPrimary* primary = factor.GetPrimary();
 			auto identifier = dynamic_cast<const CMetaIdentifier*>(primary);
 			auto terminal = dynamic_cast<const CTerminal*>(primary);
-			if (primary != nullptr && identifier == nullptr && terminal == nullptr)
-				throw MyException("Expected terminal or identifier" __FILE__, __LINE__);
+			auto special = dynamic_cast<const CSpecial*>(primary);
+			if (primary != nullptr && identifier == nullptr && terminal == nullptr && special == nullptr)
+				throw MyException("Expected terminal, identifier or special\n" __FILE__, __LINE__);
 			else if (identifier)
 				identifier->MarkAsUsed();
 			for (int i = 0; i < factor.GetMultiplier(); ++i)
@@ -121,15 +123,16 @@ namespace GrammarSymbols
 #endif
 		for (canBeEmpty = true; !(canBeEmpty = !canBeEmpty) && iter != end; ++iter)
 		{
-			CMetaIdentifier* nonterminal = dynamic_cast<CMetaIdentifier*>(*iter);
-			if (nonterminal == nullptr)
+			CDefinedGrammarSymbol* nonterminal = dynamic_cast<CDefinedGrammarSymbol*>(*iter);
+			CTerminal* terminal = dynamic_cast<CTerminal*>(*iter);
+			if (terminal != nullptr)
 			{
 #ifdef DEBUG_PARSINGTABLE
 				cerr << "add terminal ";
 				(*iter)->WriteTo(cerr);
 				cerr << endl;
 #endif
-				res += dynamic_cast<CTerminal*>(*iter);
+				res += terminal;
 			}
 			else if (canBeEmpty = nonterminal->First().Contains(nullptr))
 			{
