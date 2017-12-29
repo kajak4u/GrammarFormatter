@@ -28,6 +28,7 @@ enum FormatEffect
 	FormatNone,
 	FormatTab,
 	FormatSpace,
+	FormatNoSpace,
 	FormatNewLine,
 	FormatIntend,
 	FormatDedend

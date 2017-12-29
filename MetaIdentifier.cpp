@@ -49,7 +49,7 @@ namespace GrammarSymbols
 		{
 			name += c;
 			c = is.get();
-		} while (isalnum(c) || c == ' ' /*|| c=='-'*/);
+		} while (isalnum(c) || c == ' ' || c=='_'/*|| c=='-'*/);
 		while (name.back() == ' ')
 			name.pop_back();
 		Register();

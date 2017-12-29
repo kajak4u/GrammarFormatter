@@ -164,6 +164,7 @@ int main(int argc, char* argv[])
 #ifdef DEBUG_MEMLEAKS
 		GrammarSymbols::CGrammarObject::PrintCounter();
 #endif
+		cout << endl;
 		system("pause");
 		return 0;
 	}

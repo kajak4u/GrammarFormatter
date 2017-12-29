@@ -19,6 +19,7 @@ namespace GrammarSymbols
 		{ "DED",	FormatDedend },
 		{ "DEDEND", FormatDedend },
 		{ "SPACE",	FormatSpace },
+		{ "NOSPACE", FormatNoSpace},
 		{ "TAB",	FormatTab }
 	};
 

@@ -87,6 +87,8 @@ void CParser::Process(istream & file)
 			currentTerminal = CTerminal::Unique();
 		else
 			currentTerminal = CTerminal::Recognize(file);
+		if (currentTerminal == nullptr)
+			throw MyException("Syntax error - unrecognized terminal.\n" __FILE__, __LINE__);
 #ifdef DEBUG_PARSING
 		cerr << "Recognized terminal: " << *currentTerminal << endl;
 #endif
@@ -157,7 +159,9 @@ void CParser::WriteFormattedTo(std::ostream & os) const
 	if (treeTop == nullptr)
 		throw MyException("Invalid stack content.\n" __FILE__, __LINE__);
 	int intend = 0;
+	bool spaces = true;
 	vector<pair<CNode::SubTree::const_iterator, CNode::SubTree::const_iterator>> hierarchy = { { treeTop->getSubTree().begin(), treeTop->getSubTree().end() } };
+	bool firstInLine = true;
 	while (!hierarchy.empty())
 	{
 		if (hierarchy.back().first == hierarchy.back().second)
@@ -174,10 +178,14 @@ void CParser::WriteFormattedTo(std::ostream & os) const
 				os << "\t";
 				break;
 			case FormatSpace:
-				os << " ";
+				spaces = true;
+				break;
+			case FormatNoSpace:
+				spaces = false;
 				break;
 			case FormatNewLine:
 				os << "\n" << string(intend * 2, ' ');
+				firstInLine = true;
 				break;
 			case FormatIntend:
 				++intend;
@@ -192,6 +200,10 @@ void CParser::WriteFormattedTo(std::ostream & os) const
 		}
 		else if (CTerminal* terminal = dynamic_cast<CTerminal*>(elem->first))
 		{
+			if (firstInLine)
+				firstInLine = false;
+			else
+				os << (spaces ? " " : "");
 			os << terminal->GetValue();
 		}
 		else if (CMetaIdentifier* identifier = dynamic_cast<CMetaIdentifier*>(elem->first))
