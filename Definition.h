@@ -6,8 +6,8 @@
 
 namespace GrammarSymbols
 {
-
-	class IDefinition : public IReadable, public CGrammarObject, public ISpawnable
+	//abstract base class for both CShortDefinition and CComplexDefinition
+	class CDefinition : public IReadable, public CGrammarObject, public ISpawnable
 	{
 	};
 

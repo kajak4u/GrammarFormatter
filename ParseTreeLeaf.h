@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ParseTree.h"
+#include "ParseTreeItem.h"
 namespace GrammarSymbols
 {
 	class CTerminal;
@@ -11,7 +11,7 @@ namespace Parser
 	using namespace ::GrammarSymbols;
 
 	//class representing a leaf in parsing tree - holding a terminal
-	class CParseTreeLeaf : public CParseTree
+	class CParseTreeLeaf : public CParseTreeItem
 	{
 		//terminal leading to that state
 		CTerminal* terminal;

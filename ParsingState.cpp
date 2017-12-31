@@ -27,7 +27,7 @@ namespace Parser
 	void CParsingState::AddAction(const CTerminal *terminal, CAction *action)
 	{
 		if (actions.find(terminal) != actions.end())
-			throw MYEXCEPTION(std::string()+"Grammar syntax error - duplicate action at "+terminal->GetValue()+".", -1);
+			throw MYEXCEPTION(std::string() + "Grammar syntax error - duplicate action at " + terminal->GetValue() + ".", -1);
 		actions[terminal] = action;
 	}
 	void CParsingState::AddGoto(const CDefinedGrammarSymbol *symbol, CGoto *newGoto)

@@ -3,6 +3,7 @@
 #include "Terminal.h"
 #include "Group.h"
 #include "MetaIdentifier.h"
+#include "DefinedSymbolManager.h"
 #include "Multiplier.h"
 #include "Syntax.h"
 #include "Special.h"
@@ -116,6 +117,10 @@ void CApplication::Run()
 
 	CParser parser(table[0]);
 	parser.Process(codeFile);
+#ifdef DEBUG_PRINTMEM
+	cerr << "Parser stack: " << endl;
+	parser.PrintStackTo(cerr);
+#endif
 
 	if (!parser.Accepted())
 		cout << "The input file is not grammaticaly correct." << endl;

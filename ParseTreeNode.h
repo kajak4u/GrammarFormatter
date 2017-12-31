@@ -1,5 +1,5 @@
 #pragma once
-#include "ParseTree.h"
+#include "ParseTreeItem.h"
 #include <vector>
 
 namespace GrammarSymbols
@@ -13,12 +13,12 @@ namespace Parser
 	using namespace ::GrammarSymbols;
 
 	//class representing an internal node in parsing tree - associated with a symbol
-	class CParseTreeNode : public CParseTree
+	class CParseTreeNode : public CParseTreeItem
 	{
 	public:
 		//node's subtree - an array of pairs [symbol -> derivation], 
 		// where each symbol from [identifier]'s definition is associated to its derivation from input file
-		using SubTree = std::vector<std::pair<CPrimary*, CParseTree*>>;
+		using SubTree = std::vector<std::pair<CPrimary*, CParseTreeItem*>>;
 	private:
 		//symbol derivated from the subtree
 		const CDefinedGrammarSymbol* identifier;

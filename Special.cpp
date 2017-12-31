@@ -5,6 +5,7 @@
 #include "MetaIdentifier.h"
 #include "Terminal.h"
 #include "ShortDefinition.h"
+#include "DefinedSymbolManager.h"
 
 using namespace std;
 

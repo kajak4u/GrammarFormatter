@@ -6,7 +6,7 @@ namespace Parser
 	class CParsingState;
 
 	//base class representing any node in parsing tree
-	class CParseTree
+	class CParseTreeItem
 	{
 		//parser's state associated with the state
 		CParsingState* state;
@@ -16,9 +16,9 @@ namespace Parser
 		//sets associated parser's state
 		void SetState(CParsingState* newState);
 		//constructor
-		CParseTree(CParsingState* state);
+		CParseTreeItem(CParsingState* state);
 		//destructor
-		virtual ~CParseTree();
+		virtual ~CParseTreeItem();
 	};
 
 }

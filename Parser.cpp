@@ -51,31 +51,31 @@ namespace Parser
 		currentState->GetGoto(identifier)->Perform(*this);
 	}
 
-	void PrintTree(CParseTree* tree, int intend)
+	void PrintTree(CParseTreeItem* tree, _STD ostream& os, int intend)
 	{
 		if (CParseTreeLeaf* leaf = dynamic_cast<CParseTreeLeaf*>(tree))
 		{
-			cerr << string(intend, ' ') << *leaf->GetTerminal() << endl;
+			os << string(intend, ' ') << *leaf->GetTerminal() << endl;
 		}
 		else if (CParseTreeNode* node = dynamic_cast<CParseTreeNode*>(tree))
 		{
-			cerr << string(intend, ' ') << *node->GetIdentifier() << " => {" << endl;
+			os << string(intend, ' ') << *node->GetIdentifier() << " => {" << endl;
 			auto& subtree = node->getSubTree();
 			for (auto& item : subtree)
 			{
-				PrintTree(item.second, intend + 2);
+				PrintTree(item.second, os, intend + 2);
 			}
-			cerr << string(intend, ' ') << "}" << endl;
+			os << string(intend, ' ') << "}" << endl;
 		}
 		else
-			cerr << string(intend, ' ') << "[empty node]" << endl;
+			os << string(intend, ' ') << "[empty node]" << endl;
 	}
 
-	void PrintStack(const std::vector<CParseTree*>& stack)
+	void CParser::PrintStackTo(_STD ostream& os) const
 	{
 		for (auto item : stack)
 		{
-			PrintTree(item, 0);
+			PrintTree(item, os, 0);
 		}
 	}
 
@@ -90,7 +90,7 @@ namespace Parser
 			else
 				currentTerminal = CTerminal::Recognize(file);
 			if (currentTerminal == nullptr)
-				throw MYEXCEPTION("Syntax error - unrecognized terminal.\n" __FILE__, __LINE__);
+				throw MYEXCEPTION("Syntax error - unrecognized terminal.", 1);
 #ifdef DEBUG_PARSING
 			cerr << "Recognized terminal: " << *currentTerminal << endl;
 #endif
@@ -99,7 +99,7 @@ namespace Parser
 			{
 				currentState->GetAction(currentTerminal)->Perform(*this);
 #ifdef DEBUG_PARSING
-				PrintStack(stack);
+				PrintStack();
 #endif
 			}
 		}
@@ -109,7 +109,7 @@ namespace Parser
 	CParser::CParser(CParsingState * startState)
 		: currentState(startState)
 	{
-		stack.push_back(new CParseTree(startState));
+		stack.push_back(new CParseTreeItem(startState));
 	}
 
 	CParser::~CParser()

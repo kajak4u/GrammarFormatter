@@ -7,22 +7,22 @@ using namespace std;
 namespace GrammarSymbols
 {
 
-	Option CGroup::GetType() const
+	GroupType CGroup::GetType() const
 	{
-		return options;
+		return type;
 	}
 
 	CGroup::CGroup()
 	{
 	}
 
-	CGroup::CGroup(const CDefinitionList & list, Option type)
-		: definitionList(list), options(type)
+	CGroup::CGroup(const CDefinitionList & list, GroupType type)
+		: definitionList(list), type(type)
 	{
 	}
 
-	CGroup::CGroup(Option type)
-		: options(type)
+	CGroup::CGroup(GroupType type)
+		: type(type)
 	{
 	}
 	//
@@ -44,11 +44,11 @@ namespace GrammarSymbols
 		{
 		case '[':
 			endch = ']';
-			options = OptionOptional;
+			type = GroupOptional;
 			break;
 		case '{':
 			endch = '}';
-			options = OptionRepetition;
+			type = GroupRepetition;
 			break;
 		case '(':
 			endch2 = ')';
@@ -56,10 +56,10 @@ namespace GrammarSymbols
 			switch (c2)
 			{
 			case '/':
-				options = OptionOptional;
+				type = GroupOptional;
 				break;
 			case ':':
-				options = OptionRepetition;
+				type = GroupRepetition;
 				break;
 			default:
 				endch = endch2;
@@ -105,7 +105,7 @@ namespace GrammarSymbols
 
 	void CGroup::WriteTo(_STD ostream & os) const
 	{
-		string brackets = options == OptionOptional ? "[]" : options == OptionRepetition ? "{}" : "()";
+		string brackets = type == GroupOptional ? "[]" : type == GroupRepetition ? "{}" : "()";
 		os << brackets[0] << definitionList << brackets[1];
 	}
 
@@ -125,7 +125,7 @@ namespace GrammarSymbols
 	bool CGroup::Equals(const CPrimary * other) const
 	{
 		const CGroup* mi = dynamic_cast<const CGroup*>(other);
-		return mi != nullptr && mi->options == options && mi->definitionList == definitionList;
+		return mi != nullptr && mi->type == type && mi->definitionList == definitionList;
 	}
 
 	_STD ostream & operator<<(_STD ostream & os, const CGroup & group)

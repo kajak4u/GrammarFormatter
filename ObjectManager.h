@@ -6,7 +6,7 @@ template<typename _ITEM> class CObjectManager
 {
 	//memory
 	_STD map <_STD string, _ITEM* > memory;
-	//private constructor, destructor, deleted copying and assigning - singleton
+	//private constructor, destructor, deleted copy and assign operators - singleton
 	CObjectManager() {}
 	~CObjectManager()
 	{

@@ -13,21 +13,21 @@ namespace GrammarSymbols
 	CDefinitionList::CDefinitionList(const CDefinitionList & other)
 	{
 		this->reserve(other.size());
-		for (IDefinition* definition : other)
-			this->push_back(dynamic_cast<IDefinition*>(definition->spawn(true)));
+		for (CDefinition* definition : other)
+			this->push_back(dynamic_cast<CDefinition*>(definition->spawn(true)));
 	}
 
 
 	CDefinitionList::~CDefinitionList()
 	{
-		for (IDefinition*& def : *this)
+		for (CDefinition*& def : *this)
 			if(def)
 				delete def;
 	}
 
 	CDefinitionList CDefinitionList::operator=(CDefinitionList && other)
 	{
-		*((vector<IDefinition*>*)this) = _STD move((vector<IDefinition*>)other);
+		*((vector<CDefinition*>*)this) = _STD move((vector<CDefinition*>)other);
 		other.clear();
 		return *this;
 	}
@@ -50,7 +50,7 @@ namespace GrammarSymbols
 	void CDefinitionList::WriteTo(_STD ostream & os) const
 	{
 		bool first = true;
-		for (const IDefinition* def : *this)
+		for (const CDefinition* def : *this)
 		{
 			os << (first ? first = false, "" : "\n\t| ");
 			if (def)
@@ -62,7 +62,7 @@ namespace GrammarSymbols
 
 	void CDefinitionList::Simplify()
 	{
-		for (IDefinition*& definition : *this)
+		for (CDefinition*& definition : *this)
 		{
 			if (CComplexDefinition* complexDefinition = dynamic_cast<CComplexDefinition*>(definition))
 			{
@@ -76,7 +76,7 @@ namespace GrammarSymbols
 	void CDefinitionList::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		CGrammarObject::ForEach(condition, action);
-		for (const IDefinition* definition : *this)
+		for (const CDefinition* definition : *this)
 			if(definition)
 				definition->ForEach(condition, action);
 	}
@@ -84,7 +84,7 @@ namespace GrammarSymbols
 	void CDefinitionList::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		CGrammarObject::ForEach(condition, action);
-		for (IDefinition* definition : *this)
+		for (CDefinition* definition : *this)
 			if(definition)
 				definition->ForEach(condition, action);
 	}

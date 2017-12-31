@@ -1,11 +1,11 @@
 #pragma once
 
-//CGroup options
-enum Option
+//CGroup type
+enum GroupType
 {
-	OptionNone,			// (...)
-	OptionRepetition,	// {...}
-	OptionOptional		// [...]
+	GroupDefault,			// (...)
+	GroupRepetition,	// {...}
+	GroupOptional		// [...]
 };
 
 //EBNF grammar symbols

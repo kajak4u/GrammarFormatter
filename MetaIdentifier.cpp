@@ -80,7 +80,7 @@ namespace GrammarSymbols
 		return GetItem() < other.GetItem();
 	}
 
-	void CMetaIdentifier::MarkAsDefinedBy(const IDefinition* def) const
+	void CMetaIdentifier::MarkAsDefinedBy(const CDefinition* def) const
 	{
 		GetItem()->definitions.insert(def);
 	}

@@ -3,7 +3,7 @@
 #include "ShortDefinition.h"
 #include "Terminal.h"
 #include <iostream>
-#include "ParseTree.h"
+#include "ParseTreeItem.h"
 #include "ParseTreeNode.h"
 
 namespace GrammarSymbols
@@ -23,7 +23,7 @@ namespace Parser
 		//whether input was accepted
 		bool accepted = false;
 		//parser's stack
-		std::vector<CParseTree*> stack;
+		std::vector<CParseTreeItem*> stack;
 		//recently read terminal, waiting for processing
 		CTerminal* currentTerminal = nullptr;
 	public:
@@ -42,6 +42,8 @@ namespace Parser
 
 		//constructor, sets initial parser's state
 		CParser(CParsingState* startState);
+		//print parser's stack
+		void PrintStackTo(_STD ostream& os) const;
 		//apply format to input's derivation tree and print it to given output
 		void WriteFormattedTo(_STD ostream& os) const;
 		//destructor

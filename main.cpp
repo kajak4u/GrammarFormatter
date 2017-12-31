@@ -100,10 +100,6 @@ void skipWhiteChars(_STD istream& is, bool skipEBNFComment)
 		}
 }
 
-Symbol GetSymbol(_STD istream & is, int & group, bool alterStream)
-{
-}
-
 Symbol GetSymbol(_STD istream & is, bool alterStream)
 {
 	static const map<string, Symbol> symbols =

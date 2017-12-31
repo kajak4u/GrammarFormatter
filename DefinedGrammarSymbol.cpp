@@ -45,6 +45,12 @@ namespace GrammarSymbols
 	{
 		item = CDefinedSymbolManager::Register(GetName());
 	}
+	CDefinedGrammarSymbol::CDefinedGrammarSymbol()
+	{
+	}
+	CDefinedGrammarSymbol::~CDefinedGrammarSymbol()
+	{
+	}
 	MySet<CTerminal*, CompareObjects<CTerminal>>& CDefinedGrammarSymbol::First() const
 	{
 		return item->first;
@@ -64,7 +70,7 @@ namespace GrammarSymbols
 		return item->follow;
 	}
 
-	const MySet<const IDefinition*>& CDefinedGrammarSymbol::GetDefinitions() const
+	const MySet<const CDefinition*>& CDefinedGrammarSymbol::GetDefinitions() const
 	{
 		return item->definitions;
 	}

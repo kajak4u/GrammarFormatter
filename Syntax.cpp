@@ -8,6 +8,7 @@
 #include "Group.h"
 #include "Factor.h"
 #include "HelperSyntaxRule.h"
+#include "Terminal.h"
 #include <map>
 
 using namespace std;
@@ -58,7 +59,7 @@ namespace GrammarSymbols
 		CDefinedGrammarSymbol::ForEach([&startingWithSymbol](const CDefinedGrammarSymbol* symbol)
 		{
 			auto& defList = symbol->GetDefinitions();
-			for (const IDefinition* def : defList)
+			for (const CDefinition* def : defList)
 			{
 				const CShortDefinition* sdef = dynamic_cast<const CShortDefinition*>(def);
 				if (sdef == nullptr)
@@ -93,7 +94,7 @@ namespace GrammarSymbols
 		CDefinedGrammarSymbol::ForEach([&followedPairs](const CDefinedGrammarSymbol* symbol)
 		{
 			auto& defList = symbol->GetDefinitions();
-			for (const IDefinition* def : defList)
+			for (const CDefinition* def : defList)
 			{
 				const CShortDefinition* sdef = dynamic_cast<const CShortDefinition*>(def);
 				for (auto& iter = sdef->begin(), nextIter = iter; iter != sdef->end(); ++iter)
@@ -158,9 +159,11 @@ namespace GrammarSymbols
 			CMetaIdentifier identifier("HS#" + to_string(++helperRulesCounter));
 			const CDefinitionList& defList = group->getDefinitionList();
 			CHelperSyntaxRule* helperRule = new CHelperSyntaxRule(identifier, defList);
+#ifdef DEBUG_SIMPLIFY
 			cerr << *helperRule << endl;
+#endif
 			this->push_back(helperRule);
-			if (group->GetType() == OptionNone)
+			if (group->GetType() == GroupDefault)
 			{
 				factor->SetPrimary(&identifier);
 				identifier.MarkAsUsed();

@@ -25,7 +25,7 @@ namespace Parser
 				auto iter = _STD next(situation.pos);
 				auto beta = DereferenceOrNull(iter, *situation.def);
 				auto a = situation.allowed;
-				const MySet<const IDefinition*>& definitions = B->GetDefinitions();
+				const MySet<const CDefinition*>& definitions = B->GetDefinitions();
 				vector<CPrimary*> v = { beta, a };
 				MySet<CTerminal*, CompareObjects<CTerminal>> terminals = GetFirstFrom(iter, situation.def->end());//GetFirstFrom(_STD next(v.begin(), beta == nullptr), v.end());
 				if (terminals.Contains(nullptr))

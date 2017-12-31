@@ -6,15 +6,15 @@ namespace GrammarSymbols
 {
 	class CGroup;
 
-	class CHelperSyntaxRule :
-		public CSyntaxRule
+	//helper syntax rule - additional rules introduced to syntax to eliminate groups from syntax
+	class CHelperSyntaxRule : public CSyntaxRule
 	{
-		const CGroup* originalRule = nullptr;
 	public:
-		virtual ~CHelperSyntaxRule();
+		//create rule using given identifier and definition list
 		CHelperSyntaxRule(const CMetaIdentifier& helperIdentifier, const CDefinitionList& origin);
-		CHelperSyntaxRule(const CMetaIdentifier& helperIdentifier, const CMetaIdentifier& helperIdentifier2, Option option);
-		void WriteTo(_STD ostream& os) const override;
-		CGroup* CreateReplacement() const;
+		//create second rule for repeat/optional group using new identifier and primary identifier
+		CHelperSyntaxRule(const CMetaIdentifier& helperIdentifier, const CMetaIdentifier& helperIdentifier2, GroupType option);
+		//destructor
+		virtual ~CHelperSyntaxRule();
 	};
 }

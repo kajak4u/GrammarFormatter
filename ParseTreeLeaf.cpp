@@ -4,7 +4,7 @@
 namespace Parser
 {
 	CParseTreeLeaf::CParseTreeLeaf(CTerminal * terminal, CParsingState * state)
-		: CParseTree(state), terminal(terminal)
+		: CParseTreeItem(state), terminal(terminal)
 	{}
 
 	CParseTreeLeaf::~CParseTreeLeaf()

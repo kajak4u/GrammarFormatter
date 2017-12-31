@@ -4,7 +4,7 @@ namespace Parser
 {
 
 	CParseTreeNode::CParseTreeNode(const CDefinedGrammarSymbol * identifier, const SubTree & subtree, CParsingState * state)
-		: CParseTree(state), identifier(identifier), subtree(subtree)
+		: CParseTreeItem(state), identifier(identifier), subtree(subtree)
 	{}
 
 	CParseTreeNode::~CParseTreeNode()
