@@ -44,12 +44,40 @@ namespace GrammarSymbols
 	void CDefinedGrammarSymbol::Register()
 	{
 		item = CDefinedSymbolManager::Register(GetName());
+		++item->instances;
 	}
 	CDefinedGrammarSymbol::CDefinedGrammarSymbol()
 	{
 	}
+	CDefinedGrammarSymbol::CDefinedGrammarSymbol(const CDefinedGrammarSymbol & other)
+		: item(other.item)
+	{
+		if(item)
+			++item->instances;
+	}
+	CDefinedGrammarSymbol::CDefinedGrammarSymbol(CDefinedGrammarSymbol && other)
+		: item(other.item)
+	{
+		other.item = nullptr;
+	}
 	CDefinedGrammarSymbol::~CDefinedGrammarSymbol()
 	{
+		if (item)
+			--item->instances;
+	}
+	CDefinedGrammarSymbol & CDefinedGrammarSymbol::operator=(const CDefinedGrammarSymbol & other)
+	{
+		if (item)
+			--item->instances;
+		item = other.item;
+		if (item)
+			++item->instances;
+		return *this;
+	}
+	CDefinedGrammarSymbol & CDefinedGrammarSymbol::operator=(CDefinedGrammarSymbol && other)
+	{
+		swap(item, other.item);
+		return *this;
 	}
 	MySet<CTerminal*, CompareObjects<CTerminal>>& CDefinedGrammarSymbol::First() const
 	{

@@ -30,6 +30,14 @@ namespace GrammarSymbols
 
 	CSpecial::~CSpecial()
 	{
+		//last instance - remove definitions
+		auto item = GetItem();
+		if (item != nullptr && item->instances == 1)
+		{
+			for (auto& definition : item->definitions)
+				delete definition;
+			item->definitions.clear();
+		}
 	}
 
 	_STD istream & CSpecial::ReadFrom(_STD istream & is)

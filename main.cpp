@@ -152,10 +152,13 @@ Symbol GetSymbol(_STD istream & is, bool alterStream)
 
 int main(int argc, char* argv[])
 {
+	CApplication* app = nullptr;
 	try
 	{
-		CApplication app(argc, argv);
-		app.Run();
+		app = new CApplication(argc, argv);
+		app->Run();
+		delete app;
+		app = nullptr;
 #ifdef DEBUG_MEMLEAKS
 		GrammarSymbols::CGrammarObject::PrintCounter();
 #endif
@@ -166,6 +169,8 @@ int main(int argc, char* argv[])
 	catch (MyException& e)
 	{
 		cerr << e.message << endl;
+		if (app)
+			delete app;
 		system("pause");
 		return e.retCode;
 	}

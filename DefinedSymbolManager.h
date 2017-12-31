@@ -20,6 +20,8 @@ namespace GrammarSymbols
 		MySet<const CDefinition*> definitions;
 		//whether symbol was used
 		bool used = false;
+		//number of instances with that name
+		int instances = 0;
 	};
 	//output stream operator
 	_STD ostream& operator<<(_STD ostream& os, const CDefinedSymbolManagerItem& item);

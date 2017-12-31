@@ -25,6 +25,8 @@ class CApplication
 public:
 	//constructor with commandline arguments
 	CApplication(int argc, char* argv[]);
+	//destructor
+	~CApplication();
 	//project's main method
 	void Run();
 };

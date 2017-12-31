@@ -23,8 +23,16 @@ namespace GrammarSymbols
 	public:
 		//constructor
 		CDefinedGrammarSymbol();
+		//copy constructor
+		CDefinedGrammarSymbol(const CDefinedGrammarSymbol& other);
+		//move constructor
+		CDefinedGrammarSymbol(CDefinedGrammarSymbol&& other);
 		//destructor
 		virtual ~CDefinedGrammarSymbol();
+		//assign operator
+		CDefinedGrammarSymbol& operator=(const CDefinedGrammarSymbol& other);
+		//assign move operator
+		CDefinedGrammarSymbol& operator=(CDefinedGrammarSymbol&& other);
 
 		//access FIRST set corresponding to symbol
 		MySet<CTerminal*, CompareObjects<CTerminal>>& First() const;

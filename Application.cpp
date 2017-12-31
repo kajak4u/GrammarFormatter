@@ -36,7 +36,7 @@ void CApplication::UnregisterAllPrefixes()
 void CApplication::ProcessCmdArgs(int argc, char* argv[])
 {
 	if (argc < 3)
-		throw MYEXCEPTION("Too few arguments.", -1);
+		throw MYEXCEPTION("Too few arguments.", 1);
 	grammarFilename = argv[1];
 	codeFilename = argv[2];
 	//if only 2 parameters, input file is either an output file
@@ -61,7 +61,7 @@ CSyntax CApplication::ReadGrammar(_STD istream & grammar)
 			<< lineContent << endl;
 		if (pos != 0)
 			cerr << string(pos - 1, '=') << "^" << endl;
-		throw MYEXCEPTION(e.what(), -3);
+		throw MYEXCEPTION(e.what(), 3);
 	}
 	return syntax;
 }
@@ -72,39 +72,42 @@ void CApplication::CheckCorrectness(CSyntax & syntax)
 	if (!syntax.IsCorrect(ref(message)))
 	{
 		cerr << "Grammar contains errors!" << endl;
-		throw MYEXCEPTION(message, -4);
+		throw MYEXCEPTION(message, 4);
 	}
-
-	cout << "Grammar is correct" << endl;
-	if (message != "")
-		cout << "warnings: " << endl
-		<< message << endl;
 }
 
 CApplication::CApplication(int argc, char * argv[])
 {
 	ProcessCmdArgs(argc, argv);
 }
+CApplication::~CApplication()
+{
+	UnregisterAllPrefixes();
+}
 void CApplication::Run()
 {
 	RegisterAllPrefixes();
 	ifstream grammarFile(grammarFilename, ios::binary);
 	if (!grammarFile.is_open())
-		throw MYEXCEPTION("Could not open grammar file", -2);
+		throw MYEXCEPTION("Could not open grammar file", 2);
+	cout << "Reading grammar..." << endl;
 	CSyntax grammar = ReadGrammar(grammarFile);
 	grammarFile.close();
+	cout << "Parsing grammar - step 1/3... ";
+	cout.flush();
 	grammar.Simplify();
-
 	CheckCorrectness(grammar);
+	cout << "\rParsing grammar - step 2/3... ";
+	cout.flush();
 	grammar.CreateSets();
 #ifdef DEBUG_PRINTMEM
 	cerr << "identifier memory:" << endl;
 	CDefinedSymbolManager::PrintMemory(cerr);
 	cout << grammar;
 #endif
-
-
+	cout << "\rParsing grammar - step 3/3..." << endl;
 	CParsingTable table(grammar);
+	cout << "Grammar parsed successfully" << endl;
 #ifdef DEBUG_PRINTMEM
 	cerr << "Parsing table: " << endl
 		<< table << endl;
@@ -112,23 +115,23 @@ void CApplication::Run()
 
 	ifstream codeFile(codeFilename, ios::binary);
 	if (!codeFile.is_open())
-		throw MYEXCEPTION("Could not open input file", -5);
-
+		throw MYEXCEPTION("Could not open input file", 5);
 
 	CParser parser(table[0]);
+	cout << "Processing input file..." << endl;
 	parser.Process(codeFile);
+	codeFile.close();
 #ifdef DEBUG_PRINTMEM
 	cerr << "Parser stack: " << endl;
 	parser.PrintStackTo(cerr);
 #endif
 
 	if (!parser.Accepted())
-		cout << "The input file is not grammaticaly correct." << endl;
-	else
-	{
-		cout << "The input file is correct." << endl;
-		parser.WriteFormattedTo(cout);
-	}
-
-	UnregisterAllPrefixes();
+		throw MYEXCEPTION("The input file is not grammaticaly correct.", 6);
+	ofstream output(outputFilename, ios::binary);
+	if (!output.is_open())
+		throw MYEXCEPTION("Could not open output file", 7);
+	cout << "Saving input file..." << endl;
+	parser.WriteFormattedTo(output);
+	cout << "Done." << endl;
 }
