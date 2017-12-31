@@ -153,6 +153,7 @@ Symbol GetSymbol(_STD istream & is, bool alterStream)
 int main(int argc, char* argv[])
 {
 	CApplication* app = nullptr;
+	int retcode = 0;
 	try
 	{
 		app = new CApplication(argc, argv);
@@ -163,15 +164,16 @@ int main(int argc, char* argv[])
 		GrammarSymbols::CGrammarObject::PrintCounter();
 #endif
 		cout << endl;
-		system("pause");
-		return 0;
 	}
 	catch (MyException& e)
 	{
 		cerr << e.message << endl;
 		if (app)
 			delete app;
-		system("pause");
-		return e.retCode;
+		retcode = e.retCode;
 	}
+#ifdef _DEBUG
+	system("pause");
+#endif
+	return retcode;
 }
