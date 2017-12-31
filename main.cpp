@@ -69,7 +69,7 @@ void skipComment(_STD istream& is)
 	}
 }
 
-void skipWhiteChars(_STD istream& is)
+void skipWhiteChars(_STD istream& is, bool skipEBNFComment)
 {
 	char c, c2;
 	while (!is.eof())
@@ -81,15 +81,18 @@ void skipWhiteChars(_STD istream& is)
 		case '\r':
 			break;
 		case '(':
-			c2 = is.get();
-			if (c2 == '*')
+			if (skipEBNFComment)
 			{
+				c2 = is.get();
+				if (c2 == '*')
+				{
+					is.putback(c2);
+					is.putback(c);
+					skipComment(is);
+					break;
+				}
 				is.putback(c2);
-				is.putback(c);
-				skipComment(is);
-				break;
 			}
-			is.putback(c2);
 		default:
 			if(c!=-1)
 				is.putback(c);
@@ -99,32 +102,36 @@ void skipWhiteChars(_STD istream& is)
 
 Symbol GetSymbol(_STD istream & is, int & group, bool alterStream)
 {
-	static const map<string, pair<Symbol,int>> symbols = 
+}
+
+Symbol GetSymbol(_STD istream & is, bool alterStream)
+{
+	static const map<string, Symbol> symbols =
 	{
-		{ ",",{ SymbolConcatenate,	0 } },
-		{ "=",{ SymbolDefining,		0 } },
-		{ "|",{ SymbolSeparator,	0 } },
-		{ "\\",{ SymbolSeparator,	1 } },
-		{ "!",{ SymbolSeparator,	2 } },
-		{ "*)",{ SymbolCommentEnd,	0 } },
-		{ "(*",{ SymbolCommentStart,0 } },
-		{ ")",{ SymbolGroupEnd,		0 } },
-		{ "(",{ SymbolGroupStart,	0 } },
-		{ "]",{ SymbolOptionEnd,	0 } },
-		{ "/)",{ SymbolOptionEnd,	1 } },
-		{ "[",{ SymbolOptionStart,	0 } },
-		{ "(/",{ SymbolOptionStart,	1 } },
-		{ "}",{ SymbolRepeatEnd,	0 } },
-		{ ":)",{ SymbolRepeatEnd,	1 } },
-		{ "{",{ SymbolRepeatStart,	0 } },
-		{ "(:",{ SymbolRepeatStart,	1 } },
-		{ "-",{ SymbolExcept,		0 } },
-		{ "'",{ SymbolQuote,		0 } },
-		{ "\"",{ SymbolQuote,		1 } },
-		{ "*",{ SymbolRepetition,	0 } },
-		{ "?",{ SymbolSpecial,		0 } },
-		{ ";",{ SymbolTerminator,	0 } },
-		{ ".",{ SymbolTerminator,	1 } }
+		{ ",",	SymbolConcatenate },
+		{ "=",	SymbolDefining },
+		{ "|",	SymbolSeparator },
+		{ "\\",	SymbolSeparator },
+		{ "!",	SymbolSeparator },
+		{ "*)",	SymbolCommentEnd },
+		{ "(*",	SymbolCommentStart, },
+		{ ")",	SymbolGroupEnd },
+		{ "(",	SymbolGroupStart },
+		{ "]",	SymbolOptionEnd },
+		{ "/)",	SymbolOptionEnd },
+		{ "[",	SymbolOptionStart },
+		{ "(/",	SymbolOptionStart },
+		{ "}",	SymbolRepeatEnd },
+		{ ":)",	SymbolRepeatEnd },
+		{ "{",	SymbolRepeatStart },
+		{ "(:",	SymbolRepeatStart },
+		{ "-",	SymbolExcept },
+		{ "'",	SymbolQuote },
+		{ "\"",	SymbolQuote },
+		{ "*",	SymbolRepetition },
+		{ "?",	SymbolSpecial },
+		{ ";",	SymbolTerminator },
+		{ ".",	SymbolTerminator }
 	};
 	skipWhiteChars(is);
 	char c = is.get();
@@ -141,17 +148,9 @@ Symbol GetSymbol(_STD istream & is, int & group, bool alterStream)
 		is.putback(c2);
 	if (result == symbols.cend())
 	{
-		group = -1;
 		return SymbolUnknown;
 	}
-	group = result->second.second;
-	return result->second.first;
-}
-
-Symbol GetSymbol(_STD istream & is, bool alterStream)
-{
-	int gr;
-	return GetSymbol(is, gr, alterStream);
+	return result->second;
 }
 
 

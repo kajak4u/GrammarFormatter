@@ -4,6 +4,12 @@
 
 namespace GrammarSymbols
 {
+	class CGrammarObject;
+
+	using GrammarObjectPredicate = _STD function< bool(const CGrammarObject*)>;
+	using GrammarObjectAction = _STD function< void(CGrammarObject*)>;
+	using GrammarObjectConstAction = _STD function< void(const CGrammarObject*)>;
+
 	class CGrammarObject
 	{
 #ifdef DEBUG_MEMLEAKS
@@ -20,13 +26,7 @@ namespace GrammarSymbols
 #endif
 		virtual ~CGrammarObject();
 		static void PrintCounter();
-		virtual void ForEach(
-			_STD function<bool(const CGrammarObject*)> condition,
-			_STD function<void(const CGrammarObject*)> action
-		) const;
-		virtual void ForEach(
-			_STD function<bool(const CGrammarObject*)> condition,
-			_STD function<void(CGrammarObject*)> action
-		);
+		virtual void ForEach(GrammarObjectPredicate condition, GrammarObjectAction action);
+		virtual void ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const;
 	};
 }

@@ -5,73 +5,29 @@
 #include "Syntax.h"
 #include "Parser.h"
 #include "main.h"
+#include "Situation.h"
 
 namespace GrammarSymbols {
 	class CSyntax;
-	class CTerminal;
-	class CMetaIdentifier;
 }
-class CParsingState;
 
-class CAction
+namespace Parser
 {
-public:
-	virtual void Perform(CParser& parser) = 0;
-};
-class CGoto
-{
-	CParsingState* newState;
-public:
-	CGoto(CParsingState* newState);
-	void Perform(CParser& parser);
-};
-
-class CParsingState
-{
-public:
-	CSituations* situations;
-	_STD map<const CTerminal*, CAction*, CompareObjects<CTerminal>> actions;
-	_STD map<const CDefinedGrammarSymbol*, CGoto*, CompareObjects<CDefinedGrammarSymbol>> gotos;
-	CParsingState(CSituations* situations)
-		: situations(situations)
-	{}
-	~CParsingState();
-#ifdef _DEBUG
-	int id;
-	CParsingState(int id, CSituations* situations)
-		: id(id), situations(situations)
-	{}
-#endif
-};
-
-class CShiftAction : public CAction
-{
-	CParsingState* newState;
-public:
-	CShiftAction(CParsingState* newState);
-	virtual void Perform(CParser & parser) override;
-};
-class CAcceptAction : public CAction
-{
-public:
-	virtual void Perform(CParser & parser) override;
-};
-class CReduceAction : public CAction
-{
-	const CDefinedGrammarSymbol* result;
-	const CShortDefinition* definition;
-public:
-	CReduceAction(const CDefinedGrammarSymbol* result, const CShortDefinition* definition);
-	virtual void Perform(CParser & parser) override;
-};
-
-class CParsingTable : public std::vector<CParsingState*>
-{
-	CSituations Closure(const CSituations& situations);
-	CSituations Goto(const CSituations& situations, const CPrimary* symbol);
-public:
-	CParsingTable(const GrammarSymbols::CSyntax& grammar);
-	~CParsingTable();
-	CParsingState* AddOrGet(CSituations* situations);
-};
-_STD ostream& operator<<(_STD ostream& os, const CParsingTable& table);
+	//parsing table - an array of parsing states
+	class CParsingTable : public std::vector<CParsingState*>
+	{
+		//returns given situations set's closure
+		CSituations Closure(const CSituations& situations);
+		//returns goto for given situations set and symbol
+		CSituations Goto(const CSituations& situations, const CPrimary* symbol);
+	public:
+		//constructor from given syntax
+		CParsingTable(const GrammarSymbols::CSyntax& grammar);
+		//destructor
+		~CParsingTable();
+		//creates new parsing state or returns pointer to identical one, already existing in table
+		CParsingState* AddOrGet(CSituations* situations);
+	};
+	//output stream operator
+	_STD ostream& operator<<(_STD ostream& os, const CParsingTable& table);
+}

@@ -68,7 +68,7 @@ namespace GrammarSymbols
 			os << " - " << exception;
 	}
 
-	void CTerm::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const
+	void CTerm::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		CGrammarObject::ForEach(condition, action);
 		factor.ForEach(condition, action);
@@ -76,7 +76,7 @@ namespace GrammarSymbols
 			exception.ForEach(condition, action);
 	}
 
-	void CTerm::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action)
+	void CTerm::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		CGrammarObject::ForEach(condition, action);
 		factor.ForEach(condition, action);

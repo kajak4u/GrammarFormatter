@@ -2,7 +2,6 @@
 #include "Recognizer.h"
 #include "main.h"
 #include <string>
-#include "MetaIdentifierManager.h"
 #include "MetaIdentifier.h"
 #include "Terminal.h"
 #include "ShortDefinition.h"

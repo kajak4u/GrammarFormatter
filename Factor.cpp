@@ -85,7 +85,7 @@ namespace GrammarSymbols
 			primary->WriteTo(os);
 	}
 
-	void CFactor::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const
+	void CFactor::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		CGrammarObject::ForEach(condition, action);
 		if (primary != nullptr)
@@ -95,7 +95,7 @@ namespace GrammarSymbols
 		}
 	}
 
-	void CFactor::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action)
+	void CFactor::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		CGrammarObject::ForEach(condition, action);
 		if (primary != nullptr)

@@ -9,14 +9,14 @@ namespace GrammarSymbols
 	class CTerminal;
 	class IDefinition;
 
-	struct CMetaIdentifierManagerItem
+	struct CDefinedSymbolManagerItem
 	{
 		MySet<CTerminal*, CompareObjects<CTerminal>> first;
 		MySet<CTerminal*, CompareObjects<CTerminal>> follow;
 		MySet<const IDefinition*> definitions;
 		bool used = false;
 	};
-	_STD ostream& operator<<(_STD ostream& os, const CMetaIdentifierManagerItem& item);
+	_STD ostream& operator<<(_STD ostream& os, const CDefinedSymbolManagerItem& item);
 
-	using CMetaIdentifierManager = CObjectManager<CMetaIdentifierManagerItem>;
+	using CDefinedSymbolManager = CObjectManager<CDefinedSymbolManagerItem>;
 }

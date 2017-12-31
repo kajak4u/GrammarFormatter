@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+//interface for stream reading/writing
 class IReadable
 {
 public:

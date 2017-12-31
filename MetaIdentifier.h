@@ -7,8 +7,6 @@
 
 namespace GrammarSymbols
 {
-
-	struct CMetaIdentifierManagerItem;
 	class CTerminal;
 	class CShortDefinition;
 	class IDefinition;

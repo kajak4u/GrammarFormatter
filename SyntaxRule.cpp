@@ -68,13 +68,13 @@ namespace GrammarSymbols
 		os << identifier << " = " << definitionList << ";" << endl;
 	}
 
-	void CSyntaxRule::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const
+	void CSyntaxRule::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		CGrammarObject::ForEach(condition, action);
 		definitionList.ForEach(condition, action);
 	}
 
-	void CSyntaxRule::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action)
+	void CSyntaxRule::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		CGrammarObject::ForEach(condition, action);
 		definitionList.ForEach(condition, action);

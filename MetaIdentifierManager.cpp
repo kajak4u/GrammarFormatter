@@ -1,10 +1,10 @@
-#include "MetaIdentifierManager.h"
+#include "DefinedSymbolManager.h"
 #include <iostream>
 #include "Terminal.h"
 
 namespace GrammarSymbols
 {
-	_STD ostream& operator<<(_STD ostream& os, const CMetaIdentifierManagerItem& item)
+	_STD ostream& operator<<(_STD ostream& os, const CDefinedSymbolManagerItem& item)
 	{
 		os << "First: {";
 		for (auto& elem : item.first)

@@ -27,14 +27,14 @@ namespace GrammarSymbols
 		for (const CTerm* term : *previous)
 		{
 			if (term->HasException())
-				throw MyException("Grammar exceptions not supported yet " __FILE__, __LINE__);
+				throw MYEXCEPTION("Grammar exceptions not supported yet...", 1);
 			const CFactor& factor = term->GetFactor();
 			const CPrimary* primary = factor.GetPrimary();
 			auto identifier = dynamic_cast<const CMetaIdentifier*>(primary);
 			auto terminal = dynamic_cast<const CTerminal*>(primary);
 			auto special = dynamic_cast<const CSpecial*>(primary);
 			if (primary != nullptr && identifier == nullptr && terminal == nullptr && special == nullptr)
-				throw MyException("Expected terminal, identifier or special\n" __FILE__, __LINE__);
+				throw MYEXCEPTION("Expected terminal, identifier or special", -1);
 			else if (identifier)
 				identifier->MarkAsUsed();
 			for (int i = 0; i < factor.GetMultiplier(); ++i)
@@ -92,14 +92,14 @@ namespace GrammarSymbols
 	}
 
 
-	void CShortDefinition::ForEach(function<bool(const CGrammarObject*)> condition, function<void(const CGrammarObject*)> action) const
+	void CShortDefinition::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		CGrammarObject::ForEach(condition, action);
 		for (const CPrimary* primary : *this)
 			primary->ForEach(condition, action);
 	}
 
-	void CShortDefinition::ForEach(function<bool(const CGrammarObject*)> condition, function<void(CGrammarObject*)> action)
+	void CShortDefinition::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		CGrammarObject::ForEach(condition, action);
 		for (CPrimary* primary : *this)

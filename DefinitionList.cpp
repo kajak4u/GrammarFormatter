@@ -73,7 +73,7 @@ namespace GrammarSymbols
 
 	}
 
-	void CDefinitionList::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const
+	void CDefinitionList::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		CGrammarObject::ForEach(condition, action);
 		for (const IDefinition* definition : *this)
@@ -81,7 +81,7 @@ namespace GrammarSymbols
 				definition->ForEach(condition, action);
 	}
 
-	void CDefinitionList::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action)
+	void CDefinitionList::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		CGrammarObject::ForEach(condition, action);
 		for (IDefinition* definition : *this)

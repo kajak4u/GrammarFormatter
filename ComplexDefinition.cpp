@@ -62,14 +62,14 @@ namespace GrammarSymbols
 		return copy ? new CComplexDefinition(*this) : new CComplexDefinition();
 	}
 
-	void CComplexDefinition::ForEach(function<bool(const CGrammarObject*)> condition, function<void(const CGrammarObject*)> action) const
+	void CComplexDefinition::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		CGrammarObject::ForEach(condition, action);
 		for (const CTerm* term : *this)
 			term->ForEach(condition, action);
 	}
 
-	void CComplexDefinition::ForEach(function<bool(const CGrammarObject*)> condition, function<void(CGrammarObject*)> action)
+	void CComplexDefinition::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		CGrammarObject::ForEach(condition, action);
 		for (CTerm* term : *this)

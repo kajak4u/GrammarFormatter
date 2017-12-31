@@ -8,14 +8,14 @@ namespace GrammarSymbols
 	class CTerminal;
 	class IDefinition;
 	class CShortDefinition;
-	struct CMetaIdentifierManagerItem;
+	struct CDefinedSymbolManagerItem;
 
 	class CDefinedGrammarSymbol :
 		public CPrimary
 	{
-		CMetaIdentifierManagerItem* item;
+		CDefinedSymbolManagerItem* item;
 	protected:
-		CMetaIdentifierManagerItem* GetItem() const;
+		CDefinedSymbolManagerItem* GetItem() const;
 		void Register();
 	public:
 		CDefinedGrammarSymbol() {}
@@ -28,7 +28,6 @@ namespace GrammarSymbols
 		virtual int Compare(const CPrimary* other) const override;
 
 		virtual const std::string & GetName() const = 0;
-
 		static void ForEach(_STD function<void(const CDefinedGrammarSymbol*)> func);
 	};
 

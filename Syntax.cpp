@@ -4,6 +4,7 @@
 #include "SyntaxRule.h"
 #include "Special.h"
 #include "main.h"
+#include "Term.h"
 #include "Group.h"
 #include "Factor.h"
 #include "HelperSyntaxRule.h"
@@ -61,7 +62,7 @@ namespace GrammarSymbols
 			{
 				const CShortDefinition* sdef = dynamic_cast<const CShortDefinition*>(def);
 				if (sdef == nullptr)
-					throw MyException("Only shortdefinitions allowed\n" __FILE__, __LINE__);
+					throw MYEXCEPTION("Only shortdefinitions allowed", 1);
 				if (sdef->empty())
 					symbol->First() += nullptr;
 				else
@@ -74,7 +75,7 @@ namespace GrammarSymbols
 					else if (dynamic_cast<CDefinedGrammarSymbol*>(*primary))
 						startingWithSymbol.insert({ sdef, dynamic_cast<CDefinedGrammarSymbol*>(symbol->spawn(true)) });
 					else
-						throw MyException("Unexpected null pointer in definition\n" __FILE__, __LINE__);
+						throw MYEXCEPTION("Unexpected null pointer in definition", 1);
 				}
 			}
 		});
@@ -135,6 +136,7 @@ namespace GrammarSymbols
 	void CSyntax::Simplify()
 	{
 		vector<CFactor*> groupsToReplace;
+
 		ForEach(
 			[](const CGrammarObject* symbol)
 		{
@@ -234,14 +236,14 @@ namespace GrammarSymbols
 		return &startSymbol;
 	}
 
-	void CSyntax::ForEach(function<bool(const CGrammarObject*)> condition, function<void(const CGrammarObject*)> action) const
+	void CSyntax::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		CGrammarObject::ForEach(condition, action);
 		for (const CSyntaxRule* rule : *this)
 			rule->ForEach(condition, action);
 	}
 
-	void CSyntax::ForEach(function<bool(const CGrammarObject*)> condition, function<void(CGrammarObject*)> action)
+	void CSyntax::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		CGrammarObject::ForEach(condition, action);
 		for (CSyntaxRule* rule : *this)

@@ -31,8 +31,8 @@ namespace GrammarSymbols
 		virtual void WriteTo(_STD ostream& os) const override;
 
 
-		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const override;
-		void ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action) override;
+		void ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const override;
+		void ForEach(GrammarObjectPredicate condition, GrammarObjectAction action) override;
 
 	};
 	_STD ostream& operator<<(_STD ostream& os, const CSyntaxRule& rule);

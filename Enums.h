@@ -1,7 +1,14 @@
 #pragma once
 
-enum Option { OptionNone, OptionRepetition, OptionOptional };
+//CGroup options
+enum Option
+{
+	OptionNone,			// (...)
+	OptionRepetition,	// {...}
+	OptionOptional		// [...]
+};
 
+//EBNF grammar symbols
 enum Symbol
 {
 	SymbolUnknown,
@@ -23,13 +30,14 @@ enum Symbol
 	SymbolTerminator	// ; .
 };
 
+//format effects applied via special symbols ?...?
 enum FormatEffect
 {
-	FormatNone,
-	FormatTab,
-	FormatSpace,
-	FormatNoSpace,
-	FormatNewLine,
-	FormatIntend,
-	FormatDedend
+	FormatNone,		//no format
+	FormatTab,		//insert tab character
+	FormatSpace,	//enable spacing between symbols
+	FormatNoSpace,	//disable spacing between symbols
+	FormatNewLine,	//insert new line and intend
+	FormatIntend,	//increase intend
+	FormatDedend	//decrease intend
 };

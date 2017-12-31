@@ -110,13 +110,13 @@ namespace GrammarSymbols
 	}
 
 
-	void CGroup::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const
+	void CGroup::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		CGrammarObject::ForEach(condition, action);
 		definitionList.ForEach(condition, action);
 	}
 
-	void CGroup::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action)
+	void CGroup::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		CGrammarObject::ForEach(condition, action);
 		definitionList.ForEach(condition, action);

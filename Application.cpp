@@ -16,6 +16,7 @@
 
 using namespace std;
 using namespace GrammarSymbols;
+using namespace Parser;
 
 void CApplication::RegisterAllPrefixes()
 {
@@ -34,9 +35,11 @@ void CApplication::UnregisterAllPrefixes()
 void CApplication::ProcessCmdArgs(int argc, char* argv[])
 {
 	if (argc < 3)
-		throw MyException("Too few arguments.", -1);
+		throw MYEXCEPTION("Too few arguments.", -1);
 	grammarFilename = argv[1];
 	codeFilename = argv[2];
+	//if only 2 parameters, input file is either an output file
+	outputFilename = argv[argc == 3 ? 2 : 3];
 }
 
 CSyntax CApplication::ReadGrammar(_STD istream & grammar)
@@ -57,7 +60,7 @@ CSyntax CApplication::ReadGrammar(_STD istream & grammar)
 			<< lineContent << endl;
 		if (pos != 0)
 			cerr << string(pos - 1, '=') << "^" << endl;
-		throw MyException(e.what(), -3);
+		throw MYEXCEPTION(e.what(), -3);
 	}
 	return syntax;
 }
@@ -68,7 +71,7 @@ void CApplication::CheckCorrectness(CSyntax & syntax)
 	if (!syntax.IsCorrect(ref(message)))
 	{
 		cerr << "Grammar contains errors!" << endl;
-		throw MyException(message, -4);
+		throw MYEXCEPTION(message, -4);
 	}
 
 	cout << "Grammar is correct" << endl;
@@ -77,13 +80,16 @@ void CApplication::CheckCorrectness(CSyntax & syntax)
 		<< message << endl;
 }
 
-#include "MetaIdentifierManager.h"
+CApplication::CApplication(int argc, char * argv[])
+{
+	ProcessCmdArgs(argc, argv);
+}
 void CApplication::Run()
 {
 	RegisterAllPrefixes();
 	ifstream grammarFile(grammarFilename, ios::binary);
 	if (!grammarFile.is_open())
-		throw MyException("Could not open grammar file", -2);
+		throw MYEXCEPTION("Could not open grammar file", -2);
 	CSyntax grammar = ReadGrammar(grammarFile);
 	grammarFile.close();
 	grammar.Simplify();
@@ -91,7 +97,8 @@ void CApplication::Run()
 	CheckCorrectness(grammar);
 	grammar.CreateSets();
 #ifdef DEBUG_PRINTMEM
-	CMetaIdentifierManager::PrintMemory();
+	cerr << "identifier memory:" << endl;
+	CDefinedSymbolManager::PrintMemory(cerr);
 	cout << grammar;
 #endif
 
@@ -104,7 +111,7 @@ void CApplication::Run()
 
 	ifstream codeFile(codeFilename, ios::binary);
 	if (!codeFile.is_open())
-		throw MyException("Could not open input file", -5);
+		throw MYEXCEPTION("Could not open input file", -5);
 
 
 	CParser parser(table[0]);

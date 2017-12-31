@@ -2,6 +2,7 @@
 #include <map>
 #include <iostream>
 
+//Prefix tree for incremental recognizing. Each edge corresponds to single character in given word
 template<typename _VALUE> class CTree
 {
 	const _VALUE* current = nullptr;

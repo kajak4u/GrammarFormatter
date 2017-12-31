@@ -2,7 +2,7 @@
 #include "Recognizer.h"
 #include "main.h"
 #include <string>
-#include "MetaIdentifierManager.h"
+#include "DefinedSymbolManager.h"
 #include "ShortDefinition.h"
 #include "Terminal.h"
 #include "Special.h"
@@ -92,7 +92,7 @@ namespace GrammarSymbols
 
 	bool CMetaIdentifier::GetWarnings(MySet<_STD string>& undefined, MySet<_STD string>& unused)
 	{
-		auto& memory = CMetaIdentifierManager::GetMemory();
+		auto& memory = CDefinedSymbolManager::GetMemory();
 		for (auto& keyVal : memory)
 		{
 			if (!keyVal.second->used)

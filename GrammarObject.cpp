@@ -41,13 +41,13 @@ namespace GrammarSymbols
 	CGrammarObject::~CGrammarObject()
 	{}
 #endif
-	void CGrammarObject::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(const CGrammarObject*)> action) const
+	void CGrammarObject::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
 		if (condition(this))
 			action(this);
 	}
 
-	void CGrammarObject::ForEach(_STD function<bool(const CGrammarObject*)> condition, _STD function<void(CGrammarObject*)> action)
+	void CGrammarObject::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
 		if (condition(this))
 			action(this);

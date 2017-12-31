@@ -1,5 +1,5 @@
 #include "DefinedGrammarSymbol.h"
-#include "MetaIdentifierManager.h"
+#include "DefinedSymbolManager.h"
 #include "Terminal.h"
 #include "ShortDefinition.h"
 
@@ -37,13 +37,13 @@ namespace GrammarSymbols
 	};
 
 
-	CMetaIdentifierManagerItem * CDefinedGrammarSymbol::GetItem() const
+	CDefinedSymbolManagerItem * CDefinedGrammarSymbol::GetItem() const
 	{
 		return item;
 	}
 	void CDefinedGrammarSymbol::Register()
 	{
-		item = CMetaIdentifierManager::Register(GetName());
+		item = CDefinedSymbolManager::Register(GetName());
 	}
 	MySet<CTerminal*, CompareObjects<CTerminal>>& CDefinedGrammarSymbol::First() const
 	{
@@ -81,7 +81,7 @@ namespace GrammarSymbols
 
 	void CDefinedGrammarSymbol::ForEach(std::function<void(const CDefinedGrammarSymbol*)> func)
 	{
-		auto& memory = CMetaIdentifierManager::GetMemory();
+		auto& memory = CDefinedSymbolManager::GetMemory();
 		for (auto& item : memory)
 		{
 			CMockDefinedGrammarSymbol symbol(item.first);
