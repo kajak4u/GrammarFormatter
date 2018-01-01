@@ -28,13 +28,13 @@ namespace GrammarSymbols
 		{
 			//todo in the future...
 			if (term->HasException())
-				throw MYEXCEPTION("Exception clauses not supported yet...", 1);
+				throw MYEXCEPTION("Exception clauses not supported yet...", 100);
 			const CFactor& factor = term->GetFactor();
 			const CPrimary* primary = factor.GetPrimary();
 			if (primary == nullptr)
 				continue;
 			if (primary != nullptr && !is<const CDefinedGrammarSymbol*>(primary) && !is<const CTerminal*>(primary))
-				throw MYEXCEPTION("Expected terminal, identifier or special", -1);
+				throw MYEXCEPTION("Expected terminal, identifier or special", 2);
 			else if (auto identifier = dynamic_cast<const CMetaIdentifier*>(primary))
 				identifier->MarkAsUsed();
 			//get rid of multiplier by simply multiplying corresponding primary

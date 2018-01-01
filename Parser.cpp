@@ -91,7 +91,7 @@ namespace Parser
 			else
 				currentTerminal = CTerminal::Recognize(file);
 			if (currentTerminal == nullptr)
-				throw MYEXCEPTION("Syntax error - unrecognized terminal.", 1);
+				throw MYEXCEPTION("Syntax error - unrecognized terminal.", -6);
 #ifdef DEBUG_PARSING
 			cerr << "Recognized terminal: " << *currentTerminal << endl;
 #endif
@@ -123,10 +123,10 @@ namespace Parser
 	void CParser::WriteFormattedTo(std::ostream & os) const
 	{
 		if (stack.size() != 2)
-			throw MYEXCEPTION("Invalid stack size.",1);
+			throw MYEXCEPTION("Invalid stack size.",5);
 		CParseTreeNode* treeTop = dynamic_cast<CParseTreeNode*>(stack.back());
 		if (treeTop == nullptr)
-			throw MYEXCEPTION("Invalid stack content.",1);
+			throw MYEXCEPTION("Invalid stack content.",6);
 		int intend = 0;
 		bool spaces = true;
 		//stack of symbols with current positions - alternative for recursive printing
@@ -193,7 +193,7 @@ namespace Parser
 			}
 			//shouldn't ever happen
 			else
-				throw MYEXCEPTION("Unexpected node in hierarchy", 1);
+				throw MYEXCEPTION("Unexpected node in hierarchy", 7);
 		}
 	}
 

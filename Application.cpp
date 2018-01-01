@@ -26,8 +26,19 @@ void CApplication::UnregisterAllPrefixes()
 
 void CApplication::ProcessCmdArgs(int argc, char* argv[])
 {
+	if (argc == 2 && (string(argv[1]) == "/?") || string(argv[1]) == "--help")
+	{
+		
+		throw MYEXCEPTION(string()+
+			"Usage: GrammarFormatter grammar-file input-file [output-file]\n\n"+
+			"Description: Uses EBNF grammar file to format input-file, save result to output-file\n\n"+
+			"  grammar-file      file containing EBNF grammar file\n"+
+			"  input-file        Input file to process\n"+
+			"  output-file       Output file to store results.\n"+
+			"                    If not specified, result is saved in input-file., ", 0);
+	}
 	if (argc < 3)
-		throw MYEXCEPTION("Too few arguments.", 1);
+		throw MYEXCEPTION("Too few arguments. Use '/?' or '--help' for help.", -1);
 	grammarFilename = argv[1];
 	codeFilename = argv[2];
 	//if there are only 2 parameters, input file is either an output file
@@ -46,7 +57,7 @@ CSyntax CApplication::ReadGrammar(_STD istream & grammar)
 	catch (exception e)
 	{
 		PrintErrorPos(grammar, cerr);
-		throw MYEXCEPTION(e.what(), 3);
+		throw MYEXCEPTION(e.what(), 8);
 	}
 	return syntax;
 }
@@ -57,7 +68,7 @@ void CApplication::CheckCorrectness(CSyntax & syntax)
 	if (!syntax.IsCorrect(ref(message)))
 	{
 		cerr << "Grammar contains errors!" << endl;
-		throw MYEXCEPTION(message, 4);
+		throw MYEXCEPTION(message, -7);
 	}
 }
 
@@ -102,7 +113,7 @@ void CApplication::ParseFile(Parser::CParser & parser, std::istream & file)
 	parser.PrintStackTo(cerr);
 #endif
 	if (!parser.Accepted())
-		throw MYEXCEPTION("The input file is not grammaticaly correct.", 6);
+		throw MYEXCEPTION("The input file is not grammaticaly correct.", -8);
 }
 
 CApplication::CApplication(int argc, char * argv[])
@@ -119,7 +130,7 @@ void CApplication::Run()
 	RegisterAllPrefixes();
 	ifstream grammarFile(grammarFilename, ios::binary);
 	if (!grammarFile.is_open())
-		throw MYEXCEPTION("Could not open grammar file", 2);
+		throw MYEXCEPTION("Could not open grammar file", -9);
 	CSyntax grammar = ReadGrammar(grammarFile);
 	grammarFile.close();
 	//parse grammar
@@ -127,14 +138,14 @@ void CApplication::Run()
 	//parse input file
 	ifstream codeFile(codeFilename, ios::binary);
 	if (!codeFile.is_open())
-		throw MYEXCEPTION("Could not open input file", 5);
+		throw MYEXCEPTION("Could not open input file", -10);
 	CParser parser(table[0]);
 	ParseFile(parser, codeFile);
 	codeFile.close();
 	//write result
 	ofstream output(outputFilename, ios::binary);
 	if (!output.is_open())
-		throw MYEXCEPTION("Could not open output file", 7);
+		throw MYEXCEPTION("Could not open output file", -11);
 	cout << "Saving input file..." << endl;
 	parser.WriteFormattedTo(output);
 	cout << "Done." << endl;

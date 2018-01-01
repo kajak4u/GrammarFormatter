@@ -29,14 +29,14 @@ namespace Parser
 	{
 		//if there is a conflict, grammar is not SLR(1)
 		if (actions.find(terminal) != actions.end())
-			throw MYEXCEPTION(std::string() + "Grammar syntax error - duplicate action at " + terminal->GetValue() + ".\nGrammar is not SLR(1).", -1);
+			throw MYEXCEPTION(std::string() + "Grammar syntax error - duplicate action at " + terminal->GetValue() + ".\nGrammar is not SLR(1).", -2);
 		actions[terminal] = action;
 	}
 	void CParsingState::AddGoto(const CDefinedGrammarSymbol *symbol, CGoto *newGoto)
 	{
 		//if there is a conflict, grammar is not SLR(1)
 		if (gotos.find(symbol) != gotos.end())
-			throw MYEXCEPTION(std::string() + "Grammar syntax error - duplicate goto at " + symbol->GetName() + ".\nGrammar is not SLR(1).", -1);
+			throw MYEXCEPTION(std::string() + "Grammar syntax error - duplicate goto at " + symbol->GetName() + ".\nGrammar is not SLR(1).", -3);
 		gotos[symbol] = newGoto;
 	}
 	const CSituations * CParsingState::GetSituations() const
@@ -47,14 +47,14 @@ namespace Parser
 	{
 		auto iter = actions.find(terminal);
 		if (iter == actions.end())
-			throw MYEXCEPTION(std::string() + "Syntax error - unexpected terminal " + terminal->GetValue() + ".", -1);
+			throw MYEXCEPTION(std::string() + "Syntax error - unexpected terminal " + terminal->GetValue() + ".", -4);
 		return iter->second;
 	}
 	CGoto * CParsingState::GetGoto(const CDefinedGrammarSymbol *symbol) const
 	{
 		auto iter = gotos.find(symbol);
 		if (iter == gotos.end())
-			throw MYEXCEPTION(std::string() + "Syntax error - unexpected symbol " + symbol->GetName() + ".", -1);
+			throw MYEXCEPTION(std::string() + "Syntax error - unexpected symbol " + symbol->GetName() + ".", -5);
 		return iter->second;
 	}
 }

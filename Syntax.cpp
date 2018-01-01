@@ -57,7 +57,7 @@ namespace GrammarSymbols
 			{
 				const CShortDefinition* sdef = dynamic_cast<const CShortDefinition*>(def);
 				if (sdef == nullptr)
-					throw MYEXCEPTION("Only shortdefinitions allowed", 1);
+					throw MYEXCEPTION("Only shortdefinitions allowed", 3);
 				//if production is empty, FIRST should contain empty symbol
 				if (sdef->empty())
 					symbol->First() += nullptr;
@@ -71,7 +71,7 @@ namespace GrammarSymbols
 					else if (is<CDefinedGrammarSymbol*>(primary))
 						startingWithSymbol.insert({ sdef, dynamic_cast<CDefinedGrammarSymbol*>(symbol->spawn(true)) });
 					else
-						throw MYEXCEPTION("Unexpected null pointer in definition", 1);
+						throw MYEXCEPTION("Unexpected null pointer in definition", 4);
 				}
 			}
 		});

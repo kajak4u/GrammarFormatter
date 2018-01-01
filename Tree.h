@@ -57,7 +57,7 @@ public:
 		else
 			result = child->second->GetFromStream(is);
 		if (result == nullptr && !is.eof())
-			throw MyException("Unrecognized symbol '"+mem+"'.", -12);
+			throw MyException("Unrecognized symbol '"+mem+"'.", 1);
 		mem.pop_back();
 		return result;
 	}
