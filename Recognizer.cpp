@@ -1,5 +1,5 @@
-#include "Recognizer.h"
 #include "main.h"
+#include "Recognizer.h"
 
 namespace GrammarSymbols
 {

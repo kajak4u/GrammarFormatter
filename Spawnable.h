@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 //interface for objects' spawning and copying
 class ISpawnable

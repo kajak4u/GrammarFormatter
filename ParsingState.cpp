@@ -1,9 +1,8 @@
+#include "Action.h"
+#include "DefinedGrammarSymbol.h"
+#include "Goto.h"
 #include "ParsingState.h"
 #include "Terminal.h"
-#include "DefinedGrammarSymbol.h"
-#include "Action.h"
-#include "Goto.h"
-#include <string>
 
 namespace Parser
 {

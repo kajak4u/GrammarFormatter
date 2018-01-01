@@ -1,10 +1,11 @@
-#include "ParsingTable.h"
-#include "Situation.h"
-#include "ParsingState.h"
 #include "AcceptAction.h"
-#include "ShiftAction.h"
-#include "ReduceAction.h"
 #include "Goto.h"
+#include "ParsingState.h"
+#include "ParsingTable.h"
+#include "ReduceAction.h"
+#include "ShiftAction.h"
+#include "Syntax.h"
+#include "Terminal.h"
 
 using namespace std;
 

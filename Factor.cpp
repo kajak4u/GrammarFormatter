@@ -1,8 +1,9 @@
 #include "Factor.h"
-#include "Recognizer.h"
 #include "main.h"
-#include <string>
 #include "Multiplier.h"
+#include "Primary.h"
+#include "Recognizer.h"
+#include <string>
 
 using namespace std;
 

@@ -1,19 +1,10 @@
 #include "Application.h"
-
-#include "Terminal.h"
 #include "Group.h"
-#include "MetaIdentifier.h"
-#include "DefinedSymbolManager.h"
 #include "Multiplier.h"
-#include "Syntax.h"
-#include "Special.h"
-#include "main.h"
-#include <regex>
-#include <fstream>
-#include <map>
-#include "SyntaxRule.h"
-#include "ParsingTable.h"
 #include "Recognizer.h"
+#include "Parser.h"
+#include "Special.h"
+#include <fstream>
 
 using namespace std;
 using namespace GrammarSymbols;

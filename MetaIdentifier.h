@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Primary.h"
 #include "MySet.h"
-#include "main.h"
 #include "DefinedGrammarSymbol.h"
 
 namespace GrammarSymbols

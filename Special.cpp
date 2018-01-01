@@ -1,11 +1,8 @@
-#include "Special.h"
-#include "Recognizer.h"
-#include "main.h"
-#include <string>
-#include "MetaIdentifier.h"
-#include "Terminal.h"
-#include "ShortDefinition.h"
 #include "DefinedSymbolManager.h"
+#include "Recognizer.h"
+#include "ShortDefinition.h"
+#include "Special.h"
+#include "Terminal.h"
 
 using namespace std;
 

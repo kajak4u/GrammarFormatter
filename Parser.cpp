@@ -1,13 +1,12 @@
-#include "Parser.h"
-
-#include "Syntax.h"
-#include "main.h"
-#include "ParsingTable.h"
-#include "ParseTreeLeaf.h"
-#include "Special.h"
-#include "ParsingState.h"
 #include "Action.h"
 #include "Goto.h"
+#include "Parser.h"
+#include "ParseTreeLeaf.h"
+#include "ParseTreeNode.h"
+#include "ParsingState.h"
+#include "ParsingTable.h"
+#include "Special.h"
+#include "Syntax.h"
 using namespace std;
 
 namespace Parser

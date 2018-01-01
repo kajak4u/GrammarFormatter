@@ -2,7 +2,6 @@
 
 #include "Readable.h"
 #include "Factor.h"
-#include <functional>
 #include "GrammarObject.h"
 
 namespace GrammarSymbols

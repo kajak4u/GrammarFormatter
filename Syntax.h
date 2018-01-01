@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Readable.h"
 #include <vector>
-#include <set>
 #include "Readable.h"
 #include "GrammarObject.h"
 #include "MetaIdentifier.h"

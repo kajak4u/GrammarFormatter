@@ -1,10 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <map>
-#include "Syntax.h"
-#include "Parser.h"
-#include "main.h"
 #include "Situation.h"
 
 namespace GrammarSymbols {
@@ -13,6 +9,8 @@ namespace GrammarSymbols {
 
 namespace Parser
 {
+	class CParsingState;
+
 	//parsing table - an array of parsing states
 	class CParsingTable : public std::vector<CParsingState*>
 	{

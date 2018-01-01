@@ -1,6 +1,5 @@
-#include "DefinitionList.h"
-#include "main.h"
 #include "ComplexDefinition.h"
+#include "DefinitionList.h"
 #include "ShortDefinition.h"
 
 namespace GrammarSymbols

@@ -1,10 +1,6 @@
 #include "ComplexDefinition.h"
-#include "Enums.h"
-#include "main.h"
-#include "Term.h"
 #include "MetaIdentifier.h"
-#include "Terminal.h"
-#include "Recognizer.h"
+#include "Term.h"
 
 using namespace std;
 

@@ -1,10 +1,8 @@
-#include "main.h"
 #include "Application.h"
-#include <fstream>
-#include <string>
+#include "main.h"
+#include "Reverse.h"
 #include <map>
 #include <regex>
-#include "Reverse.h"
 
 /*
  * available debug macros:

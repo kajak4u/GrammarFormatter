@@ -4,6 +4,11 @@
 #include "Syntax.h"
 #include "ParsingTable.h"
 
+namespace Parser
+{
+	class CParser;
+}
+
 //main program class
 class CApplication
 {

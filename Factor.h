@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Readable.h"
-#include "Primary.h"
-#include <functional>
 #include "GrammarObject.h"
 
 namespace GrammarSymbols
 {
+	class CPrimary;
+
 	//factor class from EBNF standard - holds multiplier and primary
 	class CFactor : public IReadable, public CGrammarObject
 	{

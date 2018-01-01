@@ -1,6 +1,6 @@
+#include "DefinedGrammarSymbol.h"
 #include "Situation.h"
 #include "Terminal.h"
-#include "DefinedGrammarSymbol.h"
 
 namespace Parser
 {

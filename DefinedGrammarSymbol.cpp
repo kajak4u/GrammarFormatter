@@ -1,7 +1,7 @@
 #include "DefinedGrammarSymbol.h"
 #include "DefinedSymbolManager.h"
-#include "Terminal.h"
 #include "ShortDefinition.h"
+#include "Terminal.h"
 
 using namespace std;
 

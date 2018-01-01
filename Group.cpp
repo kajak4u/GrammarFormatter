@@ -1,5 +1,5 @@
-#include "main.h"
 #include "Group.h"
+#include "main.h"
 #include "Recognizer.h"
 
 using namespace std;

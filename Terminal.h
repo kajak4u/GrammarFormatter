@@ -2,7 +2,6 @@
 
 #include <string>
 #include "Primary.h"
-#include "GrammarObject.h"
 
 namespace GrammarSymbols
 {

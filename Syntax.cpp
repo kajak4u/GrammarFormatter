@@ -1,13 +1,8 @@
-
+#include "Factor.h"
+#include "Group.h"
+#include "HelperSyntaxRule.h"
 #include "ShortDefinition.h"
 #include "Syntax.h"
-#include "SyntaxRule.h"
-#include "Special.h"
-#include "main.h"
-#include "Term.h"
-#include "Group.h"
-#include "Factor.h"
-#include "HelperSyntaxRule.h"
 #include "Terminal.h"
 #include <map>
 

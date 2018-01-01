@@ -1,5 +1,4 @@
 #include "DefinedSymbolManager.h"
-#include <iostream>
 #include "Terminal.h"
 
 namespace GrammarSymbols

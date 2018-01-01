@@ -2,7 +2,6 @@
 
 #include <vector>
 #include "Definition.h"
-#include "MySet.h"
 
 namespace GrammarSymbols
 {

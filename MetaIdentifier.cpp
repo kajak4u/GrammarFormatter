@@ -1,11 +1,6 @@
+#include "DefinedSymbolManager.h"
 #include "MetaIdentifier.h"
 #include "Recognizer.h"
-#include "main.h"
-#include <string>
-#include "DefinedSymbolManager.h"
-#include "ShortDefinition.h"
-#include "Terminal.h"
-#include "Special.h"
 
 using namespace std;
 

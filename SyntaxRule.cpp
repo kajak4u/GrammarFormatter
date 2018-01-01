@@ -1,6 +1,5 @@
 #include "SyntaxRule.h"
 #include "Definition.h"
-#include "main.h"
 
 using namespace std;
 

@@ -1,8 +1,4 @@
 #include "HelperSyntaxRule.h"
-#include "Group.h"
-#include "Term.h"
-#include "Factor.h"
-#include "ComplexDefinition.h"
 #include "ShortDefinition.h"
 
 using namespace std;

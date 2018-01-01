@@ -1,5 +1,5 @@
-#include "ShiftAction.h"
 #include "Parser.h"
+#include "ShiftAction.h"
 
 namespace Parser
 {

@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Readable.h"
 #include <vector>
 #include "Enums.h"
-#include "Spawnable.h"
 #include "DefinitionList.h"
 #include "Primary.h"
 

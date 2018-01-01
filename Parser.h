@@ -1,19 +1,21 @@
 #pragma once
 
-#include "ShortDefinition.h"
 #include "Terminal.h"
 #include <iostream>
-#include "ParseTreeItem.h"
-#include "ParseTreeNode.h"
+#include <vector>
 
 namespace GrammarSymbols
 {
 	class CDefinedGrammarSymbol;
+	class CShortDefinition;
+	class CTerminal;
 }
 
 namespace Parser
 {
 	class CParsingState;
+	class CParseTreeItem;
+	using namespace ::GrammarSymbols;
 
 	//class performing the parsing process, starting from given state
 	class CParser

@@ -1,11 +1,9 @@
-#include "ShortDefinition.h"
 #include "ComplexDefinition.h"
-#include "Terminal.h"
-#include "Special.h"
-#include "Term.h"
-#include "main.h"
 #include "MetaIdentifier.h"
 #include "Recognizer.h"
+#include "ShortDefinition.h"
+#include "Term.h"
+#include "Terminal.h"
 
 using namespace std;
 

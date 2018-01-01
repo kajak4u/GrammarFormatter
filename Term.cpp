@@ -1,5 +1,5 @@
-#include "Term.h"
 #include "main.h"
+#include "Term.h"
 
 using namespace std;
 

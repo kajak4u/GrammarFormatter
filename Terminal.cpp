@@ -1,7 +1,7 @@
-#include "Terminal.h"
-#include "Recognizer.h"
-#include "TerminalManager.h"
 #include "MetaIdentifier.h"
+#include "Recognizer.h"
+#include "Terminal.h"
+#include "TerminalManager.h"
 
 using namespace std;
 
