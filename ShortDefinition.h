@@ -23,6 +23,8 @@ namespace GrammarSymbols
 		CShortDefinition(CShortDefinition&&) = default;
 		//constructor from previous complex definition
 		CShortDefinition(CComplexDefinition* previous);
+		//constructor from initializer list
+		CShortDefinition(_STD initializer_list<CPrimary*> list);
 		//destructor
 		virtual ~CShortDefinition();
 

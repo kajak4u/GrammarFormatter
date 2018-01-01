@@ -40,13 +40,8 @@ namespace GrammarSymbols
 		do
 		{
 			this->push_back(new CTerm(is));
-			skipWhiteChars(is);
-			//usun symbol ze strumienia tylko jesli jest to separator
-			if (GetSymbol(is, false) == SymbolConcatenate)
-				GetSymbol(is, true);
-			else
-				break;
-		} while (true);
+			//if next symbol is concatenate - it is followed by next definition's symbol
+		} while (TakeSymbolIf(is, SymbolConcatenate));
 		return is;
 	}
 
@@ -64,14 +59,18 @@ namespace GrammarSymbols
 
 	void CComplexDefinition::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
+		//apply to itself...
 		CGrammarObject::ForEach(condition, action);
+		//...and to every child term
 		for (const CTerm* term : *this)
 			term->ForEach(condition, action);
 	}
 
 	void CComplexDefinition::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
+		//apply to itself...
 		CGrammarObject::ForEach(condition, action);
+		//...and to every child term
 		for (CTerm* term : *this)
 			term->ForEach(condition, action);
 	}

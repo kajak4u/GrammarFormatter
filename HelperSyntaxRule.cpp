@@ -18,7 +18,7 @@ namespace GrammarSymbols
 		: CSyntaxRule(helperIdentifier)
 	{
 		for (const CDefinition* item : origin)
-			AddDefinition(dynamic_cast<CDefinition*>(item->spawn(true)));
+			AddCopyDefinition(item);
 	}
 
 	CHelperSyntaxRule::CHelperSyntaxRule(const CMetaIdentifier & helperIdentifier, const CMetaIdentifier & helperIdentifier2, GroupType option)
@@ -26,21 +26,22 @@ namespace GrammarSymbols
 	{
 		if (option == GroupOptional)
 		{
-			// H2 = H1 | [empty]
-			CShortDefinition *shortDef = new CShortDefinition();
-			shortDef->push_back(new CMetaIdentifier(helperIdentifier2));
-
+			//add definition: H2 = H1 | [empty]
 			AddDefinition(new CShortDefinition());
-			AddDefinition(shortDef);
+			AddDefinition(new CShortDefinition
+			{
+				new CMetaIdentifier(helperIdentifier2)
+			});
 		}
 		else if (option == GroupRepetition)
 		{
-			// H2 = H2, H1 | [empty] ?
-			CShortDefinition* shortDef = new CShortDefinition();
-			shortDef->push_back(new CMetaIdentifier(helperIdentifier2));
-			shortDef->push_back(new CMetaIdentifier(helperIdentifier));
+			//add definition: H2 = H2, H1 | [empty];
 			AddDefinition(new CShortDefinition());
-			AddDefinition(shortDef);
+			AddDefinition(new CShortDefinition
+			{
+				new CMetaIdentifier(helperIdentifier2),
+				new CMetaIdentifier(helperIdentifier)
+			});
 		}
 	}
 }

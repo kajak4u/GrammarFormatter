@@ -25,12 +25,6 @@ namespace GrammarSymbols
 		: type(type)
 	{
 	}
-	//
-	//CGroup & CGroup::operator=(const CGroup & other)
-	//{
-	//	definitionList = other.definitionList;
-	//	options = other.options;
-	//}
 
 	CGroup::~CGroup()
 	{
@@ -40,6 +34,7 @@ namespace GrammarSymbols
 	{
 		char c = is.get(), c2;
 		char endch, endch2 = '\0';
+		//recognize group type based on opening sequence
 		switch (c)
 		{
 		case '[':
@@ -53,6 +48,7 @@ namespace GrammarSymbols
 		case '(':
 			endch2 = ')';
 			endch = c2 = is.get();
+			//check two-characters sequences: (/ for [ and (: for {
 			switch (c2)
 			{
 			case '/':
@@ -71,8 +67,10 @@ namespace GrammarSymbols
 			throw invalid_argument(string() + "Group cannot begin with '" + c + "'");
 			break;
 		}
+		//read corresponding definition list
 		is << definitionList;
-		skipWhiteChars(is);
+		SkipWhiteChars(is);
+		//expect proper ending
 		c = is.get();
 		if (c != endch)
 			throw invalid_argument(string() + "Expected end-of-group symbol '" + endch + "', got '" + c + "'");
@@ -112,13 +110,17 @@ namespace GrammarSymbols
 
 	void CGroup::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
+		//apply to itself...
 		CGrammarObject::ForEach(condition, action);
+		//...and to definition list
 		definitionList.ForEach(condition, action);
 	}
 
 	void CGroup::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
+		//apply to itself...
 		CGrammarObject::ForEach(condition, action);
+		//...and to definition list
 		definitionList.ForEach(condition, action);
 	}
 

@@ -8,6 +8,7 @@ namespace GrammarSymbols
 	std::set<CGrammarObject*> CGrammarObject::existing;
 	CGrammarObject::CGrammarObject()
 	{
+		//add instance to counter and set
 		existing.insert(this);
 		++counter;
 		std::cerr << "Created grammar object, currently " << counter << " exist" << std::endl;
@@ -22,6 +23,7 @@ namespace GrammarSymbols
 	}
 	CGrammarObject::~CGrammarObject()
 	{
+		//remove instance from set and counter
 		if(existing.find(this)!=existing.end())
 			existing.erase(this);
 		else

@@ -18,8 +18,15 @@ namespace Parser
 		//array of gotos when reduced to a symbol
 		_STD map<const CDefinedGrammarSymbol*, CGoto*, CompareObjects<CDefinedGrammarSymbol>> gotos;
 	public:
+#ifdef _DEBUG
+		//state's record number - used in debug mode for it is more convenient for human than comparing pointers
+		int id;
+		//constructor
+		CParsingState(int id, CSituations* situations);
+#else
 		//constructor
 		CParsingState(CSituations* situations);
+#endif
 		//destructor
 		~CParsingState();
 		//set an action on given terminal
@@ -32,12 +39,5 @@ namespace Parser
 		CGoto* GetGoto(const CDefinedGrammarSymbol*) const;
 		//return situations set
 		const CSituations* GetSituations() const;
-#ifdef _DEBUG
-		//state's record number - used in debug mode for it is more convenient for human than comparing pointers
-		int id;
-		CParsingState(int id, CSituations* situations)
-			: id(id), situations(situations)
-		{}
-#endif
 	};
 }

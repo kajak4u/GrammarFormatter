@@ -30,7 +30,7 @@ namespace GrammarSymbols
 
 	CSpecial::~CSpecial()
 	{
-		//last instance - remove definitions
+		//if removing last instance, remove its corresponding definitions
 		auto item = GetItem();
 		if (item != nullptr && item->instances == 1)
 		{
@@ -42,24 +42,25 @@ namespace GrammarSymbols
 
 	_STD istream & CSpecial::ReadFrom(_STD istream & is)
 	{
-		skipWhiteChars(is);
+		SkipWhiteChars(is);
 		char c = is.get();
 		if (c != '?')
 			throw invalid_argument(string() + "Special sequence should start with question mark, '" + c + "' found instead.");
-		skipWhiteChars(is);
-
+		SkipWhiteChars(is);
+		//add characters until encounters another question mark
 		while (!is.eof() && (c = is.get()) != '?')
 			name += toupper(c);
 		if (c != '?')
 			throw invalid_argument(string() + "Special sequence should end with question mark, '" + c + "' found instead.");
-
+		//pop back trailing spaces
 		while (name.back() == ' ')
 			name.pop_back();
-
+		//assign corresponding format
 		auto iter = formatMap.find(name);
 		if (iter != formatMap.end())
 			format = iter->second;
 		Register();
+		//if first defined, add empty definition
 		const auto& item = GetItem();
 		item->used = true;
 		if (item->definitions.empty())

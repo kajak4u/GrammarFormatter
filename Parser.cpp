@@ -40,17 +40,20 @@ namespace Parser
 	void CParser::Reduce(const CDefinedGrammarSymbol *identifier, const CShortDefinition *definition)
 	{
 		CParseTreeNode::SubTree subtree;
+		//move proper number of items from stack to identifier's derivation subtree
 		subtree.reserve(definition->size());
 		auto separator = std::prev(stack.end(), definition->size());
 		auto definitionIter = definition->begin();
 		for (auto stackIter = separator; stackIter != stack.end(); ++definitionIter, ++stackIter)
 			subtree.push_back({ *definitionIter, *stackIter });
 		stack.erase(separator, stack.end());
+		//change parser state and perform Goto
 		currentState = stack.back()->GetState();
 		stack.push_back(new CParseTreeNode(identifier, subtree, nullptr));
 		currentState->GetGoto(identifier)->Perform(*this);
 	}
 
+	//prints derivation tree onto given stream
 	void PrintTree(CParseTreeItem* tree, _STD ostream& os, int intend)
 	{
 		if (CParseTreeLeaf* leaf = dynamic_cast<CParseTreeLeaf*>(tree))
@@ -74,15 +77,14 @@ namespace Parser
 	void CParser::PrintStackTo(_STD ostream& os) const
 	{
 		for (auto item : stack)
-		{
 			PrintTree(item, os, 0);
-		}
 	}
 
 	void CParser::Process(istream & file)
 	{
-		skipWhiteChars(file, false);
+		SkipWhiteChars(file, false);
 		bool lastRun = false;
+		//when reached end of file, perform one last step with [uniqueTerminal] recognized
 		while (!file.eof() || (lastRun = !lastRun))
 		{
 			if (lastRun)
@@ -94,7 +96,8 @@ namespace Parser
 #ifdef DEBUG_PARSING
 			cerr << "Recognized terminal: " << *currentTerminal << endl;
 #endif
-			skipWhiteChars(file, false);
+			SkipWhiteChars(file, false);
+			//'REDUCE' actions do not take terminal from input - repeat as long as it is still there
 			while (currentTerminal != nullptr)
 			{
 				currentState->GetAction(currentTerminal)->Perform(*this);
@@ -127,16 +130,22 @@ namespace Parser
 			throw MYEXCEPTION("Invalid stack content.",1);
 		int intend = 0;
 		bool spaces = true;
-		vector<pair<CParseTreeNode::SubTree::const_iterator, CParseTreeNode::SubTree::const_iterator>> hierarchy = { { treeTop->getSubTree().begin(), treeTop->getSubTree().end() } };
+		//stack of symbols with current positions - alternative for recursive printing
+		vector<pair<CParseTreeNode::SubTree::const_iterator, CParseTreeNode::SubTree::const_iterator>> hierarchy = { 
+			{ treeTop->getSubTree().begin(), treeTop->getSubTree().end() }
+		};
 		bool firstInLine = true;
 		while (!hierarchy.empty())
 		{
+			//if reached end of subtree, pop it from stack's top
 			if (hierarchy.back().first == hierarchy.back().second)
 			{
 				hierarchy.pop_back();
 				continue;
 			}
+			//get current pos and increment it in background
 			auto& elem = hierarchy.back().first++;
+			//if special, apply format and print its derivation (if any)
 			if (CSpecial* special = dynamic_cast<CSpecial*>(elem->first))
 			{
 				switch (special->getFormat())
@@ -164,7 +173,11 @@ namespace Parser
 				default:
 					break;
 				}
+				//if special symbol has a derivation, print it
+				if (CParseTreeNode* node = dynamic_cast<CParseTreeNode*>(elem->second))
+					hierarchy.push_back({ node->getSubTree().begin(), node->getSubTree().end() });
 			}
+			//if terminal, print it with current format
 			else if (CTerminal* terminal = dynamic_cast<CTerminal*>(elem->first))
 			{
 				if (firstInLine)
@@ -173,11 +186,13 @@ namespace Parser
 					os << (spaces ? " " : "");
 				os << terminal->GetValue();
 			}
+			//if identifier, print its derivation
 			else if (CMetaIdentifier* identifier = dynamic_cast<CMetaIdentifier*>(elem->first))
 			{
 				if (CParseTreeNode* node = dynamic_cast<CParseTreeNode*>(elem->second))
 					hierarchy.push_back({ node->getSubTree().begin(), node->getSubTree().end() });
 			}
+			//shouldn't ever happen
 			else
 				throw MYEXCEPTION("Unexpected node in hierarchy", 1);
 		}

@@ -19,6 +19,7 @@ namespace Parser
 
 	bool CSituation::operator<(const CSituation& other) const
 	{
+		//firstly compare definitions, then cursor positions, finally compare allowed terminals
 		return def != other.def ? def < other.def
 			: pos != other.pos ? pos < other.pos
 			: *allowed < *other.allowed;
@@ -33,6 +34,7 @@ namespace Parser
 
 	_STD ostream & operator<<(_STD ostream & os, const CSituation & situation)
 	{
+		//cursor position is marked by '*' character, empty symbol is visible as [empty]
 		os << *situation.result << " =";
 		for (auto iter = situation.def->begin(); iter != situation.def->end(); ++iter)
 		{

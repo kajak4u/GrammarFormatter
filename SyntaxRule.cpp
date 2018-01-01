@@ -47,7 +47,9 @@ namespace GrammarSymbols
 
 	void CSyntaxRule::Simplify()
 	{
+		//simplify definition list
 		definitionList.Simplify();
+		//mark identifier as defined by all of new rules
 		for (auto& definition : definitionList)
 			identifier.MarkAsDefinedBy(definition);
 	}

@@ -3,12 +3,18 @@
 #include <iostream>
 #include "Enums.h"
 
+//prints error location, provided that it occured in current [file] stream position
+void PrintErrorPos(_STD istream& file, _STD ostream& output);
 //extracts [line, char, lineContent] from current is position
 void ExtractLinePos(_STD istream& is, int& line, int& pos, _STD string& lineContent);
 //Skips whitespaces in given input stream. If [EBNFComment] is true, EBNF-style comments are also treated as whitespaces.
-void skipWhiteChars(_STD istream& is, bool EBNFComment=true);
+void SkipWhiteChars(_STD istream& is, bool EBNFComment=true);
+//Takes EBNF symbol from input stream, returns its enumerate and characters expansion
+std::pair<_STD string, Symbol> RecognizeSymbol(_STD istream& is);
 //Recognizes EBNF symbol in given input stream. If [alterStream] is false, returns characters back to stream.
 Symbol GetSymbol(_STD istream& is, bool alterStream);
+//takes EBNF symbol from stream if it is equal to expected
+bool TakeSymbolIf(_STD istream& is, Symbol expectedSymbol);
 
 //returns null if given [iterator] is equal to given [collection]'s end, otherwise returns dereferenced [iterator]
 template<typename _T> auto inline DereferenceOrNull(const typename _T::const_iterator iterator, const _T& collection)

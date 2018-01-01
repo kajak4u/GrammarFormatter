@@ -21,8 +21,9 @@ namespace GrammarSymbols
 
 	ISpawnable* CRecognizer::CreateFor(_STD istream& is)
 	{
-		skipWhiteChars(is);
+		SkipWhiteChars(is);
 		const ISpawnable* found = instance().hierarchy.Predict(is);
+		//if found something, create its empty clone, return null otherwise
 		return found == nullptr ? nullptr : found->spawn();
 	}
 }

@@ -38,8 +38,7 @@ namespace GrammarSymbols
 		do
 		{
 			this->push_back(new CSyntaxRule(is));
-			//cout << "Read rule: " << *this->back() << endl;
-			skipWhiteChars(is);
+			SkipWhiteChars(is);
 		} while (!is.eof());
 		return is;
 	}
@@ -64,16 +63,17 @@ namespace GrammarSymbols
 				const CShortDefinition* sdef = dynamic_cast<const CShortDefinition*>(def);
 				if (sdef == nullptr)
 					throw MYEXCEPTION("Only shortdefinitions allowed", 1);
+				//if production is empty, FIRST should contain empty symbol
 				if (sdef->empty())
 					symbol->First() += nullptr;
 				else
 				{
-					auto primary = sdef->begin();
-					if (primary == sdef->end())
-						symbol->First() += nullptr;
-					else if (CTerminal* terminal = dynamic_cast<CTerminal*>(*primary))
-						symbol->First() += terminal;
-					else if (dynamic_cast<CDefinedGrammarSymbol*>(*primary))
+					auto& primary = *sdef->begin();
+					//if production begins with terminal, add it to FIRST set
+					if (is<CTerminal*>(primary))
+						symbol->First() += dynamic_cast<CTerminal*>(primary);
+					//if production begins with symbol, it should be process in a loop
+					else if (is<CDefinedGrammarSymbol*>(primary))
 						startingWithSymbol.insert({ sdef, dynamic_cast<CDefinedGrammarSymbol*>(symbol->spawn(true)) });
 					else
 						throw MYEXCEPTION("Unexpected null pointer in definition", 1);
@@ -103,16 +103,19 @@ namespace GrammarSymbols
 					CDefinedGrammarSymbol* currentId = dynamic_cast<CDefinedGrammarSymbol*>(*iter);
 					if (!currentId)
 						continue; //we look for x,[nonterminal],y
+					//if currentId is followed by terminal, add it to FOLLOW set
 					CTerminal* nextTerminal = dynamic_cast<CTerminal*>(DereferenceOrNull(nextIter, *sdef));
 					if (nextTerminal)
 						currentId->Follow() += nextTerminal;
 					else // (*nextIter == sdef->end() || dynamic_cast<CMetaIdentifier*>(*nextIter))
 					{
 						MySet<CTerminal*, CompareObjects<CTerminal>> firstFromFollowing = GetFirstFrom(nextIter, sdef->end());
+						//if FIRST from [nextIter..sdef->end()] doesn't contain empty symbol, add it to FOLLOW set
 						if (!firstFromFollowing.Contains(nullptr))
 							currentId->Follow() += firstFromFollowing;
 						else
 						{
+							//add all symbols except empty and add production for processing later
 							currentId->Follow() += (firstFromFollowing - nullptr);
 							followedPairs.insert({ currentId, dynamic_cast<CDefinedGrammarSymbol*>(symbol->spawn(true)) });
 						}
@@ -137,18 +140,18 @@ namespace GrammarSymbols
 	void CSyntax::Simplify()
 	{
 		vector<CFactor*> groupsToReplace;
-
+		//iterate over each factors to find all groups
 		ForEach(
 			[](const CGrammarObject* symbol)
-		{
-			const CFactor* factor = dynamic_cast<const CFactor*>(symbol);
-			return factor != nullptr && is<const CGroup*>(factor->GetPrimary());
-		},
-			[&groupsToReplace](CGrammarObject* symbol) {
-			groupsToReplace.push_back(dynamic_cast<CFactor*>(symbol));
-		}
+			{
+				const CFactor* factor = dynamic_cast<const CFactor*>(symbol);
+				return factor != nullptr && is<const CGroup*>(factor->GetPrimary());
+			},
+				[&groupsToReplace](CGrammarObject* symbol) {
+				groupsToReplace.push_back(dynamic_cast<CFactor*>(symbol));
+			}
 		);
-		//idziemy od konca - dlatego, zeby w przypadku zawierania najpierw podmienic grupe wewnetrzna
+		//iterate backward, because a group can contain another group and internal group, that should be processed first, is always later in the array
 		for (auto iter = groupsToReplace.rbegin(); iter != groupsToReplace.rend(); ++iter)
 		{
 			CFactor* factor = *iter;
@@ -156,6 +159,8 @@ namespace GrammarSymbols
 #ifdef DEBUG_SIMPLIFY
 			cerr << "Replace:" << endl << *group << endl << " For: " << endl;
 #endif
+			//replace group to one or many helper rules
+			//first rule is always group's definition list
 			CMetaIdentifier identifier("HS#" + to_string(++helperRulesCounter));
 			const CDefinitionList& defList = group->getDefinitionList();
 			CHelperSyntaxRule* helperRule = new CHelperSyntaxRule(identifier, defList);
@@ -163,6 +168,7 @@ namespace GrammarSymbols
 			cerr << *helperRule << endl;
 #endif
 			this->push_back(helperRule);
+			//if group is default, everything is now fine
 			if (group->GetType() == GroupDefault)
 			{
 				factor->SetPrimary(&identifier);
@@ -170,6 +176,7 @@ namespace GrammarSymbols
 			}
 			else
 			{
+				//if group was optional or repetition, then an additional rule should be added to keep it
 				CMetaIdentifier identifier2("HS#" + to_string(++helperRulesCounter));
 				CHelperSyntaxRule* helperRule2 = new CHelperSyntaxRule(identifier2, identifier, group->GetType());
 #ifdef DEBUG_SIMPLIFY
@@ -182,6 +189,7 @@ namespace GrammarSymbols
 			}
 		}
 
+		//once all groups have been removed, remaining rules may be safely simplified to primary objects' sequences
 		for (CSyntaxRule* rule : *this)
 		{
 #ifdef DEBUG_SIMPLIFY
@@ -199,23 +207,29 @@ namespace GrammarSymbols
 		MySet<string> undefined, unused;
 		if (!CMetaIdentifier::GetWarnings(undefined, unused))
 		{
+			//the only unused symbol is syntax's start symbol
 			CMetaIdentifier* currentStartSymbol = new CMetaIdentifier(*unused.begin());
-			CShortDefinition* def = new CShortDefinition();
-			def->push_back(currentStartSymbol);
+			//new rule will be added: S# = [currentStartSymbol];
 			CMetaIdentifier newStartSymbol = CMetaIdentifier("S#");
+			//S# FOLLOW set contains unique terminal that will be added at the end of input file
 			newStartSymbol.Follow() += CTerminal::Unique();
 			CSyntaxRule* newRule = new CSyntaxRule(newStartSymbol);
-			newRule->AddDefinition(def);
+			newRule->AddDefinition(new CShortDefinition
+			{
+				currentStartSymbol
+			});
 			newRule->Simplify();
 			currentStartSymbol->MarkAsUsed();
+			//add new rule to syntax
 			push_back(newRule);
 #ifdef DEBUG_PRINTMEM
 			cerr << "Start symbol is " << *currentStartSymbol << endl;
 #endif
+			//change start symbol to S#
 			startSymbol = newStartSymbol;
 			return true;
 		}
-		if (!undefined.empty())
+		else if (!undefined.empty())
 		{
 			for (auto& name : undefined)
 				errors += string(errors == "" ? "" : "\n") + "Error: symbol " + name + " was not declared.";

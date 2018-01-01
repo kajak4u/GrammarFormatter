@@ -2,6 +2,7 @@
 
 #include <string>
 #include "Syntax.h"
+#include "ParsingTable.h"
 
 //main program class
 class CApplication
@@ -22,6 +23,10 @@ class CApplication
 	GrammarSymbols::CSyntax ReadGrammar(_STD istream& file);
 	//checks grammar's correctness
 	void CheckCorrectness(GrammarSymbols::CSyntax& grammar);
+	//creates parsing table from grammar
+	Parser::CParsingTable ParseGrammar(GrammarSymbols::CSyntax& grammar);
+	//parses input file using given parser
+	void ParseFile(Parser::CParser& parser, _STD istream& file);
 public:
 	//constructor with commandline arguments
 	CApplication(int argc, char* argv[]);

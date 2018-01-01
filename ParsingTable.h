@@ -23,6 +23,8 @@ namespace Parser
 	public:
 		//constructor from given syntax
 		CParsingTable(const GrammarSymbols::CSyntax& grammar);
+		//move constructor
+		CParsingTable(CParsingTable&& other);
 		//destructor
 		~CParsingTable();
 		//creates new parsing state or returns pointer to identical one, already existing in table

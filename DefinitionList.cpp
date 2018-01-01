@@ -27,6 +27,7 @@ namespace GrammarSymbols
 
 	CDefinitionList CDefinitionList::operator=(CDefinitionList && other)
 	{
+		//move vector's memory
 		*((vector<CDefinition*>*)this) = _STD move((vector<CDefinition*>)other);
 		other.clear();
 		return *this;
@@ -37,13 +38,8 @@ namespace GrammarSymbols
 		do
 		{
 			this->push_back(new CComplexDefinition(is));
-			skipWhiteChars(is);
-			//usun symbol ze strumienia tylko jesli jest to separator
-			if (GetSymbol(is, false) == SymbolSeparator)
-				GetSymbol(is, true);
-			else
-				break;
-		} while (true);
+			//if next symbol is separator, it is followed by next definition
+		} while (TakeSymbolIf(is, SymbolSeparator));
 		return is;
 	}
 
@@ -64,6 +60,7 @@ namespace GrammarSymbols
 	{
 		for (CDefinition*& definition : *this)
 		{
+			//convert CComplexDefinitions to CShortDefinitions
 			if (CComplexDefinition* complexDefinition = dynamic_cast<CComplexDefinition*>(definition))
 			{
 				definition = new CShortDefinition(complexDefinition);
@@ -75,7 +72,9 @@ namespace GrammarSymbols
 
 	void CDefinitionList::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
+		//apply to itself...
 		CGrammarObject::ForEach(condition, action);
+		//...and to every child definition
 		for (const CDefinition* definition : *this)
 			if(definition)
 				definition->ForEach(condition, action);
@@ -83,7 +82,9 @@ namespace GrammarSymbols
 
 	void CDefinitionList::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
+		//apply to itself...
 		CGrammarObject::ForEach(condition, action);
+		//...and to every child definition
 		for (CDefinition* definition : *this)
 			if(definition)
 				definition->ForEach(condition, action);

@@ -60,6 +60,7 @@ namespace GrammarSymbols
 	istream & CFactor::ReadFrom(istream & is)
 	{
 		ISpawnable* obj = CRecognizer::CreateFor(is);
+		//if recognized multiplier - process it and recognize again
 		if (CMultiplier* mult = dynamic_cast<CMultiplier*>(obj))
 		{
 			mult->ReadFrom(is);
@@ -87,7 +88,9 @@ namespace GrammarSymbols
 
 	void CFactor::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
 	{
+		//apply to itself...
 		CGrammarObject::ForEach(condition, action);
+		//...and to child primary
 		if (primary != nullptr)
 		{
 			//workaround for ambiguous const and non-const call
@@ -97,7 +100,9 @@ namespace GrammarSymbols
 
 	void CFactor::ForEach(GrammarObjectPredicate condition, GrammarObjectAction action)
 	{
+		//apply to itself...
 		CGrammarObject::ForEach(condition, action);
+		//...and to child primary
 		if (primary != nullptr)
 			primary->ForEach(condition, action);
 	}

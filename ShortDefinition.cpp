@@ -24,25 +24,30 @@ namespace GrammarSymbols
 
 	CShortDefinition::CShortDefinition(CComplexDefinition * previous)
 	{
+		//convert terms to primary objects
+		//expects that there are no group objects already
 		for (const CTerm* term : *previous)
 		{
+			//todo in the future...
 			if (term->HasException())
-				throw MYEXCEPTION("Grammar exceptions not supported yet...", 1);
+				throw MYEXCEPTION("Exception clauses not supported yet...", 1);
 			const CFactor& factor = term->GetFactor();
 			const CPrimary* primary = factor.GetPrimary();
-			auto identifier = dynamic_cast<const CMetaIdentifier*>(primary);
-			auto terminal = dynamic_cast<const CTerminal*>(primary);
-			auto special = dynamic_cast<const CSpecial*>(primary);
-			if (primary != nullptr && identifier == nullptr && terminal == nullptr && special == nullptr)
+			if (primary == nullptr)
+				continue;
+			if (primary != nullptr && !is<const CDefinedGrammarSymbol*>(primary) && !is<const CTerminal*>(primary))
 				throw MYEXCEPTION("Expected terminal, identifier or special", -1);
-			else if (identifier)
+			else if (auto identifier = dynamic_cast<const CMetaIdentifier*>(primary))
 				identifier->MarkAsUsed();
+			//get rid of multiplier by simply multiplying corresponding primary
 			for (int i = 0; i < factor.GetMultiplier(); ++i)
-			{
-				if(primary!=nullptr)
-					push_back(dynamic_cast<CPrimary*>(primary->spawn(true)));
-			}
+				push_back(dynamic_cast<CPrimary*>(primary->spawn(true)));
 		}
+	}
+
+	CShortDefinition::CShortDefinition(std::initializer_list<CPrimary*> list)
+		: vector<CPrimary*>(list)
+	{
 	}
 
 	CShortDefinition::~CShortDefinition()
@@ -62,14 +67,8 @@ namespace GrammarSymbols
 			if (primary)
 				primary->ReadFrom(is);
 			this->push_back(primary);
-
-			skipWhiteChars(is);
-			//usun symbol ze strumienia tylko jesli jest to separator
-			if (GetSymbol(is, false) == SymbolConcatenate)
-				GetSymbol(is, true);
-			else
-				break;
-		} while (true);
+			//if next symbol is concatenate - it is followed by next definition's symbol
+		} while (TakeSymbolIf(is, SymbolConcatenate));
 		return is;
 	}
 
@@ -110,7 +109,7 @@ namespace GrammarSymbols
 	MySet<CTerminal*, CompareObjects<CTerminal>> GetFirstFrom(_STD vector<CPrimary*>::const_iterator iter, _STD vector<CPrimary*>::const_iterator end)
 	{
 		MySet<CTerminal*, CompareObjects<CTerminal>> res;
-		//loop until encounters a nonterminal without [empty] or a terminal
+		//loop until encounters either end or a terminal or a nonterminal that cannot be derivated from empty symbol
 		bool canBeEmpty;
 #ifdef DEBUG_PARSINGTABLE
 		cerr << "Get first from definition:";
@@ -156,6 +155,7 @@ namespace GrammarSymbols
 				res += nonterminal->First();
 			}
 		}
+		//if reached end, FIRST set should also contain empty symbol
 		if (!canBeEmpty)
 		{
 #ifdef DEBUG_PARSINGTABLE

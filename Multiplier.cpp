@@ -19,6 +19,7 @@ namespace GrammarSymbols
 	{
 		string str;
 		char c = is.get();
+		//only digits because multiplier should be a natural number; allowing for leading zeros
 		while (isdigit(c))
 		{
 			str += c;
@@ -40,6 +41,7 @@ namespace GrammarSymbols
 
 	void CMultiplier::registerPrefixes()
 	{
+		//register all digits as valid prefixes
 		for (char c = '0'; c <= '9'; ++c)
 			CRecognizer::registerType(new CMultiplier(), string{ c });
 	}

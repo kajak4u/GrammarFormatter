@@ -7,29 +7,36 @@ using namespace std;
 
 namespace GrammarSymbols
 {
+	//mock class to provide access to additional data without accessing directly CDefinedSymbolManagerItem class
 	class CMockDefinedGrammarSymbol : public CDefinedGrammarSymbol
 	{
 		string name;
 	public:
+		//constructor with name
 		CMockDefinedGrammarSymbol(string name)
 			: name(name) {
 			Register();
 		}
+		//empty method for it must be implemented
 		virtual std::istream & ReadFrom(std::istream & is) override
 		{
 			return is;
 		}
+		//empty method for it must be implemented
 		virtual void WriteTo(std::ostream & os) const override
 		{
 		}
+		//sample method for they must be implemented
 		virtual ISpawnable * spawn(bool copy = false) const override
 		{
 			return new CMockDefinedGrammarSymbol(*this);
 		}
+		//sample method for they must be implemented
 		virtual bool Equals(const CPrimary * other) const override
 		{
-			return false;
+			return other==this;
 		}
+		//returns name
 		virtual const std::string & GetName() const override
 		{
 			return name;
@@ -86,9 +93,12 @@ namespace GrammarSymbols
 
 	bool CDefinedGrammarSymbol::TryAddFirstFrom(const CShortDefinition * def) const
 	{
+		//get terminals that can be at definition's begin
 		MySet<CTerminal*, CompareObjects<CTerminal>> newSymbols = GetFirstFrom(def->begin(), def->end());
+		//if nothing more than current FIRST subset, return false
 		if (newSymbols.IsSubsetOf(First()))
 			return false;
+		//otherwise, add missing symbols and return true
 		First() += newSymbols;
 		return true;
 	}
@@ -105,10 +115,13 @@ namespace GrammarSymbols
 
 	int CDefinedGrammarSymbol::Compare(const CPrimary * other) const
 	{
+		//if comparing with symbol, compare items' pointers
 		if (const CDefinedGrammarSymbol* sp = dynamic_cast<const CDefinedGrammarSymbol*>(other))
 			return item - sp->item;
+		//if comparing with terminal, symbol is always greater
 		else if (dynamic_cast<const CTerminal*>(other))
 			return 1;
+		//otherwise, use base class comparing method
 		else
 			return CPrimary::Compare(other);
 	}
@@ -118,6 +131,7 @@ namespace GrammarSymbols
 		auto& memory = CDefinedSymbolManager::GetMemory();
 		for (auto& item : memory)
 		{
+			//provide an object to access additional memory without accessing directly CDefinedSymbolManagerItem
 			CMockDefinedGrammarSymbol symbol(item.first);
 			func(&symbol);
 		}

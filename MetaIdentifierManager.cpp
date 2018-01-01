@@ -4,6 +4,7 @@
 
 namespace GrammarSymbols
 {
+	//print memory: First, Follow, used, defined, instances
 	_STD ostream& operator<<(_STD ostream& os, const CDefinedSymbolManagerItem& item)
 	{
 		os << "First: {";
@@ -18,7 +19,8 @@ namespace GrammarSymbols
 				os << *elem << " ";
 			else
 				os << "[] ";
-		os << "};\t" << (item.used ? "" : "not ") << "used; " << (!item.definitions.empty() ? "" : "not ") << "defined";
+		os << "};\t" << (item.used ? "" : "not ") << "used; " << (!item.definitions.empty() ? "" : "not ") << "defined;\t";
+		os << item.instances << " instances.";
 		return os;
 	}
 }

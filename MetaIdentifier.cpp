@@ -40,16 +40,17 @@ namespace GrammarSymbols
 
 	_STD istream & CMetaIdentifier::ReadFrom(_STD istream & is)
 	{
-		skipWhiteChars(is);
+		SkipWhiteChars(is);
 		char c = is.get();
 		if (!isalpha(c))
 			throw invalid_argument(string() + "Meta identifier should start with letter, '" + c + "' found instead.");
-
+		//add all valid characters to identifier's name
 		do
 		{
 			name += c;
 			c = is.get();
-		} while (isalnum(c) || c == ' ' || c=='_'/*|| c=='-'*/);
+		} while (isalnum(c) || c == ' ' || c == '_');
+		//pop all trailing spaces
 		while (name.back() == ' ')
 			name.pop_back();
 		Register();
@@ -68,6 +69,7 @@ namespace GrammarSymbols
 
 	void CMetaIdentifier::registerPrefixes()
 	{
+		//register all small and capital letters
 		for (char c = 'a'; c <= 'z'; ++c)
 		{
 			CRecognizer::registerType(new CMetaIdentifier(), string{ c });
@@ -95,12 +97,15 @@ namespace GrammarSymbols
 		auto& memory = CDefinedSymbolManager::GetMemory();
 		for (auto& keyVal : memory)
 		{
+			//add to unused if is not marked as used
 			if (!keyVal.second->used)
 				unused.insert(keyVal.first);
+			//add to undefined if has 0 definitions
 			if (keyVal.second->definitions.empty())
 				undefined.insert(keyVal.first);
 		}
-		return !undefined.empty() || unused.size() != 1; // starting symbol is unused
+		// starting symbol should be unused, so only valid case is: 0 undefined and 1 unused
+		return !undefined.empty() || unused.size() != 1;
 	}
 
 	bool CMetaIdentifier::Equals(const CPrimary * other) const
