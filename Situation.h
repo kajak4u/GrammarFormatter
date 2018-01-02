@@ -27,7 +27,7 @@ namespace Parser
 		//constructor with pos set at definition's begin
 		CSituation(const CDefinedGrammarSymbol* result, const CShortDefinition* def, CTerminal* allowed = nullptr);
 		//returns its copy but with position moved forward
-		CSituation nextPos() const;
+		CSituation NextPos() const;
 
 		//boolean relation operators
 		bool operator<(const CSituation& other) const;

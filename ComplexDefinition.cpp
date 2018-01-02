@@ -48,7 +48,7 @@ namespace GrammarSymbols
 			os << (first ? first = false, "" : ", ") << *term;
 	}
 
-	ISpawnable * CComplexDefinition::spawn(bool copy) const
+	ISpawnable * CComplexDefinition::Spawn(bool copy) const
 	{
 		return copy ? new CComplexDefinition(*this) : new CComplexDefinition();
 	}

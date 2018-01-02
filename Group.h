@@ -32,12 +32,12 @@ namespace GrammarSymbols
 		//destructor
 		virtual ~CGroup();
 		//returns its definition list
-		const CDefinitionList& getDefinitionList() const;
+		const CDefinitionList& GetDefinitionList() const;
 		//register its prefixes to CRecognizer
-		static void registerPrefixes();
+		static void RegisterPrefixes();
 
 		//inherited from ISpawnable
-		ISpawnable* spawn(bool copy = false) const override;
+		ISpawnable* Spawn(bool copy = false) const override;
 		//inherited from IReadable
 		_STD istream& ReadFrom(_STD istream& is) override;
 		void WriteTo(_STD ostream & os) const override;

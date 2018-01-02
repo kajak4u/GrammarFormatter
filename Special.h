@@ -22,15 +22,15 @@ namespace GrammarSymbols
 		//destructor
 		virtual ~CSpecial();
 		//register its prefixes to CRecognizer
-		static void registerPrefixes();
+		static void RegisterPrefixes();
 		//returns format
-		FormatEffect getFormat() const;
+		FormatEffect GetFormat() const;
 
 		//inherited from IReadable
 		_STD istream & ReadFrom(_STD istream & is) override;
 		void WriteTo(_STD ostream & os) const override;
 		//inherited from ISpawnable
-		ISpawnable * spawn(bool copy = false) const override;
+		ISpawnable * Spawn(bool copy = false) const override;
 		//inherited from CPrimary
 		bool Equals(const CPrimary * other) const override;
 		//inherited from CDefinedGrammarSymbol

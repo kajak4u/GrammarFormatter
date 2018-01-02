@@ -13,7 +13,7 @@ namespace GrammarSymbols
 	{
 		this->reserve(other.size());
 		for (CDefinition* definition : other)
-			this->push_back(dynamic_cast<CDefinition*>(definition->spawn(true)));
+			this->push_back(dynamic_cast<CDefinition*>(definition->Spawn(true)));
 	}
 
 

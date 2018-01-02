@@ -62,7 +62,7 @@ namespace Parser
 		else if (CParseTreeNode* node = dynamic_cast<CParseTreeNode*>(tree))
 		{
 			os << string(intend, ' ') << *node->GetIdentifier() << " => {" << endl;
-			auto& subtree = node->getSubTree();
+			auto& subtree = node->GetSubTree();
 			for (auto& item : subtree)
 			{
 				PrintTree(item.second, os, intend + 2);
@@ -131,7 +131,7 @@ namespace Parser
 		bool spaces = true;
 		//stack of symbols with current positions - alternative for recursive printing
 		vector<pair<CParseTreeNode::SubTree::const_iterator, CParseTreeNode::SubTree::const_iterator>> hierarchy = { 
-			{ treeTop->getSubTree().begin(), treeTop->getSubTree().end() }
+			{ treeTop->GetSubTree().begin(), treeTop->GetSubTree().end() }
 		};
 		bool firstInLine = true;
 		while (!hierarchy.empty())
@@ -147,7 +147,7 @@ namespace Parser
 			//if special, apply format and print its derivation (if any)
 			if (CSpecial* special = dynamic_cast<CSpecial*>(elem->first))
 			{
-				switch (special->getFormat())
+				switch (special->GetFormat())
 				{
 				case FormatTab:
 					os << "\t";
@@ -174,7 +174,7 @@ namespace Parser
 				}
 				//if special symbol has a derivation, print it
 				if (CParseTreeNode* node = dynamic_cast<CParseTreeNode*>(elem->second))
-					hierarchy.push_back({ node->getSubTree().begin(), node->getSubTree().end() });
+					hierarchy.push_back({ node->GetSubTree().begin(), node->GetSubTree().end() });
 			}
 			//if terminal, print it with current format
 			else if (CTerminal* terminal = dynamic_cast<CTerminal*>(elem->first))
@@ -189,7 +189,7 @@ namespace Parser
 			else if (CMetaIdentifier* identifier = dynamic_cast<CMetaIdentifier*>(elem->first))
 			{
 				if (CParseTreeNode* node = dynamic_cast<CParseTreeNode*>(elem->second))
-					hierarchy.push_back({ node->getSubTree().begin(), node->getSubTree().end() });
+					hierarchy.push_back({ node->GetSubTree().begin(), node->GetSubTree().end() });
 			}
 			//shouldn't ever happen
 			else

@@ -59,12 +59,12 @@ namespace Parser
 		{
 			for (const CSituation& situation : I)
 				if (DereferenceOrNull(situation.pos, *situation.def) == nullptr)
-					J.insert(situation.nextPos());
+					J.insert(situation.NextPos());
 		}
 		else
 			for (const CSituation& situation : I)
 				if (symbol->Equals(DereferenceOrNull(situation.pos, *situation.def)))
-					J.insert(situation.nextPos());
+					J.insert(situation.NextPos());
 		//return Closure for the new situation set
 		return Closure(J);
 	}

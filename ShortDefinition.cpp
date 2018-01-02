@@ -17,7 +17,7 @@ namespace GrammarSymbols
 	{
 		reserve(other.size());
 		for (const CPrimary* primary : other)
-			push_back(dynamic_cast<CPrimary*>(primary->spawn(true)));
+			push_back(dynamic_cast<CPrimary*>(primary->Spawn(true)));
 	}
 
 	CShortDefinition::CShortDefinition(CComplexDefinition * previous)
@@ -33,13 +33,13 @@ namespace GrammarSymbols
 			const CPrimary* primary = factor.GetPrimary();
 			if (primary == nullptr)
 				continue;
-			if (primary != nullptr && !is<const CDefinedGrammarSymbol*>(primary) && !is<const CTerminal*>(primary))
+			if (primary != nullptr && !Is<const CDefinedGrammarSymbol*>(primary) && !Is<const CTerminal*>(primary))
 				throw MYEXCEPTION("Expected terminal, identifier or special", 2);
 			else if (auto identifier = dynamic_cast<const CMetaIdentifier*>(primary))
 				identifier->MarkAsUsed();
 			//get rid of multiplier by simply multiplying corresponding primary
 			for (int i = 0; i < factor.GetMultiplier(); ++i)
-				push_back(dynamic_cast<CPrimary*>(primary->spawn(true)));
+				push_back(dynamic_cast<CPrimary*>(primary->Spawn(true)));
 		}
 	}
 
@@ -83,7 +83,7 @@ namespace GrammarSymbols
 		}
 	}
 
-	ISpawnable * CShortDefinition::spawn(bool copy) const
+	ISpawnable * CShortDefinition::Spawn(bool copy) const
 	{
 		return copy ? new CShortDefinition(*this) : new CShortDefinition();
 	}

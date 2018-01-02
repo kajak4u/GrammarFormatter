@@ -32,7 +32,7 @@ namespace GrammarSymbols
 		_STD istream& ReadFrom(_STD istream& is) override;
 		void WriteTo(_STD ostream& os) const override;
 		//inherited from ISpawnable
-		ISpawnable * spawn(bool copy = false) const override;
+		ISpawnable * Spawn(bool copy = false) const override;
 		//inherited from CGrammarObject
 		void ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const override;
 		void ForEach(GrammarObjectPredicate condition, GrammarObjectAction action) override;

@@ -45,15 +45,15 @@ namespace GrammarSymbols
 		return is;
 	}
 
-	ISpawnable * CTerminal::spawn(bool copy) const
+	ISpawnable * CTerminal::Spawn(bool copy) const
 	{
 		return copy ? new CTerminal(*this) : new CTerminal();
 	}
 
-	void CTerminal::registerPrefixes()
+	void CTerminal::RegisterPrefixes()
 	{
-		CRecognizer::registerType(new CTerminal(), "'");
-		CRecognizer::registerType(new CTerminal(), "\"");
+		CRecognizer::RegisterType(new CTerminal(), "'");
+		CRecognizer::RegisterType(new CTerminal(), "\"");
 	}
 
 	CTerminal & CTerminal::operator=(const CTerminal & other)
@@ -120,7 +120,7 @@ namespace GrammarSymbols
 		if (const CTerminal* term = dynamic_cast<const CTerminal*>(other))
 			return item-term->item;
 		//if comparing with symbol, symbol is always greater
-		else if (is<const CDefinedGrammarSymbol*>(other))
+		else if (Is<const CDefinedGrammarSymbol*>(other))
 			return -1;
 		//otherwise, use base class comparing method
 		else

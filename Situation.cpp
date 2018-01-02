@@ -12,7 +12,7 @@ namespace Parser
 		: CSituation(result, def, def->begin(), allowed)
 	{}
 
-	CSituation CSituation::nextPos() const
+	CSituation CSituation::NextPos() const
 	{
 		return CSituation(result, def, _STD next(pos), allowed);
 	}

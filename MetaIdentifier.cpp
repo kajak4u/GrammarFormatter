@@ -57,18 +57,18 @@ namespace GrammarSymbols
 		os << name;
 	}
 
-	ISpawnable * CMetaIdentifier::spawn(bool copy) const
+	ISpawnable * CMetaIdentifier::Spawn(bool copy) const
 	{
 		return copy ? new CMetaIdentifier(*this) : new CMetaIdentifier();
 	}
 
-	void CMetaIdentifier::registerPrefixes()
+	void CMetaIdentifier::RegisterPrefixes()
 	{
 		//register all small and capital letters
 		for (char c = 'a'; c <= 'z'; ++c)
 		{
-			CRecognizer::registerType(new CMetaIdentifier(), string{ c });
-			CRecognizer::registerType(new CMetaIdentifier(), string{ (char)toupper(c) });
+			CRecognizer::RegisterType(new CMetaIdentifier(), string{ c });
+			CRecognizer::RegisterType(new CMetaIdentifier(), string{ (char)toupper(c) });
 		}
 	}
 

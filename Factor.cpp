@@ -18,14 +18,14 @@ namespace GrammarSymbols
 		: multiplier(multiplier)
 	{
 		if (primary != nullptr)
-			this->primary = dynamic_cast<CPrimary*>(primary->spawn(true));
+			this->primary = dynamic_cast<CPrimary*>(primary->Spawn(true));
 	}
 
 	CFactor::CFactor(const CFactor & other)
 		: multiplier(other.multiplier)
 	{
 		if (other.primary != nullptr)
-			primary = dynamic_cast<CPrimary*>(other.primary->spawn(true));
+			primary = dynamic_cast<CPrimary*>(other.primary->Spawn(true));
 	}
 
 	CFactor::CFactor(CFactor && other)
@@ -48,7 +48,7 @@ namespace GrammarSymbols
 	{
 		if (primary)
 			delete primary;
-		primary = dynamic_cast<CPrimary*>(newPrimary->spawn(true));
+		primary = dynamic_cast<CPrimary*>(newPrimary->Spawn(true));
 	}
 
 

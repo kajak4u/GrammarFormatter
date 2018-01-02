@@ -24,7 +24,7 @@ namespace GrammarSymbols
 		//destructor
 		virtual ~CMetaIdentifier();
 		//register its prefixes to CRecognizer
-		static void registerPrefixes();
+		static void RegisterPrefixes();
 		bool operator<(const CMetaIdentifier& other) const;
 		//marks identifier's name as defined by given definition
 		void MarkAsDefinedBy(const CDefinition*) const;
@@ -39,7 +39,7 @@ namespace GrammarSymbols
 		_STD istream & ReadFrom(_STD istream & is) override;
 		void WriteTo(_STD ostream& os) const override;
 		//inherited from ISpawnable
-		ISpawnable * spawn(bool copy = false) const override;
+		ISpawnable * Spawn(bool copy = false) const override;
 		//inherited from CPrimary
 		bool Equals(const CPrimary * other) const override;
 	};

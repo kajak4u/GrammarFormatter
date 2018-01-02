@@ -32,6 +32,6 @@ namespace Parser
 		//returns associated symbol
 		const CDefinedGrammarSymbol* GetIdentifier() const;
 		//returns symbol's derivation
-		const SubTree& getSubTree() const;
+		const SubTree& GetSubTree() const;
 	};
 }

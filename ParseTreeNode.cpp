@@ -18,7 +18,7 @@ namespace Parser
 		return identifier;
 	}
 
-	const CParseTreeNode::SubTree & CParseTreeNode::getSubTree() const
+	const CParseTreeNode::SubTree & CParseTreeNode::GetSubTree() const
 	{
 		return subtree;
 	}

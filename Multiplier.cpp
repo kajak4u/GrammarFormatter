@@ -29,7 +29,7 @@ namespace GrammarSymbols
 		return is.putback(c);
 	}
 
-	ISpawnable * CMultiplier::spawn(bool copy) const
+	ISpawnable * CMultiplier::Spawn(bool copy) const
 	{
 		return copy ? new CMultiplier(*this) : new CMultiplier();
 	}
@@ -39,11 +39,11 @@ namespace GrammarSymbols
 		return value;
 	}
 
-	void CMultiplier::registerPrefixes()
+	void CMultiplier::RegisterPrefixes()
 	{
 		//register all digits as valid prefixes
 		for (char c = '0'; c <= '9'; ++c)
-			CRecognizer::registerType(new CMultiplier(), string{ c });
+			CRecognizer::RegisterType(new CMultiplier(), string{ c });
 	}
 
 	void CMultiplier::WriteTo(_STD ostream & os) const

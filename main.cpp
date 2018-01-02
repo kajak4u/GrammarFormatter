@@ -52,7 +52,7 @@ using namespace std;
 	is.seekg(filepos, is.beg);
 }
 
-void skipComment(_STD istream& is)
+void SkipComment(_STD istream& is)
 {
 	//EBNF comments are cumulative - each start symbol '(*' must have its closing equivalent '*)'
 	//  e.g. (* ... (* ... *) ... *)
@@ -82,7 +82,7 @@ void skipComment(_STD istream& is)
 			{
 				is.putback(c);
 				is.putback('(');
-				skipComment(is);
+				SkipComment(is);
 			}
 			else
 				is.putback(c);
@@ -112,7 +112,7 @@ void SkipWhiteChars(_STD istream& is, bool skipEBNFComment)
 				{
 					is.putback(c2);
 					is.putback(c);
-					skipComment(is);
+					SkipComment(is);
 					break;
 				}
 				is.putback(c2);
@@ -176,7 +176,7 @@ Symbol GetSymbol(_STD istream & is, bool alterStream)
 {
 	pair<string,Symbol> result = RecognizeSymbol(is);
 	if (!alterStream)
-		for (char c : Reverse(result.first))
+		for (char c : Reversed(result.first))
 			is.putback(c);
 	return result.second;
 }
@@ -187,7 +187,7 @@ bool TakeSymbolIf(_STD istream& is, Symbol expectedSymbol)
 	if (result.second == expectedSymbol)
 		return true;
 	//invalid symbol, so put characters back
-	for (char c : Reverse(result.first))
+	for (char c : Reversed(result.first))
 		is.putback(c);
 	return false;
 }

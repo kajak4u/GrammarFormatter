@@ -80,25 +80,25 @@ namespace GrammarSymbols
 		return is;
 	}
 
-	const CDefinitionList & CGroup::getDefinitionList() const
+	const CDefinitionList & CGroup::GetDefinitionList() const
 	{
 		return definitionList;
 	}
 
-	ISpawnable* CGroup::spawn(bool copy) const
+	ISpawnable* CGroup::Spawn(bool copy) const
 	{
 		return copy ? new CGroup(*this) : new CGroup();
 	}
 
-	void CGroup::registerPrefixes()
+	void CGroup::RegisterPrefixes()
 	{
-		CRecognizer::registerType(new CGroup(), "[");
-		CRecognizer::registerType(new CGroup(), "(/");
+		CRecognizer::RegisterType(new CGroup(), "[");
+		CRecognizer::RegisterType(new CGroup(), "(/");
 
-		CRecognizer::registerType(new CGroup(), "{");
-		CRecognizer::registerType(new CGroup(), "(:");
+		CRecognizer::RegisterType(new CGroup(), "{");
+		CRecognizer::RegisterType(new CGroup(), "(:");
 
-		CRecognizer::registerType(new CGroup(), "(");
+		CRecognizer::RegisterType(new CGroup(), "(");
 	}
 
 	void CGroup::WriteTo(_STD ostream & os) const

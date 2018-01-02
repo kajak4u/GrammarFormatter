@@ -19,13 +19,13 @@ namespace GrammarSymbols
 		//returns mutltiplier's value
 		int GetValue() const;
 		//register its prefixes to CRecognizer
-		static void registerPrefixes();
+		static void RegisterPrefixes();
 
 		//inherited from IReadable
 		_STD istream & ReadFrom(_STD istream & is) override;
 		void WriteTo(_STD ostream & os) const override;
 		//inherited from ISpawnable
-		ISpawnable * spawn(bool copy = false) const override;
+		ISpawnable * Spawn(bool copy = false) const override;
 
 	};
 	//output stream operator

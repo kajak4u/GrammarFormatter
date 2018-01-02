@@ -70,17 +70,17 @@ namespace GrammarSymbols
 		os << "?" << name << "?";
 	}
 
-	ISpawnable * CSpecial::spawn(bool copy) const
+	ISpawnable * CSpecial::Spawn(bool copy) const
 	{
 		return copy ? new CSpecial(*this) : new CSpecial();
 	}
 
-	void CSpecial::registerPrefixes()
+	void CSpecial::RegisterPrefixes()
 	{
-		CRecognizer::registerType(new CSpecial(), "?");
+		CRecognizer::RegisterType(new CSpecial(), "?");
 	}
 
-	FormatEffect CSpecial::getFormat() const
+	FormatEffect CSpecial::GetFormat() const
 	{
 		return format;
 	}

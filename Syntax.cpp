@@ -4,6 +4,7 @@
 #include "ShortDefinition.h"
 #include "Syntax.h"
 #include "Terminal.h"
+#include "Reverse.h"
 #include <map>
 
 using namespace std;
@@ -65,11 +66,11 @@ namespace GrammarSymbols
 				{
 					auto& primary = *sdef->begin();
 					//if production begins with terminal, add it to FIRST set
-					if (is<CTerminal*>(primary))
+					if (Is<CTerminal*>(primary))
 						symbol->First() += dynamic_cast<CTerminal*>(primary);
 					//if production begins with symbol, it should be process in a loop
-					else if (is<CDefinedGrammarSymbol*>(primary))
-						startingWithSymbol.insert({ sdef, dynamic_cast<CDefinedGrammarSymbol*>(symbol->spawn(true)) });
+					else if (Is<CDefinedGrammarSymbol*>(primary))
+						startingWithSymbol.insert({ sdef, dynamic_cast<CDefinedGrammarSymbol*>(symbol->Spawn(true)) });
 					else
 						throw MYEXCEPTION("Unexpected null pointer in definition", 4);
 				}
@@ -112,7 +113,7 @@ namespace GrammarSymbols
 						{
 							//add all symbols except empty and add production for processing later
 							currentId->Follow() += (firstFromFollowing - nullptr);
-							followedPairs.insert({ currentId, dynamic_cast<CDefinedGrammarSymbol*>(symbol->spawn(true)) });
+							followedPairs.insert({ currentId, dynamic_cast<CDefinedGrammarSymbol*>(symbol->Spawn(true)) });
 						}
 					}
 				}
@@ -140,16 +141,15 @@ namespace GrammarSymbols
 			[](const CGrammarObject* symbol)
 			{
 				const CFactor* factor = dynamic_cast<const CFactor*>(symbol);
-				return factor != nullptr && is<const CGroup*>(factor->GetPrimary());
+				return factor != nullptr && Is<const CGroup*>(factor->GetPrimary());
 			},
 				[&groupsToReplace](CGrammarObject* symbol) {
 				groupsToReplace.push_back(dynamic_cast<CFactor*>(symbol));
 			}
 		);
 		//iterate backward, because a group can contain another group and internal group, that should be processed first, is always later in the array
-		for (auto iter = groupsToReplace.rbegin(); iter != groupsToReplace.rend(); ++iter)
+		for(CFactor* factor : Reversed(groupsToReplace))
 		{
-			CFactor* factor = *iter;
 			const CGroup* group = dynamic_cast<const CGroup*>(factor->GetPrimary());
 #ifdef DEBUG_SIMPLIFY
 			cerr << "Replace:" << endl << *group << endl << " For: " << endl;
@@ -157,7 +157,7 @@ namespace GrammarSymbols
 			//replace group to one or many helper rules
 			//first rule is always group's definition list
 			CMetaIdentifier identifier("HS#" + to_string(++helperRulesCounter));
-			const CDefinitionList& defList = group->getDefinitionList();
+			const CDefinitionList& defList = group->GetDefinitionList();
 			CHelperSyntaxRule* helperRule = new CHelperSyntaxRule(identifier, defList);
 #ifdef DEBUG_SIMPLIFY
 			cerr << *helperRule << endl;

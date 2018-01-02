@@ -10,9 +10,9 @@ template<typename _VALUE> class CTree
 public:
 	~CTree()
 	{
-		clear();
+		Clear();
 	}
-	void clear()
+	void Clear()
 	{
 		for (auto& node : children)
 			delete node.second;
@@ -21,7 +21,7 @@ public:
 			delete current;
 		current = nullptr;
 	}
-	void add(const _STD string& index, const _VALUE* value)
+	void Add(const _STD string& index, const _VALUE* value)
 	{
 		CTree<_VALUE>* current = this;
 		for (auto i : index)

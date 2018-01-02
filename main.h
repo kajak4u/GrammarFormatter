@@ -23,7 +23,7 @@ template<typename _T> auto inline DereferenceOrNull(const typename _T::const_ite
 }
 
 //returns whether given [obj] can be cast to type [_T]
-template<typename _T, typename _U> bool inline is(_U obj)
+template<typename _T, typename _U> bool inline Is(_U obj)
 {
 	return dynamic_cast<_T>(obj) != nullptr;
 }

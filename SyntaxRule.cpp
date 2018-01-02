@@ -41,7 +41,7 @@ namespace GrammarSymbols
 
 	void CSyntaxRule::AddCopyDefinition(const CDefinition * definition)
 	{
-		definitionList.push_back(dynamic_cast<CDefinition*>(definition->spawn(true)));
+		definitionList.push_back(dynamic_cast<CDefinition*>(definition->Spawn(true)));
 	}
 
 	void CSyntaxRule::Simplify()

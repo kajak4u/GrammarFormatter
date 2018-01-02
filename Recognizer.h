@@ -22,11 +22,11 @@ namespace GrammarSymbols
 		CRecognizer& operator=(CRecognizer &&) = delete;
 
 		//returns reference to the only instance of class
-		static CRecognizer& instance();
+		static CRecognizer& Instance();
 		//frees memory
 		static void FreeMemory();
 		//registers object sample with given prefix
-		static void registerType(ISpawnable* obj, _STD string seq);
+		static void RegisterType(ISpawnable* obj, _STD string seq);
 		//returns new object for corresponding input stream
 		static ISpawnable* CreateFor(_STD istream& is);
 	};

@@ -28,7 +28,7 @@ namespace GrammarSymbols
 		//returns value
 		const _STD string& GetValue() const;
 		//register its prefixes to CRecognizer
-		static void registerPrefixes();
+		static void RegisterPrefixes();
 		//assign operator
 		CTerminal& operator=(const CTerminal& other);
 		//relation operator
@@ -42,7 +42,7 @@ namespace GrammarSymbols
 		_STD istream& ReadFrom(_STD istream& is) override;
 		void WriteTo(_STD ostream & os) const override;
 		//inherited from ISpawnable
-		ISpawnable * spawn(bool copy = false) const override;
+		ISpawnable * Spawn(bool copy = false) const override;
 		//inherited from CPrimary
 		bool Equals(const CPrimary * other) const override;
 		int Compare(const CPrimary* other) const override;

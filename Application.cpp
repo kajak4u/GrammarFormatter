@@ -12,11 +12,11 @@ using namespace Parser;
 
 void CApplication::RegisterAllPrefixes()
 {
-	CGroup::registerPrefixes();
-	CSpecial::registerPrefixes();
-	CTerminal::registerPrefixes();
-	CMultiplier::registerPrefixes();
-	CMetaIdentifier::registerPrefixes();
+	CGroup::RegisterPrefixes();
+	CSpecial::RegisterPrefixes();
+	CTerminal::RegisterPrefixes();
+	CMultiplier::RegisterPrefixes();
+	CMetaIdentifier::RegisterPrefixes();
 }
 
 void CApplication::UnregisterAllPrefixes()

@@ -3,7 +3,7 @@
 
 namespace GrammarSymbols
 {
-	CRecognizer& CRecognizer::instance()
+	CRecognizer& CRecognizer::Instance()
 	{
 		static CRecognizer instance;
 		return instance;
@@ -11,19 +11,19 @@ namespace GrammarSymbols
 
 	void CRecognizer::FreeMemory()
 	{
-		instance().hierarchy.clear();
+		Instance().hierarchy.Clear();
 	}
 
-	void CRecognizer::registerType(ISpawnable* obj, _STD string seq)
+	void CRecognizer::RegisterType(ISpawnable* obj, _STD string seq)
 	{
-		instance().hierarchy.add(seq, obj);
+		Instance().hierarchy.Add(seq, obj);
 	}
 
 	ISpawnable* CRecognizer::CreateFor(_STD istream& is)
 	{
 		SkipWhiteChars(is);
-		const ISpawnable* found = instance().hierarchy.Predict(is);
+		const ISpawnable* found = Instance().hierarchy.Predict(is);
 		//if found something, create its empty clone, return null otherwise
-		return found == nullptr ? nullptr : found->spawn();
+		return found == nullptr ? nullptr : found->Spawn();
 	}
 }

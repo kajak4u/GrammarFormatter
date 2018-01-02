@@ -27,7 +27,7 @@ namespace GrammarSymbols
 		{
 		}
 		//sample method for they must be implemented
-		virtual ISpawnable * spawn(bool copy = false) const override
+		virtual ISpawnable * Spawn(bool copy = false) const override
 		{
 			return new CMockDefinedGrammarSymbol(*this);
 		}
