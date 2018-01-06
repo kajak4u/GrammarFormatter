@@ -36,6 +36,4 @@ namespace GrammarSymbols
 		//inherited from CDefinedGrammarSymbol
 		const std::string & GetName() const override;
 	};
-	//output stream operator
-	_STD ostream& operator<<(_STD ostream& os, const CSpecial& special);
 }

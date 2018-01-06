@@ -32,6 +32,4 @@ namespace GrammarSymbols
 		void ForEach(GrammarObjectPredicate condition, GrammarObjectAction action) override;
 		void ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const override;
 	};
-	//output stream operator
-	_STD ostream& operator<<(_STD ostream& os, const CComplexDefinition& def);
 }

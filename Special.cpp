@@ -95,10 +95,4 @@ namespace GrammarSymbols
 		const CSpecial* mi = dynamic_cast<const CSpecial*>(other);
 		return mi != nullptr && mi->name == name;
 	}
-
-	_STD ostream & operator<<(_STD ostream & os, const CSpecial & special)
-	{
-		special.WriteTo(os);
-		return os;
-	}
 }

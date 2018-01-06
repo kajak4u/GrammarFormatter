@@ -126,10 +126,4 @@ namespace GrammarSymbols
 		else
 			return CPrimary::Compare(other);
 	}
-
-	_STD ostream & operator<<(_STD ostream & os, const CTerminal & terminal)
-	{
-		terminal.WriteTo(os);
-		return os;
-	}
 }

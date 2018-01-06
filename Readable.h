@@ -10,4 +10,5 @@ public:
 	virtual void WriteTo(_STD ostream& os) const = 0;
 	virtual ~IReadable();
 };
-_STD istream& operator<<(_STD istream& is, IReadable& obj);
+_STD istream& operator<<(_STD istream& is, IReadable* obj);
+_STD ostream& operator>>(_STD ostream& os, const IReadable* obj);

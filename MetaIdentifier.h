@@ -43,6 +43,4 @@ namespace GrammarSymbols
 		//inherited from CPrimary
 		bool Equals(const CPrimary * other) const override;
 	};
-	//output stream operator
-	_STD ostream& operator<<(_STD ostream& os, const CMetaIdentifier& identifier);
 }

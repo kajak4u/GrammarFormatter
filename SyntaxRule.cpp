@@ -66,7 +66,7 @@ namespace GrammarSymbols
 
 	void CSyntaxRule::WriteTo(_STD ostream & os) const
 	{
-		os << identifier << " = " << definitionList << ";" << endl;
+		os << &identifier << " = " << &definitionList << ";" << endl;
 	}
 
 	void CSyntaxRule::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
@@ -79,11 +79,5 @@ namespace GrammarSymbols
 	{
 		CGrammarObject::ForEach(condition, action);
 		definitionList.ForEach(condition, action);
-	}
-
-	_STD ostream & operator<<(_STD ostream & os, const CSyntaxRule & rule)
-	{
-		rule.WriteTo(os);
-		return os;
 	}
 }

@@ -107,10 +107,4 @@ namespace GrammarSymbols
 		if (primary != nullptr)
 			primary->ForEach(condition, action);
 	}
-
-	_STD ostream & operator<<(_STD ostream & os, const CFactor & factor)
-	{
-		factor.WriteTo(os);
-		return os;
-	}
 }

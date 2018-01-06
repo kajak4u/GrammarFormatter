@@ -28,6 +28,4 @@ namespace GrammarSymbols
 		ISpawnable * Spawn(bool copy = false) const override;
 
 	};
-	//output stream operator
-	_STD ostream& operator<<(_STD ostream& os, const CMultiplier& mult);
 }

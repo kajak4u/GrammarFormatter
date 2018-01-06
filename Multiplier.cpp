@@ -50,10 +50,4 @@ namespace GrammarSymbols
 	{
 		os << value;
 	}
-
-	_STD ostream & operator<<(_STD ostream & os, const CMultiplier & mult)
-	{
-		mult.WriteTo(os);
-		return os;
-	}
 }

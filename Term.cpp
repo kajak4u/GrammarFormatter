@@ -63,9 +63,9 @@ namespace GrammarSymbols
 
 	void CTerm::WriteTo(_STD ostream & os) const
 	{
-		os << factor;
+		os << &factor;
 		if (hasException)
-			os << " - " << exception;
+			os << " - " << &exception;
 	}
 
 	void CTerm::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const
@@ -82,11 +82,5 @@ namespace GrammarSymbols
 		factor.ForEach(condition, action);
 		if (hasException)
 			exception.ForEach(condition, action);
-	}
-
-	_STD ostream & operator<<(_STD ostream & os, const CTerm & term)
-	{
-		term.WriteTo(os);
-		return os;
 	}
 }

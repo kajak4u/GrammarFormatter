@@ -89,10 +89,4 @@ namespace GrammarSymbols
 				definition->ForEach(condition, action);
 	}
 
-	_STD ostream & operator<<(_STD ostream & os, const CDefinitionList & list)
-	{
-		list.WriteTo(os);
-		return os;
-	}
-
 }

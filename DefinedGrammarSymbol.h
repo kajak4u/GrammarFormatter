@@ -50,6 +50,4 @@ namespace GrammarSymbols
 		//get symbol's name
 		virtual const std::string & GetName() const = 0;
 	};
-	//output stream operator
-	_STD ostream& operator<<(_STD ostream& os, const CDefinedGrammarSymbol& identifier);
 }

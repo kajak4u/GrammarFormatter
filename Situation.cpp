@@ -35,7 +35,7 @@ namespace Parser
 	_STD ostream & operator<<(_STD ostream & os, const CSituation & situation)
 	{
 		//cursor position is marked by '*' character, empty symbol is visible as [empty]
-		os << *situation.result << " =";
+		os << situation.result << " =";
 		for (auto iter = situation.def->begin(); iter != situation.def->end(); ++iter)
 		{
 			os << (iter == situation.pos ? " * " : " ");
@@ -46,7 +46,7 @@ namespace Parser
 		}
 		if (situation.pos == situation.def->end())
 			os << " *";
-		os << ", " << *situation.allowed;
+		os << ", " << situation.allowed;
 		return os;
 	}
 

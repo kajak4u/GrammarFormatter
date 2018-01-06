@@ -42,7 +42,7 @@ namespace GrammarSymbols
 	void CSyntax::WriteTo(ostream & os) const
 	{
 		for (CSyntaxRule* rule : *this)
-			os << *rule << endl;
+			os << rule << endl;
 	}
 
 	void CSyntax::CreateSets()
@@ -260,11 +260,5 @@ namespace GrammarSymbols
 		CGrammarObject::ForEach(condition, action);
 		for (CSyntaxRule* rule : *this)
 			rule->ForEach(condition, action);
-	}
-
-	ostream & operator<<(ostream & os, const CSyntax & syntax)
-	{
-		syntax.WriteTo(os);
-		return os;
 	}
 }

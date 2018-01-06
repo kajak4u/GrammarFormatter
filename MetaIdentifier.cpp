@@ -54,7 +54,7 @@ namespace GrammarSymbols
 
 	void CMetaIdentifier::WriteTo(_STD ostream & os) const
 	{
-		os << name;
+		os << &name;
 	}
 
 	ISpawnable * CMetaIdentifier::Spawn(bool copy) const
@@ -107,11 +107,5 @@ namespace GrammarSymbols
 	{
 		const CMetaIdentifier* mi = dynamic_cast<const CMetaIdentifier*>(other);
 		return mi != nullptr && mi->GetItem() == GetItem();
-	}
-
-	_STD ostream & operator<<(_STD ostream & os, const CMetaIdentifier & identifier)
-	{
-		identifier.WriteTo(os);
-		return os;
 	}
 }

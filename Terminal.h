@@ -47,6 +47,4 @@ namespace GrammarSymbols
 		bool Equals(const CPrimary * other) const override;
 		int Compare(const CPrimary* other) const override;
 	};
-	//output stream operator
-	_STD ostream& operator<<(_STD ostream& os, const CTerminal& terminal);
 }

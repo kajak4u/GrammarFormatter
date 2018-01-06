@@ -32,6 +32,4 @@ namespace GrammarSymbols
 		void ForEach(GrammarObjectPredicate condition, GrammarObjectAction action) override;
 
 	};
-
-	_STD ostream& operator<<(_STD ostream& os, const CDefinitionList& list);
 }

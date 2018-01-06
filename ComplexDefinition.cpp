@@ -45,7 +45,7 @@ namespace GrammarSymbols
 	{
 		bool first = true;
 		for (const CTerm* term : *this)
-			os << (first ? first = false, "" : ", ") << *term;
+			os << (first ? first = false, "" : ", ") << term;
 	}
 
 	ISpawnable * CComplexDefinition::Spawn(bool copy) const
@@ -69,11 +69,5 @@ namespace GrammarSymbols
 		//...and to every child term
 		for (CTerm* term : *this)
 			term->ForEach(condition, action);
-	}
-
-	ostream & operator<<(ostream & os, const CComplexDefinition & def)
-	{
-		def.WriteTo(os);
-		return os;
 	}
 }

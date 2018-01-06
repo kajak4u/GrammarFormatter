@@ -137,10 +137,4 @@ namespace GrammarSymbols
 		}
 	}
 
-	std::ostream & operator<<(std::ostream & os, const CDefinedGrammarSymbol & identifier)
-	{
-		identifier.WriteTo(os);
-		return os;
-	}
-
 }
