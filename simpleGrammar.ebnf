@@ -1,12 +1,12 @@
 S = statements;
 statements = | stmt, {?NL?, stmt};
-if_stmt = 'if', bool_condition, 'then', (?NL?, complex_stmt | ?INT?, ?NL?, simple_stmt, ?DED?);
+if_stmt = 'if', bool_condition, 'then', (?NL?, complex_stmt | ?IND?, ?NL?, simple_stmt, ?DED?);
 semicolon = ?NOSPACE?, ';', ?SPACE?;
 simple_stmt = ';' | if_stmt | assign_stmt;
-complex_stmt = '{', ?INT?, ?NL?, statements, ?DED?, ?NL?, '}';
+complex_stmt = '{', ?IND?, ?NL?, statements, ?DED?, ?NL?, '}';
 stmt = simple_stmt | complex_stmt;
 assign_stmt = identifier, '=', bool_condition, semicolon;
-identifier = ?NOSPACE?, letter, {digit|letter|'_'}, ?SPACE?;
+identifier = ?WHITEOFF?, letter, {digit|letter|'_'}, ?WHITEON?;
 digit = '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9';
 letter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z";
 bool_condition = bool_condition2, {('&' | '|'), bool_condition2};
@@ -16,8 +16,8 @@ bool_condition3 = 'true' | 'false';
 (*
 S = E;
 E = T, {?NL?, '+', T};
-T = F, ?INT?, {?NL?, '*', F}, ?DED?;
-F = ?INT?, '(', ?NL?, E, ?DED?, ?NL?, ')' | id;
+T = F, ?IND?, {?NL?, '*', F}, ?DED?;
+F = ?IND?, '(', ?NL?, E, ?DED?, ?NL?, ')' | id;
 id = '0' | digit | digit, id;
 digit = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 *)

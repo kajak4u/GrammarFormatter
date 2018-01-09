@@ -183,10 +183,10 @@ namespace Parser
 				case FormatNoSpace:
 					firstInLine = true;
 					break;
-				case FormatIntend:
+				case FormatIndent:
 					++intend;
 					break;
-				case FormatDedend:
+				case FormatDedent:
 					if (intend)
 						--intend;
 					break;

@@ -39,6 +39,6 @@ enum FormatEffect
 	FormatWhitespaceEnable,	//allow whitespaces between symbols
 	FormatWhitespaceDisable,//forbid whitespaces between symbols
 	FormatNewLine,	//insert new line and intend
-	FormatIntend,	//increase intend
-	FormatDedend	//decrease intend
+	FormatIndent,	//increase indentation
+	FormatDedent	//decrease indentation
 };
