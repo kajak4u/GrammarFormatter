@@ -44,7 +44,7 @@ using namespace std;
 		oldfilepos = is.tellg();
 		++line;
 		getline(is, str, '\n');
-	} while (is.tellg() < filepos);
+	} while (!is.eof() && is.tellg() < filepos);
 	//offset in line is the difference between start position and the line's begin
 	pos = int(filepos - oldfilepos);
 	lineContent = str;

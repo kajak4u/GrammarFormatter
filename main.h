@@ -42,12 +42,21 @@ template<class _T> struct CompareObjects
 class MyException
 {
 public:
-	_STD string message;
+#ifdef _DEBUG
 	_STD string file;
 	int line;
+#endif
+	_STD string message;
 	int retCode;
+#ifdef _DEBUG
+#define MYEXCEPTION(message, retCode) MyException(message, retCode, __FILE__, __LINE__)
 	MyException(const _STD string& message, int retCode, _STD string file, int line)
 		: message(message), retCode(retCode), file(file), line(line)
 	{}
+#else
+#define MYEXCEPTION(message, retCode) MyException(message, retCode)
+	MyException(const _STD string& message, int retCode)
+		: message(message), retCode(retCode)
+	{}
+#endif
 };
-#define MYEXCEPTION(message, retCode) MyException(message, retCode, __FILE__, __LINE__)

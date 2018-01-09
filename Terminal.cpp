@@ -102,7 +102,8 @@ namespace GrammarSymbols
 			c = is.get();
 		}
 		//return last character back to stream, for it is not in this terminal
-		is.putback(c);
+		if(c!=-1)
+			is.putback(c);
 		if(name.empty())
 			return nullptr;
 		return new CTerminal(name);

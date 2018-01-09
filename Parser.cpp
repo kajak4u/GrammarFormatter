@@ -91,7 +91,10 @@ namespace Parser
 			else
 				currentTerminal = CTerminal::Recognize(file);
 			if (currentTerminal == nullptr)
-				throw MYEXCEPTION("Syntax error - unrecognized terminal.", -6);
+				if (file.eof())
+					continue;
+				else
+					throw MYEXCEPTION("Syntax error - unrecognized terminal.", -6);
 #ifdef DEBUG_PARSING
 			cerr << "Recognized terminal: " << *currentTerminal << endl;
 #endif
