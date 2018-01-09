@@ -26,7 +26,7 @@ void CApplication::UnregisterAllPrefixes()
 
 void CApplication::ProcessCmdArgs(int argc, char* argv[])
 {
-	if (argc == 2 && (string(argv[1]) == "/?") || string(argv[1]) == "--help")
+	if (argc == 2 && (string(argv[1]) == "/?" || string(argv[1]) == "--help"))
 	{
 		
 		throw MYEXCEPTION(string()+
@@ -35,7 +35,7 @@ void CApplication::ProcessCmdArgs(int argc, char* argv[])
 			"  grammar-file      file containing EBNF grammar file\n"+
 			"  input-file        Input file to process\n"+
 			"  output-file       Output file to store results.\n"+
-			"                    If not specified, result is saved in input-file., ", 0);
+			"                    If not specified, result is saved in input-file. ", 0);
 	}
 	if (argc < 3)
 		throw MYEXCEPTION("Too few arguments. Use '/?' or '--help' for help.", -1);
