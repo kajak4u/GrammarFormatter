@@ -219,7 +219,8 @@ int main(int argc, char* argv[])
 	}
 #ifdef _DEBUG
 	//in debug mode, pause console before exiting
-	system("pause");
+	cout << "Press [Enter] to continue . . . ";
+	cin.get();
 #endif
 	return retcode;
 }
