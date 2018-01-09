@@ -9,15 +9,16 @@ using namespace std;
 namespace GrammarSymbols
 {
 	map<string, FormatEffect> CSpecial::formatMap = {
-		{ "NL",		FormatNewLine },
-		{ "NEWLINE",FormatNewLine },
-		{ "INT",	FormatIntend },
-		{ "INTEND", FormatIntend },
-		{ "DED",	FormatDedend },
-		{ "DEDEND", FormatDedend },
-		{ "SPACE",	FormatSpace },
-		{ "NOSPACE", FormatNoSpace},
-		{ "TAB",	FormatTab }
+		{ "NL",			FormatNewLine },
+		{ "NEWLINE",	FormatNewLine },
+		{ "INT",		FormatIntend },
+		{ "INTEND",		FormatIntend },
+		{ "DED",		FormatDedend },
+		{ "DEDEND",		FormatDedend },
+		{ "WHITEON",	FormatWhitespaceEnable },
+		{ "WHITEOFF",	FormatWhitespaceDisable },
+		{ "NOSPACE",	FormatNoSpace},
+		{ "TAB",		FormatTab }
 	};
 
 	CSpecial::CSpecial()

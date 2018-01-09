@@ -46,6 +46,19 @@ namespace Parser
 		for (auto stackIter = separator; stackIter != stack.end(); ++definitionIter, ++stackIter)
 			subtree.push_back({ *definitionIter, *stackIter });
 		stack.erase(separator, stack.end());
+		//check for special symbols
+		if (const CSpecial* special = dynamic_cast<const CSpecial*>(identifier))
+		{
+			switch (special->GetFormat())
+			{
+				case FormatWhitespaceEnable:
+					whitespacesAllowed = true;
+					break;
+				case FormatWhitespaceDisable:
+					whitespacesAllowed = false;
+					break;
+			}
+		}
 		//change parser state and perform Goto
 		currentState = stack.back()->GetState();
 		stack.push_back(new CParseTreeNode(identifier, subtree, nullptr));
@@ -98,7 +111,6 @@ namespace Parser
 #ifdef DEBUG_PARSING
 			cerr << "Recognized terminal: " << *currentTerminal << endl;
 #endif
-			SkipWhiteChars(file, false);
 			//'REDUCE' actions do not take terminal from input - repeat as long as it is still there
 			while (currentTerminal != nullptr)
 			{
@@ -107,6 +119,8 @@ namespace Parser
 				PrintStack();
 #endif
 			}
+			if (whitespacesAllowed)
+				SkipWhiteChars(file, false);
 		}
 	}
 
@@ -154,15 +168,19 @@ namespace Parser
 				{
 				case FormatTab:
 					os << "\t";
+					firstInLine = true;
 					break;
-				case FormatSpace:
+				case FormatWhitespaceEnable:
 					spaces = true;
 					break;
-				case FormatNoSpace:
+				case FormatWhitespaceDisable:
 					spaces = false;
 					break;
 				case FormatNewLine:
 					os << "\n" << string(intend, '\t');
+					firstInLine = true;
+					break;
+				case FormatNoSpace:
 					firstInLine = true;
 					break;
 				case FormatIntend:

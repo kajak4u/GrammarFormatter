@@ -28,6 +28,8 @@ namespace Parser
 		std::vector<CParseTreeItem*> stack;
 		//recently read terminal, waiting for processing
 		CTerminal* currentTerminal = nullptr;
+		//whether whitespaces are currently allowed
+		bool whitespacesAllowed = true;
 	public:
 		//changes current state to given [state]
 		void ChangeStateTo(CParsingState* state);
