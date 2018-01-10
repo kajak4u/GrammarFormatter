@@ -158,13 +158,20 @@ pair<string, Symbol> RecognizeSymbol(_STD istream& is)
 	SkipWhiteChars(is);
 	//get 2 chars, for symbols are 1- or 2-characters
 	char c = is.get();
+	if (is.eof())
+		return{ "", SymbolUnknown };
 	char c2 = is.get();
-	auto result = symbols.find({ c, c2 });
-	if (result != symbols.end())
-		return *result;
-	//if 2-character symbol is not matched, try with 1-character
-	is.putback(c2);
-	result = symbols.find({ c });
+	if (!is.eof())
+	{
+		auto result = symbols.find({ c, c2 });
+		if (result != symbols.end())
+			return *result;
+		//if 2-character symbol is not matched, try with 1-character
+		is.putback(c2);
+	}
+	else
+		is.clear();
+	auto result = symbols.find({ c });
 	if (result != symbols.end())
 		return *result;
 

@@ -145,7 +145,7 @@ namespace Parser
 		if (treeTop == nullptr)
 			throw MYEXCEPTION("Invalid stack content.",6);
 		int intend = 0;
-		bool spaces = true;
+		unsigned spaces = -1;
 		//stack of symbols with current positions - alternative for recursive printing
 		vector<pair<CParseTreeNode::SubTree::const_iterator, CParseTreeNode::SubTree::const_iterator>> hierarchy = { 
 			{ treeTop->GetSubTree().begin(), treeTop->GetSubTree().end() }
@@ -171,10 +171,10 @@ namespace Parser
 					firstInLine = true;
 					break;
 				case FormatWhitespaceEnable:
-					spaces = true;
+					spaces = -1;
 					break;
 				case FormatWhitespaceDisable:
-					spaces = false;
+					spaces = firstInLine ? 0 : 1;
 					break;
 				case FormatNewLine:
 					os << "\n" << string(intend, '\t');
@@ -202,8 +202,8 @@ namespace Parser
 			{
 				if (firstInLine)
 					firstInLine = false;
-				else
-					os << (spaces ? " " : "");
+				else if (spaces && spaces--)
+					os << " ";
 				os << terminal->GetValue();
 			}
 			//if identifier, print its derivation
