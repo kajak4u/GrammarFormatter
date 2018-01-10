@@ -29,14 +29,19 @@ namespace Parser
 	{
 		//if there is a conflict, grammar is not SLR(1)
 		if (actions.find(terminal) != actions.end())
-			throw MYEXCEPTION(std::string() + "Grammar syntax error - duplicate action at " + terminal->GetValue() + ".\nGrammar is not SLR(1).", -2);
+		{
+			std::cerr << "XXX" << std::endl;
+			for (auto& situation : *this->GetSituations())
+				std::cerr << "  " << situation << std::endl;
+			throw MYEXCEPTION(std::string() + "Grammar parsing error - duplicate action at " + terminal->GetValue() + ".\nGrammar is not SLR(1).", -2);
+		}
 		actions[terminal] = action;
 	}
 	void CParsingState::AddGoto(const CDefinedGrammarSymbol *symbol, CGoto *newGoto)
 	{
 		//if there is a conflict, grammar is not SLR(1)
 		if (gotos.find(symbol) != gotos.end())
-			throw MYEXCEPTION(std::string() + "Grammar syntax error - duplicate goto at " + symbol->GetName() + ".\nGrammar is not SLR(1).", -3);
+			throw MYEXCEPTION(std::string() + "Grammar parsing error - duplicate goto at " + symbol->GetName() + ".\nGrammar is not SLR(1).", -3);
 		gotos[symbol] = newGoto;
 	}
 	const CSituations * CParsingState::GetSituations() const

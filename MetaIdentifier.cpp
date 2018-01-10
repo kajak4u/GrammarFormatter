@@ -1,6 +1,7 @@
 #include "DefinedSymbolManager.h"
 #include "MetaIdentifier.h"
 #include "Recognizer.h"
+#include <string>
 
 using namespace std;
 
@@ -54,7 +55,7 @@ namespace GrammarSymbols
 
 	void CMetaIdentifier::WriteTo(_STD ostream & os) const
 	{
-		os << &name;
+		os << name;
 	}
 
 	ISpawnable * CMetaIdentifier::Spawn(bool copy) const

@@ -1,5 +1,7 @@
 #include "ReduceAction.h"
 #include "Parser.h"
+#include "DefinedGrammarSymbol.h"
+#include "ShortDefinition.h"
 
 namespace Parser
 {
@@ -10,9 +12,7 @@ namespace Parser
 	void CReduceAction::Perform(CParser & parser)
 	{
 #ifdef DEBUG_PARSING
-		cerr << "Reduce from " << *result << " = ";
-		definition->WriteTo(cerr);
-		cerr << endl;
+		std::cerr << "Reduce from " << *result << " = " << *definition << std::endl;
 #endif
 		parser.Reduce(result, definition);
 	}

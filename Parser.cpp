@@ -70,11 +70,11 @@ namespace Parser
 	{
 		if (CParseTreeLeaf* leaf = dynamic_cast<CParseTreeLeaf*>(tree))
 		{
-			os << string(intend, ' ') << leaf->GetTerminal() << endl;
+			os << string(intend, ' ') << *leaf->GetTerminal() << endl;
 		}
 		else if (CParseTreeNode* node = dynamic_cast<CParseTreeNode*>(tree))
 		{
-			os << string(intend, ' ') << node->GetIdentifier() << " => {" << endl;
+			os << string(intend, ' ') << *node->GetIdentifier() << " => {" << endl;
 			auto& subtree = node->GetSubTree();
 			for (auto& item : subtree)
 			{
@@ -116,7 +116,7 @@ namespace Parser
 			{
 				currentState->GetAction(currentTerminal)->Perform(*this);
 #ifdef DEBUG_PARSING
-				PrintStack();
+				PrintStackTo(cout);
 #endif
 			}
 			if (whitespacesAllowed)

@@ -49,7 +49,7 @@ namespace GrammarSymbols
 		{
 			os << (first ? first = false, "" : "\n\t| ");
 			if (def)
-				def->WriteTo(os);
+				os << *def;
 			else
 				os << "[empty]";
 		}

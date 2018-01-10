@@ -17,27 +17,15 @@ namespace GrammarSymbols
 			AddCopyDefinition(item);
 	}
 
-	CHelperSyntaxRule::CHelperSyntaxRule(const CMetaIdentifier & helperIdentifier, const CMetaIdentifier & helperIdentifier2, GroupType option)
+	CHelperSyntaxRule::CHelperSyntaxRule(const CMetaIdentifier & helperIdentifier, const CMetaIdentifier & helperIdentifier2)
 		: CSyntaxRule(helperIdentifier)
 	{
-		if (option == GroupOptional)
+		//add definition: H2 = H2, H1 | [empty];
+		AddDefinition(new CShortDefinition());
+		AddDefinition(new CShortDefinition
 		{
-			//add definition: H2 = H1 | [empty]
-			AddDefinition(new CShortDefinition());
-			AddDefinition(new CShortDefinition
-			{
-				new CMetaIdentifier(helperIdentifier2)
-			});
-		}
-		else if (option == GroupRepetition)
-		{
-			//add definition: H2 = H2, H1 | [empty];
-			AddDefinition(new CShortDefinition());
-			AddDefinition(new CShortDefinition
-			{
-				new CMetaIdentifier(helperIdentifier2),
-				new CMetaIdentifier(helperIdentifier)
-			});
-		}
+			new CMetaIdentifier(helperIdentifier2),
+			new CMetaIdentifier(helperIdentifier)
+		});
 	}
 }

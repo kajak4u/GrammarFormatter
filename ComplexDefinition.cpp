@@ -45,7 +45,7 @@ namespace GrammarSymbols
 	{
 		bool first = true;
 		for (const CTerm* term : *this)
-			os << (first ? first = false, "" : ", ") << term;
+			os << (first ? first = false, "" : ", ") << *term;
 	}
 
 	ISpawnable * CComplexDefinition::Spawn(bool copy) const

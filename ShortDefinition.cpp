@@ -63,7 +63,7 @@ namespace GrammarSymbols
 			if (obj && !primary)
 				throw invalid_argument(string() + "Expected primary");
 			if (primary)
-				primary->ReadFrom(is);
+				is >> *primary;
 			this->push_back(primary);
 			//if next symbol is concatenate - it is followed by next definition's symbol
 		} while (TakeSymbolIf(is, SymbolConcatenate));
@@ -77,7 +77,7 @@ namespace GrammarSymbols
 		{
 			os << (first ? first = false, "" : ", ");
 			if (primary != nullptr)
-				primary->WriteTo(os);
+				os << *primary;
 			else
 				os << "[empty]";
 		}
@@ -113,8 +113,7 @@ namespace GrammarSymbols
 		cerr << "Get first from definition:";
 		for (auto it = iter; it != end; ++it)
 		{
-			cerr << " ";
-			(*it)->WriteTo(cerr);
+			cerr << " " << **it;
 		}
 		cerr << endl;
 #endif
@@ -125,9 +124,7 @@ namespace GrammarSymbols
 			if (terminal != nullptr)
 			{
 #ifdef DEBUG_PARSINGTABLE
-				cerr << "add terminal ";
-				(*iter)->WriteTo(cerr);
-				cerr << endl;
+				cerr << "add terminal " << **iter << endl;
 #endif
 				res += terminal;
 			}

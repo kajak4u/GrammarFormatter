@@ -66,7 +66,7 @@ namespace GrammarSymbols
 
 	void CSyntaxRule::WriteTo(_STD ostream & os) const
 	{
-		os << &identifier << " = " << &definitionList << ";" << endl;
+		os << identifier << " = " << definitionList << ";" << endl;
 	}
 
 	void CSyntaxRule::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const

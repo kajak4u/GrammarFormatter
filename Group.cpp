@@ -68,7 +68,7 @@ namespace GrammarSymbols
 			break;
 		}
 		//read corresponding definition list
-		is << &definitionList;
+		is >> definitionList;
 		SkipWhiteChars(is);
 		//expect proper ending
 		c = is.get();
@@ -104,7 +104,7 @@ namespace GrammarSymbols
 	void CGroup::WriteTo(_STD ostream & os) const
 	{
 		string brackets = type == GroupOptional ? "[]" : type == GroupRepetition ? "{}" : "()";
-		os << brackets[0] << &definitionList << brackets[1];
+		os << brackets[0] << definitionList << brackets[1];
 	}
 
 

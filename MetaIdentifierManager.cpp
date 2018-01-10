@@ -9,13 +9,13 @@ namespace GrammarSymbols
 		os << "First: {";
 		for (auto& elem : item.first)
 			if (elem)
-				os << elem << " ";
+				os << *elem << " ";
 			else
 				os << "[] ";
 		os << "}\tFollow: {";
 		for (auto& elem : item.follow)
 			if (elem)
-				os << elem << " ";
+				os << *elem << " ";
 			else
 				os << "[] ";
 		os << "};\t" << (item.used ? "" : "not ") << "used; " << (!item.definitions.empty() ? "" : "not ") << "defined;\t";

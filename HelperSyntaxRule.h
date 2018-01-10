@@ -1,6 +1,5 @@
 #pragma once
 #include "SyntaxRule.h"
-#include "Enums.h"
 
 namespace GrammarSymbols
 {
@@ -12,8 +11,8 @@ namespace GrammarSymbols
 	public:
 		//create rule using given identifier and definition list
 		CHelperSyntaxRule(const CMetaIdentifier& helperIdentifier, const CDefinitionList& origin);
-		//create second rule for repeat/optional group using new identifier and primary identifier
-		CHelperSyntaxRule(const CMetaIdentifier& helperIdentifier, const CMetaIdentifier& helperIdentifier2, GroupType option);
+		//create second rule for repeat group using new identifier and primary identifier
+		CHelperSyntaxRule(const CMetaIdentifier& helperIdentifier, const CMetaIdentifier& helperIdentifier2);
 		//destructor
 		virtual ~CHelperSyntaxRule();
 	};

@@ -42,7 +42,7 @@ namespace GrammarSymbols
 	void CSyntax::WriteTo(ostream & os) const
 	{
 		for (CSyntaxRule* rule : *this)
-			os << rule << endl;
+			os << *rule << endl;
 	}
 
 	void CSyntax::CreateSets()
@@ -163,24 +163,28 @@ namespace GrammarSymbols
 			cerr << *helperRule << endl;
 #endif
 			this->push_back(helperRule);
-			//if group is default, everything is now fine
-			if (group->GetType() == GroupDefault)
+			switch (group->GetType())
 			{
-				factor->SetPrimary(&identifier);
-				identifier.MarkAsUsed();
-			}
-			else
-			{
-				//if group was optional or repetition, then an additional rule should be added to keep it
-				CMetaIdentifier identifier2("HS#" + to_string(++helperRulesCounter));
-				CHelperSyntaxRule* helperRule2 = new CHelperSyntaxRule(identifier2, identifier, group->GetType());
+				case GroupOptional:
+					//if group is optional, add empty definition and go further
+					helperRule->AddDefinition(new CShortDefinition());
+				case GroupDefault:
+					//rules are ok, set flag and change symbol
+					factor->SetPrimary(&identifier);
+					identifier.MarkAsUsed();
+					break;
+				case GroupRepetition:
+					//if group was optional or repetition, then an additional rule should be added to keep it
+					CMetaIdentifier identifier2("HS#" + to_string(++helperRulesCounter));
+					CHelperSyntaxRule* helperRule2 = new CHelperSyntaxRule(identifier2, identifier);
 #ifdef DEBUG_SIMPLIFY
-				cerr << " and: " << endl << *helperRule2 << endl;
+					cerr << " and: " << endl << *helperRule2 << endl;
 #endif
-				identifier.MarkAsUsed();
-				this->push_back(helperRule2);
-				factor->SetPrimary(&identifier2);
-				identifier2.MarkAsUsed();
+					identifier.MarkAsUsed();
+					this->push_back(helperRule2);
+					factor->SetPrimary(&identifier2);
+					identifier2.MarkAsUsed();
+					break;
 			}
 		}
 

@@ -63,9 +63,9 @@ namespace GrammarSymbols
 
 	void CTerm::WriteTo(_STD ostream & os) const
 	{
-		os << &factor;
+		os << factor;
 		if (hasException)
-			os << " - " << &exception;
+			os << " - " << exception;
 	}
 
 	void CTerm::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const

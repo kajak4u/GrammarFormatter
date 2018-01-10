@@ -6,7 +6,7 @@ namespace Parser
 	void CAcceptAction::Perform(CParser & parser)
 	{
 #ifdef DEBUG_PARSING
-		cerr << "Accept " << endl;
+		std::cerr << "Accept " << std::endl;
 #endif
 		parser.Accept();
 	}

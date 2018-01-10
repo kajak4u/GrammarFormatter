@@ -5,6 +5,7 @@
 #include "Parser.h"
 #include "Special.h"
 #include <fstream>
+#include "DefinedSymbolManager.h"
 
 using namespace std;
 using namespace GrammarSymbols;
@@ -51,7 +52,7 @@ CSyntax CApplication::ReadGrammar(_STD istream & grammar)
 	CSyntax syntax;
 	try
 	{
-		syntax.ReadFrom(grammar);
+		grammar >> syntax;
 		cout << "Grammar loaded correctly" << endl;
 	}
 	catch (exception e)

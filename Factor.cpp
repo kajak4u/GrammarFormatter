@@ -75,7 +75,7 @@ namespace GrammarSymbols
 		if (obj && !primary)
 			throw invalid_argument(string() + "Expected primary");
 		if (primary)
-			this->primary->ReadFrom(is);
+			is >> *this->primary;
 		return is;
 	}
 
@@ -84,7 +84,7 @@ namespace GrammarSymbols
 		if (multiplier != 1)
 			os << multiplier << " * ";
 		if (primary)
-			primary->WriteTo(os);
+			os << *primary;
 	}
 
 	void CFactor::ForEach(GrammarObjectPredicate condition, GrammarObjectConstAction action) const

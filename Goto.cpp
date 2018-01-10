@@ -1,5 +1,6 @@
 #include "Goto.h"
 #include "Parser.h"
+#include "ParsingState.h"
 
 namespace Parser
 {
@@ -11,9 +12,9 @@ namespace Parser
 	{
 #ifdef DEBUG_PARSING
 #ifdef _DEBUG
-		cerr << "Goto " << newState->id << endl;
+		std::cerr << "Goto " << newState->id << std::endl;
 #else
-		cerr << "Goto " << endl;
+		std::cerr << "Goto " << std::endl;
 #endif
 #endif
 		parser.ChangeStateTo(newState);
